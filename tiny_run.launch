@@ -1,0 +1,19 @@
+<launch>
+  <machine name="local" address="localhost" default="true" />
+
+  <param name="use_sim_time" value="true"/>
+  <arg name="dataset" default="" />
+  <arg name="rate" default="1.0" />
+
+  <node name="tinySLAM" pkg="tiny_slam" type="tinyslam"
+        cwd="node" required="true" output="screen">
+    <remap from="laser_scan" to="/base_scan" />
+  </node>
+
+  <node name="player" pkg="rosbag" type="play"
+        args="--delay=3 --clock --rate $(arg rate) $(arg path)" />
+
+  <node name="MapTrasformPublisher" pkg="tf" type="static_transform_publisher"
+        args="0 0 0 0 0 0 odom_combined map 250" cwd="node" required="true"/>
+
+</launch>
