@@ -5,13 +5,25 @@
   <arg name="dataset" default="" />
   <arg name="rate" default="1.0" />
 
-  <node name="tinySLAM" pkg="tiny_slam" type="tinyslam"
+  <node name="tinySLAM" pkg="tinyslam_ros" type="tiny_slam"
         cwd="node" required="true" output="screen">
     <remap from="laser_scan" to="/base_scan" />
+
+    <!-- Modules setup -->
+    <param name="cell_type" value="avg" />
+    <param name="occupancy_estimator" value="const" />
+    <param name="skip_exceeding_lsr_vals" value="false" />
+
+    <!-- Internal constants setup -->
+    <param name="base_occupied_prob" value="0.95" />
+    <param name="base_empty_prob" value="0.01" />
   </node>
 
   <node name="player" pkg="rosbag" type="play"
         args="--delay=3 --clock --rate $(arg rate) $(arg path)" />
+
+  <node name="rviz" pkg="rviz" type="rviz" respawn="true"
+        args="-d $(find tinyslam_ros)/rviz/debug.rviz" />
 
   <node name="MapTrasformPublisher" pkg="tf" type="static_transform_publisher"
         args="0 0 0 0 0 0 odom_combined map 250" cwd="node" required="true"/>

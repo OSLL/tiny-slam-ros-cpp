@@ -1,23 +1,3 @@
-/*
-Copyright (c) 2016 JetBrains Research, Mobile Robot Algorithms Laboratory
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this 
-software and associated documentation files (the "Software"), to deal in the Software 
-without restriction, including without limitation the rights to use, copy, modify, merge, 
-publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons 
-to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies 
-or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-
 #ifndef __LASER_SCAN_OBSERVER_H
 #define __LASER_SCAN_OBSERVER_H
 
@@ -25,14 +5,16 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 #include <sensor_msgs/LaserScan.h>
 #include <boost/shared_ptr.hpp>
 
-#include "../sensor_data.h"
-#include "TopicWithTransform.h"
+#include "../core/sensor_data.h"
+#include "topic_with_transform.h"
 
 class LaserScanObserver : public TopicObserver<sensor_msgs::LaserScan> {
   using ScanPtr = boost::shared_ptr<sensor_msgs::LaserScan>;
 public: //methods
 
-  LaserScanObserver():_prev_x(0), _prev_y(0), _prev_yaw(0) {}
+  LaserScanObserver(bool skip_max_vals = false):
+    _skip_max_vals(skip_max_vals),
+    _prev_x(0), _prev_y(0), _prev_yaw(0) {}
 
   virtual void handle_transformed_msg(
     const ScanPtr msg, const tf::StampedTransform& t) {
@@ -53,6 +35,10 @@ public: //methods
         continue;
       } else if (msg->range_max <= sp.range) {
         sp.is_occupied = false;
+        sp.range = msg->range_max;
+        if (_skip_max_vals) {
+          continue;
+        }
       }
       laser_scan.points.push_back(sp);
     }
@@ -66,7 +52,9 @@ public: //methods
   }
 
   virtual void handle_laser_scan(TransformedLaserScan &) = 0;
+
 private: // fields
+  bool _skip_max_vals;
   double _prev_x, _prev_y, _prev_yaw;
 };
 

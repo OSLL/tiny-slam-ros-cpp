@@ -1,23 +1,3 @@
-/*
-Copyright (c) 2016 JetBrains Research, Mobile Robot Algorithms Laboratory
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this 
-software and associated documentation files (the "Software"), to deal in the Software 
-without restriction, including without limitation the rights to use, copy, modify, merge, 
-publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons 
-to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies 
-or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
-PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
-ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
-
 #ifndef __RVIZ_GRID_VIEWER_H
 #define __RVIZ_GRID_VIEWER_H
 
@@ -27,8 +7,8 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/OccupancyGrid.h>
 
-#include "../state_data.h"
-#include "../grid_map.h"
+#include "../core/state_data.h"
+#include "../core/maps/grid_map.h"
 
 class RvizGridViewer {
 public: // method
@@ -46,8 +26,8 @@ public: // method
                            "odom_combined", "robot_pose"));
   }
 
-  template <typename CellType>
-  void show_map(const GridMap<CellType> &map) {
+  void show_map(const GridMap &map) {
+    // TODO: move map publishing rate to parameter
     if ((ros::Time::now() - _last_pub_time).toSec() < 5.0) {
       return;
     }
@@ -65,7 +45,7 @@ public: // method
 
     for (const auto &row : map.cells()) {
       for (const auto &cell : row) {
-        int cell_value = cell.value() == -1 ? -1 : cell.value() * 100;
+        int cell_value = cell->value() == -1 ? -1 : cell->value() * 100;
         map_msg.data.push_back(cell_value);
       }
     }
