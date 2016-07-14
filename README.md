@@ -16,14 +16,16 @@ Current implementation supposes that the robot provides odometry data and laser 
 # Example
 
 Use the provided launch-file to run and configure tinySLAM node:
-roslaunch tinyslam_ros tinyslam_run.launch path:=[path to dataset]
+
+> roslaunch tinyslam_ros tinyslam_run.launch path:=[path to dataset]
+
 Dataset should be in BAG format (http://wiki.ros.org/rosbag). You also may comment out rosbag node in the launch file if you use the real-time data or replace it with some other dataset player.
 
 # Nodes 
 
 ## tiny_slam
 
-The tiny_slam node takes in sensor_msgs/LaserScan messages and odometry data from /tf topic and builds a map (nav_msgs/OccupancyGrid) that can be retrieved via the ROS topic /map.
+The tiny_slam node takes in [sensor_msgs/LaserScan](http://docs.ros.org/api/sensor_msgs/html/msg/LaserScan.html) messages and odometry data from /tf topic and builds a map ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)) that can be retrieved via the ROS topic /map.
 
 ### Subscribed Topics
 
