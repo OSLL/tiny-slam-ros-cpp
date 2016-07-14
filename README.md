@@ -36,23 +36,21 @@ The tiny_slam node takes in sensor_msgs/LaserScan messages and odometry data fro
 
 ### Parameters
 
-* ~cell_type (string, default: “avg”)
+* **~cell_type** (string, default: “avg”)
 Accepted values: “avg” -- modified cell model; “base” -- original cell model
-* ~occupancy_estimator (string, default: "const")
+* **~occupancy_estimator** (string, default: "const")
 Accepted values: “const” -- original occupancy estimator; “area” -- dynamic occupancy estimator
-* ~skip_exceeding_lsr_vals (boolean, default: false)
+* **~skip_exceeding_lsr_vals** (boolean, default: false)
 Determines how to handle out of range laser measurements: true -- ignore such measurements, false -- process as empty cells.
-* ~base_occupied_prob (float, default: 0.95)
+* **~base_occupied_prob** (float, default: 0.95)
 The initial probability of cell to be occupied (i.e. the probability of laser scan data to be valid)
-* ~base_empty_prob (float, default: 0.01)
+* **~base_empty_prob** (float, default: 0.01)
 The initial probability of cell to be empty (i.e. the probability of out of range laser scan data to be valid)
 
 ### Required tf Transforms
-base_link → odom_combined
-usually provided by the odometry system (e.g., the driver for the mobile base)
+*base_link → odom_combined*: usually provided by the odometry system (e.g., the driver for the mobile base)
 
 ### Provided tf Transforms
-map → robot_pose
-the current estimate of the robot's pose within the map frame 
+*map → robot_pose*: the current estimate of the robot's pose within the map frame 
 
 
