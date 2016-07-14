@@ -1,9 +1,9 @@
 <package>
-  <description brief="tinyslam_ros">  </description>
+  <description brief="tiny_slam">  </description>
   <author>OSLL</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
-  <url>https://dev.osll.ru/projects/robotics/wiki</url>
+  <url>http://wiki.ros.org/tiny_slam</url>
   <depend package="std_msgs"/>
   <depend package="sensor_msgs"/>
   <depend package="roscpp"/>

@@ -17,7 +17,7 @@ Current implementation supposes that the robot provides odometry data and laser 
 
 Use the provided launch-file to run and configure tinySLAM node:
 
-> roslaunch tinyslam_ros tinyslam_run.launch path:=[path to dataset]
+> roslaunch tiny_slam tinyslam_run.launch path:=[path to dataset]
 
 Dataset should be in BAG format (http://wiki.ros.org/rosbag). You also may comment out rosbag node in the launch file if you use the real-time data or replace it with some other dataset player.
 

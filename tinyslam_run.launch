@@ -5,7 +5,7 @@
   <arg name="dataset" default="" />
   <arg name="rate" default="1.0" />
 
-  <node name="tinySLAM" pkg="tinyslam_ros" type="tiny_slam"
+  <node name="tinySLAM" pkg="tiny_slam" type="tiny_slam"
         cwd="node" required="true" output="screen">
     <remap from="laser_scan" to="/base_scan" />
 
@@ -23,7 +23,7 @@
         args="--delay=3 --clock --rate $(arg rate) $(arg path)" />
 
   <node name="rviz" pkg="rviz" type="rviz" respawn="true"
-        args="-d $(find tinyslam_ros)/rviz/debug.rviz" />
+        args="-d $(find tiny_slam)/rviz/debug.rviz" />
 
   <node name="MapTrasformPublisher" pkg="tf" type="static_transform_publisher"
         args="0 0 0 0 0 0 odom_combined map 250" cwd="node" required="true"/>

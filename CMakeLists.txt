@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 SET(CMAKE_CXX_FLAGS "-std=c++11 -Wall -O3")
-project(tinyslam_ros)
+project(tiny_slam)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp

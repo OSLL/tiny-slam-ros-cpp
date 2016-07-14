@@ -5,7 +5,7 @@
   <description>TinySLAM ROS implementation</description>
   <maintainer email=ros@osll.ru>OSLL</maintainer>
   <license>MIT</license>
-  <!-- <url type="website">http://wiki.ros.org/tinyslam_ros</url> -->
+  <url type="website">http://wiki.ros.org/tiny_slam</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
