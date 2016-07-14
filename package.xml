@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>tinyslam_ros</name>
+  <name>tiny_slam</name>
   <version>0.1.0</version>
   <description>TinySLAM ROS implementation</description>
   <maintainer email=ros@osll.ru>OSLL</maintainer>
