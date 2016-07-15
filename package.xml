@@ -3,7 +3,7 @@
   <name>tiny_slam</name>
   <version>0.1.0</version>
   <description>TinySLAM ROS implementation</description>
-  <maintainer email=ros@osll.ru>OSLL</maintainer>
+  <maintainer email="ros@osll.ru">OSLL</maintainer>
   <license>MIT</license>
   <url type="website">http://wiki.ros.org/tiny_slam</url>
 
