@@ -3,6 +3,8 @@ Copyright (c) 2016 JetBrains Research, Mobile Robot Algorithms Laboratory
 Authors: Artur Huletski, Dmitriy Kartashov
 TinySLAM C++ implementation for ROS
 
+[![Build Status](http://build.ros.org/buildStatus/icon?job=Jdoc__tiny_slam__ubuntu_trusty_amd64)](http://build.ros.org/job/Jdoc__tiny_slam__ubuntu_trusty_amd64/)
+
 # Description
 
 This package provides ROS implentation of the tinySLAM (https://openslam.org/tinyslam.html) that is one of the most simpliest and lightweight SLAM methods. Current implementation is compatible with ROS Jade and adds some improvements to the original method:
