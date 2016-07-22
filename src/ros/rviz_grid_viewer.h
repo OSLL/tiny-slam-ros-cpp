@@ -1,3 +1,8 @@
+/**
+ * \file
+ * \brief There is the class in this file
+ */
+
 #ifndef __RVIZ_GRID_VIEWER_H
 #define __RVIZ_GRID_VIEWER_H
 
@@ -10,10 +15,19 @@
 #include "../core/state_data.h"
 #include "../core/maps/grid_map.h"
 
+/**
+ * \brief This class show the map and robot position on this map.
+ */
+
 class RvizGridViewer {
 public: // method
   RvizGridViewer(ros::Publisher pub):
     _map_pub(pub) {}
+
+  /**
+   * This function shows robot's position.
+   * \param[in] r stores robot's position.
+   */
 
   void show_robot_pose(const RobotState &r) {
     tf::Transform t;
@@ -25,6 +39,11 @@ public: // method
       tf::StampedTransform(t, ros::Time::now(),
                            "odom_combined", "robot_pose"));
   }
+
+  /**
+   * This function shows the map.
+   * \param[in] map stores the map.
+   */
 
   void show_map(const GridMap &map) {
     // TODO: move map publishing rate to parameter
@@ -55,9 +74,9 @@ public: // method
   }
 
 private: // fields
-  ros::Publisher _map_pub;
-  ros::Time _last_pub_time;
-  tf::TransformBroadcaster _tf_brcst;
+  ros::Publisher _map_pub; ///< This data member stores map publisher by ROS
+  ros::Time _last_pub_time;  ///< This data member stores last map publisher time.
+  tf::TransformBroadcaster _tf_brcst; ///< This data member store publish information of coordinate frame transform
 };
 
 #endif
