@@ -8,11 +8,18 @@
 #include "grid_cell_factory.h"
 #include "../geometry_utils.h"
 
+/**
+ * \brief Class describes Map that consists of Cells
+ */
 class GridMap {
 public:
   using Cell = std::shared_ptr<GridCell>;
 public:
   // TODO: cp, mv ctors, dtor
+  /**
+   * Constructor with parameters.
+   * \param cell_factory Object of class Factory that creates requied type of Cell.
+   */
   GridMap(std::shared_ptr<GridCellFactory> cell_factory):
     // TODO: replace hardcoded value with params
     _width(500), _height(500), _m_per_cell(0.1),
@@ -23,49 +30,56 @@ public:
       }
     }
   }
-
+  /// Getter of width of map
   int width() const { return _width; }
+  /// Getter of height of map
   int height() const { return _height; }
+  /// Getter of Scale
   double scale() const { return _m_per_cell; }
-
+  /// Getter of vector of cells
   const std::vector<std::vector<Cell>> cells() const { return _cells; }
-
+  /**
+   * Setter of value of each cell
+   * \param cell_coord Coordinates of a cell
+   * \param new_value Probability for cell of being occupied
+   * \param quality Measure of beleif to the data
+   */
   void update_cell(const DiscretePoint2D& cell_coord,
                    const Occupancy &new_value, double quality = 1.0) {
     // TODO: bounds check
     _cells[cell_coord.y][cell_coord.x]->set_value(new_value, quality);
   }
-
+  /// Getter of the value of cell
   double cell_value(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x]->value();
   }
-
+  /// Constant getter of cell by point
   const Cell &cell(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x];
   }
-
+  /// Constant getter of cell by coordinates
   const Cell &cell(int x, int y) const {
       return _cells[x][y];
   }
-
+  /// Getter of cell by point
   Cell &cell(const DiscretePoint2D& cell_coord) {
     return _cells[cell_coord.y][cell_coord.x];
   }
-
+  /// Decides whether the point is in map
   bool has_cell(const DiscretePoint2D& cell_coord) const {
     return 0 <= cell_coord.x && cell_coord.y < _width &&
            0 <= cell_coord.y && cell_coord.y < _height;
   }
-
+  /// Projects coordinates in meters to world made of cells and returns coordinates of cell
   DiscretePoint2D world_to_cell(double x, double y) const {
     int cell_x = std::floor(_width /2 + x/_m_per_cell);
     int cell_y = std::floor(_height/2 + y/_m_per_cell);
 
     return DiscretePoint2D(cell_x, cell_y);
   }
-
+  /// Getter scale
   double cell_scale() const { return _m_per_cell; }
-
+  /// Getter of bounds of the world
   Rectangle world_cell_bounds(const DiscretePoint2D &cell_coord) {
     Rectangle bounds;
     bounds.bot = (cell_coord.y + _height/2) * _m_per_cell;
@@ -76,10 +90,10 @@ public:
   }
 
 private: // fields
-  int _width, _height;
-  double _m_per_cell;
-  std::shared_ptr<GridCellFactory> _cell_factory;
-  std::vector<std::vector<Cell>> _cells;
+  int _width, _height; ///< Width and height of world
+  double _m_per_cell;  ///< Scale, meters per cell
+  std::shared_ptr<GridCellFactory> _cell_factory; ///< Factory for creating cells
+  std::vector<std::vector<Cell>> _cells; ///< Vector of cells
 };
 
 #endif

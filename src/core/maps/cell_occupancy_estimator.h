@@ -2,16 +2,21 @@
 #define _CELL_OCCUPANCY_ESTIMATOR_H
 
 #include "../geometry_utils.h"
-
+/**
+ * Structure that contains information about probability of occupancy and quality of estimation for point
+ * with coordinates(x,y)
+ */
 struct Occupancy {
   double prob_occ;
   double estimation_quality;
   // estimated obstacle center
   double x, y;
 
+  ///Constructor with parameters "probability of occupation" and "quality of estimation"
   Occupancy(double prob, double quality) :
     prob_occ(prob), estimation_quality(quality) {}
 
+  ///Constructor with parameters "probability of occupation" and "quality of estimation" for a point (x,y)
   Occupancy(double prob, double quality, double curr_x, double curr_y) :
     prob_occ(prob), estimation_quality(quality), x(curr_x), y(curr_y) {}
 
@@ -20,12 +25,17 @@ struct Occupancy {
            EQ_DOUBLE(estimation_quality, that.estimation_quality);
   }
 };
-
+/**
+ * Structure that shows where a ray reaches an obstacle
+ */
 struct Beam {
-  double x_st, y_st;
-  double x_end, y_end;
+  double x_st, y_st; ///< Coordinates of start of beam
+  double x_end, y_end; ///< Coordinates where beam reaches an obstacle
 };
 
+/**
+ * Virtual class that estimates the occupance of cell. Function of estimation should be overrided
+ */
 class CellOccupancyEstimator {
 public:
   CellOccupancyEstimator(double base_occ_prob, double base_empty_prob):
@@ -34,8 +44,8 @@ public:
                                        const Rectangle &cell_bnds,
                                        bool is_occ) = 0;
 protected:
-  double base_occ_prob() { return _base_occ_prob; }
-  double base_empty_prob() { return _base_empty_prob; }
+  double base_occ_prob() { return _base_occ_prob; } ///< Getter of occupancy probability
+  double base_empty_prob() { return _base_empty_prob; } ///< Getter of empty probability
 private:
   double _base_occ_prob, _base_empty_prob;
 };
