@@ -1,3 +1,10 @@
+/*!
+ * \brief Description of class file (TinyWorld is inherited from LaserScanGridWorld)
+ *
+ * There are structure TinyWorldParams which has two parameters of scan quality and class TinyWorld
+ * there are included such files as: state_data.h, sensor_data.h, laser_scan_grid_world.h, grid_cell_strategy.h, tiny_grid_cells.h, tiny_scan_matcher.h
+ */
+
 #ifndef __TINY_WORLD_H
 #define __TINY_WORLD_H
 
@@ -13,23 +20,32 @@
 #include "tiny_grid_cells.h"
 #include "tiny_scan_matcher.h"
 
+/*!
+ * \brief Structure-storage of two different quality of laser scanner
+ */
 struct TinyWorldParams {
   double localized_scan_quality, raw_scan_quality;
 };
 
+/*!
+ * \brief
+ */
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
   // Scan matcher
-  const double SIG_XY = 0.2;
-  const double SIG_TH = 0.1;
-  const double BAD_LMT = 20;
-  const double TOT_LMT = BAD_LMT * 5;
+  const double SIG_XY = 0.2; ///< data member \f$\sigma_{x,y}\f$
+  const double SIG_TH = 0.1; ///< data member \f$\sigma_{\theta}\f$
+  const double BAD_LMT = 20; ///< amount of bad steps for monte-carlo choice better robot position
+  const double TOT_LMT = BAD_LMT * 5; ///< maximum amount of steps are able to be done
 
-  const double HOLE_WIDTH = 1.5;
+  const double HOLE_WIDTH = 1.5; ///< the total width
 public:
   using Point = DiscretePoint2D;
 public:
 
+  /*!
+   * Parameterized constructor sets all data members
+   */
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,
             const TinyWorldParams &params) :
     LaserScanGridWorld(gcs), _gcs(gcs), _params(params),
@@ -37,6 +53,10 @@ public:
                                       BAD_LMT, TOT_LMT,
                                       SIG_XY, SIG_TH)) {}
 
+  /*!
+   * Function updates robot pose and map
+   * \param[in] scan - data from laser scanner
+   */
   virtual void handle_observation(TransformedLaserScan &scan) override {
     RobotState pose_delta;
     _scan_matcher->reset_state();
@@ -50,6 +70,14 @@ public:
     LaserScanGridWorld::handle_observation(scan);
   }
 
+  /*!
+   * Function estimates one point from scanner on its occupancy
+   * \param[in] map - all built map
+   *  \param[in] laser_x,laser_y - the beginning coordinates of the laser ray
+   *   \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray
+   *    \param[in] is_occ - the parameter which shows is this cell occupied or not
+   *     \param[in] quality - the quality of laser scanner
+   */
   virtual void handle_scan_point(GridMap &map,
                                  double laser_x, double laser_y,
                                  double beam_end_x, double beam_end_y,
@@ -86,9 +114,9 @@ public:
     return _scan_matcher;
   }
 private:
-  std::shared_ptr<GridCellStrategy> _gcs;
-  const TinyWorldParams _params;
-  std::shared_ptr<TinyScanMatcher> _scan_matcher;
+  std::shared_ptr<GridCellStrategy> _gcs; ///< data member with initial parameters how to calculate the probability of cell occupancy
+  const TinyWorldParams _params; ///< data member contains the quality of laser scanner
+  std::shared_ptr<TinyScanMatcher> _scan_matcher; ///< data member provided to calculate the optimal robot position
 };
 
 #endif
