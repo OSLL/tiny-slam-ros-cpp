@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief There is the class in this file
+ * \brief In this file, is implemented a class that stores information about cell.
  */
 
 #ifndef __GRID_CELL_STRATEGY_H

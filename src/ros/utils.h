@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief There is the function in this file
+ * \brief There is the function publish_2D_Transform in this file.
  */
 
 #ifndef __SLAM_FMWK_ROS_UTILS_H
@@ -12,8 +12,8 @@
 
 /**
  * This function transform coordinate.
- * \param[in] base_frame The frame_id of the coordinate frame in which this transform is defined.
- * \param[in] target_frame The frame_id of the coordinate frame this transform defines.
+ * \param base_frame The frame_id of the coordinate frame in which this transform is defined.
+ * \param target_frame The frame_id of the coordinate frame this transform defines.
  * \param x,y,th The coordinate.
  */
 

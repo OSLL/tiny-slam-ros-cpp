@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief There is the class in this file
+ * \brief In this file, is implemented a class that stores information about location of the robot.
  */
 
 #ifndef __LASER_SCAN_OBSERVER_H
@@ -14,7 +14,7 @@
 #include "topic_with_transform.h"
 
 /**
- * \brief This class stores a location information of the robot, reads the new data and writes the change.
+ * \brief This class stores information about location of the robot, reads the new data and writes the change.
  */
 
 class LaserScanObserver : public TopicObserver<sensor_msgs::LaserScan> {
@@ -27,8 +27,8 @@ public: //methods
   /**
    * This method reads the new data and writes the change.
    * After that saves the new information about location.
-   *\param[in] msg The message between nodes of ROS's classes
-   *\param[in] t The object of ROS's class that store new information about location
+   *\param msg The message between nodes of ROS's classes
+   *\param t The object of ROS's class that store new information about location
    */
 
   virtual void handle_transformed_msg(
@@ -69,7 +69,7 @@ public: //methods
   virtual void handle_laser_scan(TransformedLaserScan &) = 0;
 
 private: // fields
-  bool _skip_max_vals;///<  This data members help to understand what need to do with ScanPoint.
+  bool _skip_max_vals;///< This data members help to understand what need to do with ScanPoint.
   double _prev_x, _prev_y, _prev_yaw; ///< This data members store information about location.
 };
 

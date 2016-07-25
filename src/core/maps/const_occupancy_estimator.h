@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief There is the class in this file
+ * \brief In this file, is implemented a class that gives information about cell's occupancy.
  */
 
 #ifndef __CONST_OCCUPANCY_ESTIMATOR_H

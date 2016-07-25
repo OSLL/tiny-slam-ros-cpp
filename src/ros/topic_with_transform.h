@@ -1,6 +1,8 @@
 /**
  * \file
- * \brief There is 2 classes in this file
+ * \brief In this file are implemented 2 classes.
+ * TopicObserver - abstract base class.
+ * TopicWithTransform - class, that synchronizes odometry and transform.
  */
 
 #ifndef __TOPIC_WITH_TRANSFORM_H
@@ -15,7 +17,7 @@
 #include <boost/shared_ptr.hpp>
 
 /**
- * \brief This is base abstract class. Derived classes of this class stores information about the world
+ * \brief This is abstract base class. Derived classes of this class stores information about the world.s
  */
 
 // TODO: make this class inner
@@ -61,12 +63,12 @@ public: // methods
     _observers.push_back(obs);
   }
 private: // consts
-  const uint32_t SUBSCR_QUEUE_SZ = 10000; ///< Size of the buffer of subscribe.
-  const uint32_t FILTER_QUEUE_SZ = 10000; ///< Size of the buffer of filters.
+  const uint32_t SUBSCR_QUEUE_SZ = 10000; ///< Size of the queue of subscribe.
+  const uint32_t FILTER_QUEUE_SZ = 10000; ///< Size of the queue of filters.
 private: // methods
 
   /**
-   * Function which subscribes to ROS transform message and
+   * Method which subscribes to ROS transform message and
    * writes in the _observer container change of the robot location
    * \param msg Shared Pointer on MsgType.
    */

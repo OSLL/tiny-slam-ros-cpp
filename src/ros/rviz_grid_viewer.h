@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief There is the class in this file
+ * \brief In this file, is implemented a class that can show the map and the position of the robot.
  */
 
 #ifndef __RVIZ_GRID_VIEWER_H
@@ -26,7 +26,7 @@ public: // method
 
   /**
    * This function shows robot's position.
-   * \param[in] r stores robot's position.
+   * \param r stores robot's position.
    */
 
   void show_robot_pose(const RobotState &r) {
@@ -42,7 +42,7 @@ public: // method
 
   /**
    * This function shows the map.
-   * \param[in] map stores the map.
+   * \param map stores the map.
    */
 
   void show_map(const GridMap &map) {
