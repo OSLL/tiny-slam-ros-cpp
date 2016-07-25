@@ -1,10 +1,8 @@
 /*!
  * \file
- *  \brief Description of class TinySlamFascade file.
+ * \brief Description of class file (TinySlamFascade is inherited from LaserScanObserver)
  *
- *  This file includes one class TinySlamFascade and includes
- *  such files like: laser_scan_observer.h, rviz_grid_viewer.h,
- *  				 grid_cell_strategy.h, tiny_world.h
+ * This file includes one class TinySlamFascade which is a fascade class which incapsulate and initiate all another abilities
  */
 
 #ifndef __TINY_SLAM_FASCADE_H
@@ -33,9 +31,9 @@ public: // methods
 
   /*!
    * Parameterized constructor sets all data members
-   * \param[in] gcs - Grid Cell Strategy - configuration of one cell in map
-   *  \param[in] params - configuration of laser scan (sets the quality value)
-   *   \param[in] skip_max_vals - boolean variable - flag shows how are high values in messages will be handeled
+   * \param[in] gcs           - Grid Cell Strategy - configuration of one cell in map
+   * \param[in] params        - configuration of laser scan (sets the quality value)
+   * \param[in] skip_max_vals - boolean variable - flag shows how are high values in messages will be handeled
    */
   TinySlamFascade(std::shared_ptr<GridCellStrategy> gcs,
                   const TinyWorldParams &params,
@@ -52,6 +50,8 @@ public: // methods
 
   /*!
    * Function updates the building map and robot pose using scan data
+   * 
+   * It shifts the robot pose on scanner odnometry parameters (\f$\Delta x, \Delta y, \Delta\theta\f$) and update the map using abilities presented in "world"
    * \param[in,out] scan - data from laser scanner, the view that robot has seen just a moment
    * (it is out variable as during this method there makes a decision about its value robust)
    */
@@ -73,11 +73,11 @@ public: // methods
     _world->scan_matcher()->subscribe(obs);
   }
   /*!
-     * Function-setter of data member "world", which removes a scanner matcher
-     * \param[in] obs - the scanner matcher
-     */
+   * Function-setter of data member "world", which removes a scanner matcher
+   * \param[in] obs - the scanner matcher
+   */
   void remove_scan_matcher_observer(ScanMatcherObsPtr obs) {
-    _world->scan_matcher()->subscribe(obs);
+    _world->scan_matcher()->unsubscribe(obs);
   }
 
 private:

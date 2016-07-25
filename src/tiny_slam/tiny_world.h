@@ -1,8 +1,9 @@
 /*!
- * \brief Description of class file (TinyWorld is inherited from LaserScanGridWorld)
+ * \file
  *
- * There are structure TinyWorldParams which has two parameters of scan quality and class TinyWorld
- * there are included such files as: state_data.h, sensor_data.h, laser_scan_grid_world.h, grid_cell_strategy.h, tiny_grid_cells.h, tiny_scan_matcher.h
+ * \brief Description of class file (TinyWorld is inherited from LaserScanGridWorld) and one structure TinyWorldParams
+ *
+ * There are structure TinyWorldParams which has two parameters of scan quality and class TinyWorld which contsins information about the environment and its parameters.
  */
 
 #ifndef __TINY_WORLD_H
@@ -28,7 +29,9 @@ struct TinyWorldParams {
 };
 
 /*!
- * \brief
+ * \brief Derived class from LaserScanGridWorld to estimate occupancy of each cell
+ *
+ * This class contains all initial configuration for Scan_Matcher and presents logic when does the occupancy of every cell calculate and what does happen into this process.
  */
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
@@ -55,6 +58,10 @@ public:
 
   /*!
    * Function updates robot pose and map
+   * 
+   * It is set the absolute value of \f$\sigma_{x,t,\theta}\f$ and is started to find the most suitable place in the map
+   * to decreese an odnometry error so the robot pose updates and after that aplies this scanner data to the world changing
+   * values of some cells which are different on the scanner data.
    * \param[in] scan - data from laser scanner
    */
   virtual void handle_observation(TransformedLaserScan &scan) override {
@@ -72,11 +79,14 @@ public:
 
   /*!
    * Function estimates one point from scanner on its occupancy
+   * 
+   * It takes the obstacle coordinates (beam_end_x, beam_end_y) and estimates the occupancy of the cell where this point locates.
+   * And after that all cells (where points from robot pose to the obstacle locate) changes its probability value to make "wall blur"
    * \param[in] map - all built map
-   *  \param[in] laser_x,laser_y - the beginning coordinates of the laser ray
-   *   \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray
-   *    \param[in] is_occ - the parameter which shows is this cell occupied or not
-   *     \param[in] quality - the quality of laser scanner
+   * \param[in] laser_x,laser_y - the beginning coordinates of the laser ray
+   * \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray
+   * \param[in] is_occ - the parameter which shows is this cell occupied or not
+   * \param[in] quality - the quality of laser scanner
    */
   virtual void handle_scan_point(GridMap &map,
                                  double laser_x, double laser_y,
@@ -110,6 +120,10 @@ public:
     }
   }
 
+  /*!
+   * Function-getter of scanner matcher using in this world
+   * \rerurn the shared pointer on scan matcher
+   */
   std::shared_ptr<GridScanMatcher> scan_matcher() {
     return _scan_matcher;
   }

@@ -1,10 +1,10 @@
 /*!
  * \file
- *  \brief Main file with the entry point
+ * \brief Main file with the entry point
  *
- *  There are main and functions which parse initialization launch file.
- *  Moreover there is a declaration of one class (PoseScanMatcherObserver is inherited from GridScanMatcherObserver)
- *  This file includes such files as: area_occupancy_estimator.h, const_occupancy_estimator.h, grid_cell_strategy.h, tiny_fascade.h,tiny_world.h, tiny_grid_cells.h
+ * There are main and functions which parse initialization launch file.
+ * Moreover there is a declaration of one class (PoseScanMatcherObserver is inherited from GridScanMatcherObserver)
+ * This file includes such files as: area_occupancy_estimator.h, const_occupancy_estimator.h, grid_cell_strategy.h, tiny_fascade.h,tiny_world.h, tiny_grid_cells.h
  */
 
 #include <iostream>
@@ -90,7 +90,7 @@ std::shared_ptr<GridCellFactory> init_cell_factory(TinyWorldParams &params) {
 /*!
  * Functions sets the estimator in case of what parameters came from launch file
  * \param[in] params - values from launch files
- *  \return The pointer (shared) on created estimator of map cost
+ * \return The pointer (shared) on created estimator of map cost
  */
 std::shared_ptr<CellOccupancyEstimator> init_occ_estimator() {
   double occ_prob, empty_prob;
@@ -120,6 +120,10 @@ bool init_skip_exceeding_lsr() {
   return param_value;
 }
 
+/*!
+ * The entry point where it creates an environment world based on coming parameters.
+ * After that it is subscribed on ros topic. Than the viewer/map-builder is created and it is started.
+ */
 int main(int argc, char** argv) {
   ros::init(argc, argv, "tinySLAM");
 
