@@ -1,3 +1,11 @@
+/*!
+ * \file
+ *
+ * \brief Description of class file (TinyWorld is inherited from LaserScanGridWorld) and one structure TinyWorldParams
+ *
+ * There are structure TinyWorldParams which has two parameters of scan quality and class TinyWorld which contsins information about the environment and its parameters.
+ */
+
 #ifndef __TINY_WORLD_H
 #define __TINY_WORLD_H
 
@@ -13,23 +21,34 @@
 #include "tiny_grid_cells.h"
 #include "tiny_scan_matcher.h"
 
+/*!
+ * \brief Structure-storage of two different quality of laser scanner
+ */
 struct TinyWorldParams {
   double localized_scan_quality, raw_scan_quality;
 };
 
+/*!
+ * \brief Derived class from LaserScanGridWorld to estimate occupancy of each cell
+ *
+ * This class contains all initial configuration for Scan_Matcher and presents logic when does the occupancy of every cell calculate and what does happen into this process.
+ */
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
   // Scan matcher
-  const double SIG_XY = 0.2;
-  const double SIG_TH = 0.1;
-  const double BAD_LMT = 20;
-  const double TOT_LMT = BAD_LMT * 5;
+  const double SIG_XY = 0.2; ///< data member \f$\sigma_{x,y}\f$
+  const double SIG_TH = 0.1; ///< data member \f$\sigma_{\theta}\f$
+  const double BAD_LMT = 20; ///< amount of bad steps for monte-carlo choice better robot position
+  const double TOT_LMT = BAD_LMT * 5; ///< maximum amount of steps are able to be done
 
-  const double HOLE_WIDTH = 1.5;
+  const double HOLE_WIDTH = 1.5; ///< the total width
 public:
   using Point = DiscretePoint2D;
 public:
 
+  /*!
+   * Parameterized constructor sets all data members
+   */
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,
             const TinyWorldParams &params) :
     LaserScanGridWorld(gcs), _gcs(gcs), _params(params),
@@ -37,6 +56,14 @@ public:
                                       BAD_LMT, TOT_LMT,
                                       SIG_XY, SIG_TH)) {}
 
+  /*!
+   * Function updates robot pose and map
+   * 
+   * It is set the absolute value of \f$\sigma_{x,t,\theta}\f$ and is started to find the most suitable place in the map
+   * to decreese an odnometry error so the robot pose updates and after that aplies this scanner data to the world changing
+   * values of some cells which are different on the scanner data.
+   * \param[in] scan - data from laser scanner
+   */
   virtual void handle_observation(TransformedLaserScan &scan) override {
     RobotState pose_delta;
     _scan_matcher->reset_state();
@@ -50,6 +77,17 @@ public:
     LaserScanGridWorld::handle_observation(scan);
   }
 
+  /*!
+   * Function estimates one point from scanner on its occupancy
+   * 
+   * It takes the obstacle coordinates (beam_end_x, beam_end_y) and estimates the occupancy of the cell where this point locates.
+   * And after that all cells (where points from robot pose to the obstacle locate) changes its probability value to make "wall blur"
+   * \param[in] map - all built map
+   * \param[in] laser_x,laser_y - the beginning coordinates of the laser ray
+   * \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray
+   * \param[in] is_occ - the parameter which shows is this cell occupied or not
+   * \param[in] quality - the quality of laser scanner
+   */
   virtual void handle_scan_point(GridMap &map,
                                  double laser_x, double laser_y,
                                  double beam_end_x, double beam_end_y,
@@ -82,13 +120,17 @@ public:
     }
   }
 
+  /*!
+   * Function-getter of scanner matcher using in this world
+   * \rerurn the shared pointer on scan matcher
+   */
   std::shared_ptr<GridScanMatcher> scan_matcher() {
     return _scan_matcher;
   }
 private:
-  std::shared_ptr<GridCellStrategy> _gcs;
-  const TinyWorldParams _params;
-  std::shared_ptr<TinyScanMatcher> _scan_matcher;
+  std::shared_ptr<GridCellStrategy> _gcs; ///< data member with initial parameters how to calculate the probability of cell occupancy
+  const TinyWorldParams _params; ///< data member contains the quality of laser scanner
+  std::shared_ptr<TinyScanMatcher> _scan_matcher; ///< data member provided to calculate the optimal robot position
 };
 
 #endif
