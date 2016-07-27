@@ -1,7 +1,3 @@
-/**
- * \file
- * \brief In this file, is implemented a class that stores information about location of the robot.
- */
 
 #ifndef __LASER_SCAN_OBSERVER_H
 #define __LASER_SCAN_OBSERVER_H
@@ -14,7 +10,7 @@
 #include "topic_with_transform.h"
 
 /**
- * \brief This class stores information about location of the robot, reads the new data and writes the change.
+ * \brief This class observes for LaserScan and stores information about location.
  */
 
 class LaserScanObserver : public TopicObserver<sensor_msgs::LaserScan> {
@@ -24,12 +20,11 @@ public: //methods
   LaserScanObserver(bool skip_max_vals = false):
     _skip_max_vals(skip_max_vals),
     _prev_x(0), _prev_y(0), _prev_yaw(0) {} /// < Constructor of this class
-  /**
-   * This method reads the new data and writes the change.
-   * After that saves the new information about location.
-   *\param msg The message between nodes of ROS's classes
-   *\param t The object of ROS's class that store new information about location
-   */
+/**
+ * Converts Transform and LaserScan after robot has moved.
+ *\param msg The message between nodes of ROS's classes
+ *\param t The object of TF that stores transform.
+ */
 
   virtual void handle_transformed_msg(
     const ScanPtr msg, const tf::StampedTransform& t) {
@@ -69,8 +64,8 @@ public: //methods
   virtual void handle_laser_scan(TransformedLaserScan &) = 0;
 
 private: // fields
-  bool _skip_max_vals;///< This data members help to understand what need to do with ScanPoint.
-  double _prev_x, _prev_y, _prev_yaw; ///< This data members store information about location.
+  bool _skip_max_vals;
+  double _prev_x, _prev_y, _prev_yaw;
 };
 
 #endif

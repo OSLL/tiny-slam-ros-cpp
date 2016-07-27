@@ -1,8 +1,8 @@
 /**
  * \file
- * \brief There is 2 classes in this file.
- * GridCell - abstract base class, whose heirs return information about cell occupancy.
- * GridCellFactory - abstract base class, whose heirs can create a new cell.
+ * There are classes in this file:
+ * GridCell - abstract base class, whose subclasses ;
+ * GridCellFactory - abstract base class, whose subclasses create a new cell.
  */
 
 #ifndef __GRID_CELL_FACTORY_H
@@ -27,7 +27,7 @@ public:
 };
 
 /**
- * \brief This class is abstract. Derived classes of this class create a new cell.
+ * \brief This is abstract class, whose subclasses are responsible for strategy of cell's creation.
  */
 
 class GridCellFactory {
