@@ -15,17 +15,20 @@
 
 struct TinyWorldParams {
   double localized_scan_quality, raw_scan_quality;
+  const double SIG_XY;
+  const double SIG_TH;
+  const double BAD_LMT;
+  const double TOT_LMT;
+  const double HOLE_WIDTH;
+
+  TinyWorldParams(double const_params[]): SIG_XY(const_params[0]),
+                                          SIG_TH(const_params[1]),
+                                          BAD_LMT(const_params[2]),
+                                          TOT_LMT(const_params[3]),
+                                          HOLE_WIDTH(const_params[4]){}
 };
 
 class TinyWorld : public LaserScanGridWorld {
-private: // internal params
-  // Scan matcher
-  const double SIG_XY = 0.2;
-  const double SIG_TH = 0.1;
-  const double BAD_LMT = 20;
-  const double TOT_LMT = BAD_LMT * 5;
-
-  const double HOLE_WIDTH = 1.5;
 public:
   using Point = DiscretePoint2D;
 public:
@@ -34,8 +37,8 @@ public:
             const TinyWorldParams &params) :
     LaserScanGridWorld(gcs), _gcs(gcs), _params(params),
     _scan_matcher(new TinyScanMatcher(_gcs->cost_est(),
-                                      BAD_LMT, TOT_LMT,
-                                      SIG_XY, SIG_TH)) {}
+                                      params.BAD_LMT, params.TOT_LMT,
+                                      params.SIG_XY, params.SIG_TH)) {}
 
   virtual void handle_observation(TransformedLaserScan &scan) override {
     RobotState pose_delta;
@@ -60,7 +63,7 @@ public:
 
     double obst_dist_sq = robot_pt.dist_sq(obst_pt);
     std::vector<Point> pts = DiscreteLine2D(robot_pt, obst_pt).points();
-    double hole_dist_sq = std::pow(HOLE_WIDTH / map.cell_scale(), 2);
+    double hole_dist_sq = std::pow(_params.HOLE_WIDTH / map.cell_scale(), 2);
 
     auto occ_est = _gcs->occupancy_est();
     Occupancy beam_end_occ = occ_est->estimate_occupancy(beam,

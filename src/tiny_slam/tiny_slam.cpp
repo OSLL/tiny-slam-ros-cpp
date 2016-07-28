@@ -79,11 +79,22 @@ bool init_skip_exceeding_lsr() {
   return param_value;
 }
 
+TinyWorldParams init_common_world_params(){
+  double array_of_params[5];
+  ros::param::param<double>("~sigma_XY_MonteCarlo",    array_of_params[0],0.2);
+  ros::param::param<double>("~sigma_theta_MonteCarlo", array_of_params[1],0.1);
+  ros::param::param<double>("~limit_of_bad_attempts",  array_of_params[2],20);
+  ros::param::param<double>("~limit_of_total_attempts",array_of_params[3],100);
+  ros::param::param<double>("~hole_width",             array_of_params[4],1.5);
+
+  return TinyWorldParams(array_of_params);
+}
+
 int main(int argc, char** argv) {
   ros::init(argc, argv, "tinySLAM");
 
   ros::NodeHandle nh;
-  TinyWorldParams params;
+  TinyWorldParams params = init_common_world_params();
   std::shared_ptr<ScanCostEstimator> cost_est{new TinyScanCostEstimator()};
   std::shared_ptr<GridCellStrategy> gcs{new GridCellStrategy{
     init_cell_factory(params), cost_est, init_occ_estimator()}};
