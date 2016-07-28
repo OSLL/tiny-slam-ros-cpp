@@ -13,23 +13,36 @@
 #include "tiny_grid_cells.h"
 #include "tiny_scan_matcher.h"
 
+/*!
+ * \brief Structure-storage of two different quality of laser scanner - two values of trust for laser data
+ */
 struct TinyWorldParams {
   double localized_scan_quality, raw_scan_quality;
 };
 
+/*!
+ * \brief Derived class from LaserScanGridWorld to estimate occupancy of each cell
+ *
+ * There is an robot state handle based on used scanner matcher rules and laser data handle based on algorithm from the article with wall blur
+ */
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
   // Scan matcher
-  const double SIG_XY = 0.2;
-  const double SIG_TH = 0.1;
-  const double BAD_LMT = 20;
-  const double TOT_LMT = BAD_LMT * 5;
+  const double SIG_XY = 0.2; ///< data member \f$\sigma_{x,y}\f$
+  const double SIG_TH = 0.1; ///< data member \f$\sigma_{\theta}\f$
+  const double BAD_LMT = 20; ///< amount of bad steps for monte-carlo choice better robot position
+  const double TOT_LMT = BAD_LMT * 5; ///< maximum amount of steps are able to be done
 
-  const double HOLE_WIDTH = 1.5;
+  const double HOLE_WIDTH = 1.5; ///< the total width
 public:
   using Point = DiscretePoint2D;
 public:
 
+  /*!
+   * Parameterized constructor sets all data members
+   * \param[in] gcs    - shared pointer on strategy for each cell (how does estimate occupancy, cost of laser data etc)
+   * \param[in] params - the initial values of trust for laser data
+   */
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,
             const TinyWorldParams &params) :
     LaserScanGridWorld(gcs), _gcs(gcs), _params(params),
@@ -37,6 +50,12 @@ public:
                                       BAD_LMT, TOT_LMT,
                                       SIG_XY, SIG_TH)) {}
 
+  /*!
+   * Updates robot pose and map
+   * 
+   * Starts to find the most suitable place in the map to decrees an odnometry error. And sets the trust value "quality" for come laser data
+   * \param[in] scan - data from laser scanner
+   */
   virtual void handle_observation(TransformedLaserScan &scan) override {
     RobotState pose_delta;
     _scan_matcher->reset_state();
@@ -50,6 +69,17 @@ public:
     LaserScanGridWorld::handle_observation(scan);
   }
 
+  /*!
+   * Function estimates one point from scanner on its occupancy
+   * 
+   * It takes the obstacle coordinates (beam_end_x, beam_end_y) and estimates the occupancy of the cell where this point locates.
+   * And after that all cells (where points from robot pose to the obstacle locate) changes its probability value to make "wall blur"
+   * \param[in] map - all built map
+   * \param[in] laser_x,laser_y - the beginning coordinates of the laser ray
+   * \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray
+   * \param[in] is_occ - the parameter which shows is this cell occupied or not
+   * \param[in] quality - the quality of laser scanner
+   */
   virtual void handle_scan_point(GridMap &map,
                                  double laser_x, double laser_y,
                                  double beam_end_x, double beam_end_y,
@@ -82,6 +112,10 @@ public:
     }
   }
 
+  /*!
+   * Getter of scanner matcher using in this world
+   * \rerurn the shared pointer on scan matcher
+   */
   std::shared_ptr<GridScanMatcher> scan_matcher() {
     return _scan_matcher;
   }
