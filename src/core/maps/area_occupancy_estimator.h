@@ -6,33 +6,73 @@
 #include <type_traits>
 
 #include "cell_occupancy_estimator.h"
-
+/*!
+ * \brief Derived class from CellOccupancyEstimator to calculate the value of occupancy of one cell
+ *
+ * This class appears to make a rule to calculate the value of cell occupancy based on laser way through the cell.
+ * It takes the part of cell with is cut from the laser beam (ray cuts the cell on two parts) and calculates a ratio between these parts.
+ */
 class AreaOccupancyEstimator : public CellOccupancyEstimator {
 private: // types
+  /*!
+   * \brief enumeration to generally locate a cross point (between laser beam and cell bounds)
+   */
   enum class IntersLocation : char {
-    Bot = 0, Left = 1, Top = 2, Right = 3
+    Bot = 0,  ///< shows that the intersection locates on the bottom of rectangle
+    Left = 1, ///< shows that the intersection locates on the left side of rectangle
+    Top = 2,  ///< shows that the intersection locates on the top of rectangle
+    Right = 3 ///< shows that the intersection locates on the left side of rectangle
   };
 
+  /*!
+   * \brief Structure collects the location of intersection with information about the \f$(x,y)\f$ position
+   * and generally location (on the top, on the left side etc)
+   */
   struct Intersection {
+   /*!
+     * Parameterized constructor sets all data members
+     * \param[in] loc - where did intersection happen (bot, left, right, top)
+     * \param[in] inters_x, inters_y - the \f$x\f$ and \f$y\f$ coordinate of intersection
+     */
     Intersection(IntersLocation loc, double inters_x, double inters_y) :
       location(loc), x(inters_x), y(inters_y) {}
 
-    IntersLocation location;
+    IntersLocation location; ///< where did intersection happen (bot, left, right, top)
+    /*!
+     * Shows that intersection locates on horizontal line
+     * \return boolean value that \code location == IntersLocation::Bot || location == IntersLocation::Top \encode
+     */
     bool is_horiz() const {
       return location == IntersLocation::Bot || location == IntersLocation::Top;
     }
-    double x, y;
+    double x, y; ///< the \f$x\f$ and \f$y\f$ coordinate of intersection
   };
 
   using Intersections = std::vector<Intersection>;
 
+  /*!
+   * \brief Structure which define a ray in the space with beginning point and sift values
+   * \f$\Delta x\f$ and \f$\Delta y\f$
+   */
   struct Ray { // in parametric form
+    /*!
+     * Parameterized constructor sets all data members
+     * \param[in] x_s, y_s - \f$(x, y)\f$ coordinate of the ray beginning
+     * \param[in] x_d, y_d - \f$(\Delta x, \Delta y)\f$ sift values to make a ray direction
+     */
     Ray(double x_s, double x_d, double y_s, double y_d) :
       x_st(x_s), x_delta(x_d), y_st(y_s), y_delta(y_d) {}
 
-    double x_st, x_delta;
-    double y_st, y_delta;
+    double x_st, x_delta;  ///< the \f$x\f$ coordinate and shift
+    double y_st, y_delta;  ///< the \f$y\f$ coordinate and shift
 
+    /*!
+     * Finds if there is an intersection with this ray and a horizontal segment given as input variable
+     * \param[in] st_x, end_x - the \f$\x\f$ beginning and ending coordinates of input segment
+     * \param[in] y - the \f$y\f$ coordinate of input segment
+     * \param[in] loc - the place where intersection happens
+     * \param[in,out] consumer - vector of all points-intersections
+     */
     void intersect_horiz_segm(double st_x, double end_x, double y,
                               IntersLocation loc, Intersections &consumer) {
       if (EQ_DOUBLE(y_delta, 0))
@@ -46,6 +86,13 @@ private: // types
       consumer.push_back(Intersection(loc, inters_x, y));
     }
 
+    /*!
+     * Fnds if there is an intersection with this ray and vertical segment given as input variable
+     * \param[in] st_y, end_y - the \f$\y\f$ beginning and ending coordinates of input segment
+     * \param[in] x - the \f$x\f$ coordinate of input segment
+     * \param[in] loc - the place where intersection happens
+     * \param[in,out] consumer - vector of all points-intersections
+     */
     void intersect_vert_segm(double st_y, double end_y, double x,
                              IntersLocation loc, Intersections &consumer) {
       if (EQ_DOUBLE(x_delta, 0))
@@ -61,9 +108,16 @@ private: // types
 
 public: //methods
 
+  /*!
+   * Parameterized constructor sets all data members
+   * \param[in] occ, empty - base probabilities values of occupied (not occupied) cells (0.95 and 0.1 by default)
+   */
   AreaOccupancyEstimator(double occ, double empty) :
     CellOccupancyEstimator(occ, empty) {}
 
+  /*!
+   * Finds the probability of cell to be estimated based on areas appeared by laser beam way through a cell
+   */
   virtual Occupancy estimate_occupancy(const Beam &beam,
                                        const Rectangle &cell_bnds,
                                        bool is_occ) override {
@@ -73,6 +127,19 @@ public: //methods
   }
 
 private: // methods
+  /*!
+   * Calculates intersections of the input beam with all bounds of input rectangle
+   *
+   * The beam crosses cell bounds in two points if the cell is not occupied and in one point if not
+   * (and "stops" on the obstacle). So in the second way it could be said that the obstacle is perpendicular to the laser beam.
+   * This method returns the intersection points of laser beam with cell bounds if there is no obstacle in this cell,
+   * and the point where this obstacle could cross the cell bounds if there is an obstacle.
+   *
+   * \param[in] beam - input laser beam
+   * \param[in] bnds - bound of cell area
+   * \param[in] is_occ - flag is this cell occupied or not
+   * \return the vector of intersections if they are exist
+   */
   Intersections find_intersections(const Beam &beam,
                                    const Rectangle &bnds, bool is_occ) {
     Intersections intersections;
@@ -94,6 +161,16 @@ private: // methods
     return intersections;
   }
 
+  /*!
+   * Computes the area of a occupied chunk.
+   * The laser beam (or bound of possible obstacle) could cut the cell on a triangle and a trapezoid or on two trapezoids
+   * so the returned value "area" is the area of one cut part
+   * \param[in] beam   - the laser ray
+   * \param[in] bnds   - the bounds of a cell
+   * \param[in] is_occ - flag that this cell is occupied
+   * \param[in] inters - the array of points - intersections wall with cell bounds
+   * \return the area of cell chunk which is cut by laser beam (or obstacle bound)
+   */
   double compute_chunk_area(const Beam &beam, const Rectangle &bnds,
                             bool is_occ,
                             const std::vector<Intersection> inters) {
@@ -109,7 +186,18 @@ private: // methods
     }
 
     double corner_x = 0, corner_y = 0, area = 0;
+
     double chunk_is_triangle = inters[0].is_horiz() ^ inters[1].is_horiz();
+    /* inters[0].is_horis | inters[1].is_horiz | XOR (^)
+     * -------------------+--------------------+---------
+     *        false       |        false       |  false
+     * -------------------+--------------------+---------
+     *        false       |        true        |  true   - one intersection happens on horizontal line but another
+     * -------------------+--------------------+---------      (so chunk is a triangle)
+     *        true        |        false       |  true   - one intersection happens on horizontal line but another
+     * -------------------+--------------------+---------      (so chunk is a triangle)
+     *        true        |        true        |  false
+     */
     if (chunk_is_triangle) {
       // determine "base" corner (corner of cell that
       // is also a corner of the triangle
@@ -153,6 +241,12 @@ private: // methods
     return area;
   }
 
+  /*!
+   * Answers on a question are pints \f$(x_1,y_1)\f$ and \f$(x_2,y_2)\f$ locate on the same side of line based on points \f$(x_{line 1},y_{line 1})\f$ and \f$(x_{line 2},y_{line 2})\f$
+   * \param[in] line_x1, line_y1, line_x2, line_y2 - coordinates \f$(x_{line 1},y_{line 1})\f$ and \f$(x_{line 2},y_{line 2})\f$ of line
+   * \param[in] x1,y1,x2,y2 - coordinates \f$(x_1,y_1)\f$ and \f$(x_2,y_2)\f$ of interesting two points
+   * \return does the point locate on the same side from line or doesn't
+   */
   bool are_on_the_same_side(double line_x1, double line_y1,
                             double line_x2, double line_y2,
                             double x1, double y1, double x2, double y2) {
@@ -161,6 +255,13 @@ private: // methods
                (dy*y2 - dx*x2 + dy*x2 - dx*y2);
   }
 
+  /*!
+   * Gives the value of possibility of current cell be occupied based on ratio between cut chunk area and total area
+   * \param[in] chunk_area - the area of chunk cell cut by laser beam
+   * \param[in] total_area - the area of cell
+   * \param[in] is_occ     - flag illustrated that this cell is occupied (there is an obstacle in this cell)
+   * \return the probability of current cell to be occupied
+   */
   Occupancy estimate_occupancy(double chunk_area, double total_area,
                                bool is_occ) {
     double area_rate = chunk_area / total_area;
