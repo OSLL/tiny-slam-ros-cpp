@@ -1,11 +1,3 @@
-/*!
- * \file
- *
- * \brief Description of class file (TinyWorld is inherited from LaserScanGridWorld) and one structure TinyWorldParams
- *
- * There are structure TinyWorldParams which has two parameters of scan quality and class TinyWorld which contsins information about the environment and its parameters.
- */
-
 #ifndef __TINY_WORLD_H
 #define __TINY_WORLD_H
 
@@ -22,7 +14,7 @@
 #include "tiny_scan_matcher.h"
 
 /*!
- * \brief Structure-storage of two different quality of laser scanner
+ * \brief Structure-storage of two different quality of laser scanner - two values of trust for laser data
  */
 struct TinyWorldParams {
   double localized_scan_quality, raw_scan_quality;
@@ -31,7 +23,7 @@ struct TinyWorldParams {
 /*!
  * \brief Derived class from LaserScanGridWorld to estimate occupancy of each cell
  *
- * This class contains all initial configuration for Scan_Matcher and presents logic when does the occupancy of every cell calculate and what does happen into this process.
+ * There is an robot state handle based on used scanner matcher rules and laser data handle based on algorithm from the article with wall blur
  */
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
@@ -48,6 +40,8 @@ public:
 
   /*!
    * Parameterized constructor sets all data members
+   * \param[in] gcs    - shared pointer on strategy for each cell (how does estimate occupancy, cost of laser data etc)
+   * \param[in] params - the initial values of trust for laser data
    */
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,
             const TinyWorldParams &params) :
@@ -57,11 +51,9 @@ public:
                                       SIG_XY, SIG_TH)) {}
 
   /*!
-   * Function updates robot pose and map
+   * Updates robot pose and map
    * 
-   * It is set the absolute value of \f$\sigma_{x,t,\theta}\f$ and is started to find the most suitable place in the map
-   * to decreese an odnometry error so the robot pose updates and after that aplies this scanner data to the world changing
-   * values of some cells which are different on the scanner data.
+   * Starts to find the most suitable place in the map to decrees an odnometry error. And sets the trust value "quality" for come laser data
    * \param[in] scan - data from laser scanner
    */
   virtual void handle_observation(TransformedLaserScan &scan) override {
@@ -121,16 +113,16 @@ public:
   }
 
   /*!
-   * Function-getter of scanner matcher using in this world
+   * Getter of scanner matcher using in this world
    * \rerurn the shared pointer on scan matcher
    */
   std::shared_ptr<GridScanMatcher> scan_matcher() {
     return _scan_matcher;
   }
 private:
-  std::shared_ptr<GridCellStrategy> _gcs; ///< data member with initial parameters how to calculate the probability of cell occupancy
-  const TinyWorldParams _params; ///< data member contains the quality of laser scanner
-  std::shared_ptr<TinyScanMatcher> _scan_matcher; ///< data member provided to calculate the optimal robot position
+  std::shared_ptr<GridCellStrategy> _gcs;
+  const TinyWorldParams _params;
+  std::shared_ptr<TinyScanMatcher> _scan_matcher;
 };
 
 #endif

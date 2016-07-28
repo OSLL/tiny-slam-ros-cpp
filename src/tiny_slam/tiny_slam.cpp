@@ -3,8 +3,7 @@
  * \brief Main file with the entry point
  *
  * There are main and functions which parse initialization launch file.
- * Moreover there is a declaration of one class (PoseScanMatcherObserver is inherited from GridScanMatcherObserver)
- * This file includes such files as: area_occupancy_estimator.h, const_occupancy_estimator.h, grid_cell_strategy.h, tiny_fascade.h,tiny_world.h, tiny_grid_cells.h
+ * Moreover there is a declaration of one class (PoseScanMatcherObserver is inherited from GridScanMatcherObserver).
  */
 
 #include <iostream>
@@ -36,7 +35,7 @@ class PoseScanMatcherObserver : public GridScanMatcherObserver {
 public:
 
   /*!
-   * Functions publish with child frame sm_curr_pose and base frame odom_combined
+   * Publishes the robot pose with child frame sm_curr_pose
    * \param[in] pose - robot location in space
    */
   virtual void on_scan_test(const RobotState &pose,
@@ -45,7 +44,7 @@ public:
     publish_transform("sm_curr_pose", pose);
   }
   /*!
-   * Functions publish with child frame sm_best_pose and base frame odom_combined
+   * FPublishes the robot pose with child frame sm_best_pose
    * \param[in] pose - robot location in space
    */
   virtual void on_pose_update(const RobotState &pose,
@@ -55,9 +54,9 @@ public:
   }
 private:
     /*!
-     * private function which publish the robot state
+     * Publishes the robot state with variable child frame
      * \param[in] frame_id - the child frame
-     *  \param[in] p - robot location in space
+     * \param[in] p        - robot location in space
      */
     void publish_transform(const std::string& frame_id, const RobotState& p) {
       publish_2D_transform(frame_id, "odom_combined", p.x, p.y, p.theta);
@@ -66,9 +65,9 @@ private:
 
 
 /*!
- * Functions sets the cell factory in case of what parameters came from launch file
+ * Sets the cell factory based on parameters came from launch file
  * \param[in] params - values from launch files
- *  \return The pointer (shared) on created factory of grid cells
+ * \return The pointer (shared) on created factory of grid cells
  */
 std::shared_ptr<GridCellFactory> init_cell_factory(TinyWorldParams &params) {
   std::string cell_type;
@@ -88,7 +87,7 @@ std::shared_ptr<GridCellFactory> init_cell_factory(TinyWorldParams &params) {
   }
 }
 /*!
- * Functions sets the estimator in case of what parameters came from launch file
+ * Sets the estimator based on parameters came from launch file
  * \param[in] params - values from launch files
  * \return The pointer (shared) on created estimator of map cost
  */
@@ -112,7 +111,7 @@ std::shared_ptr<CellOccupancyEstimator> init_occ_estimator() {
 }
 
 /*!
- * Function returns the launch file configured parameter how to deal with exceeding values
+ * Returns how to deal with exceeding values based on parameters came from launch file
  */
 bool init_skip_exceeding_lsr() {
   bool param_value;
@@ -121,8 +120,7 @@ bool init_skip_exceeding_lsr() {
 }
 
 /*!
- * The entry point where it creates an environment world based on coming parameters.
- * After that it is subscribed on ros topic. Than the viewer/map-builder is created and it is started.
+ * The entry point where it is created an environment world and main node "tiny slam" is launched.
  */
 int main(int argc, char** argv) {
   ros::init(argc, argv, "tinySLAM");
