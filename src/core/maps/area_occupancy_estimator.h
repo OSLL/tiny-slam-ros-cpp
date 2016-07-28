@@ -6,32 +6,44 @@
 #include <type_traits>
 
 #include "cell_occupancy_estimator.h"
-
+/*!
+ * \brief Derived class from CellOccupancyEstimator to calculate the value of occupancy of one cell
+ *
+ * This class appears to make a rule to calculate the value of cell occupancy based on laser way through the cell.
+ * It takes the part of cell with is cut from the laser beam (ray cuts the cell on two parts) and calculates a ratio between these parts.
+ */
 class AreaOccupancyEstimator : public CellOccupancyEstimator {
 private: // types
+
   enum class IntersLocation : char {
-    Bot = 0, Left = 1, Top = 2, Right = 3
+    Bot = 0,  
+    Left = 1, 
+    Top = 2,  
+    Right = 3 
   };
 
   struct Intersection {
+
     Intersection(IntersLocation loc, double inters_x, double inters_y) :
       location(loc), x(inters_x), y(inters_y) {}
 
     IntersLocation location;
+
     bool is_horiz() const {
       return location == IntersLocation::Bot || location == IntersLocation::Top;
     }
-    double x, y;
+    double x, y; ///< the \f$x\f$ and \f$y\f$ coordinate of intersection
   };
 
   using Intersections = std::vector<Intersection>;
 
   struct Ray { // in parametric form
+
     Ray(double x_s, double x_d, double y_s, double y_d) :
       x_st(x_s), x_delta(x_d), y_st(y_s), y_delta(y_d) {}
 
-    double x_st, x_delta;
-    double y_st, y_delta;
+    double x_st, x_delta;  
+    double y_st, y_delta;  
 
     void intersect_horiz_segm(double st_x, double end_x, double y,
                               IntersLocation loc, Intersections &consumer) {
@@ -61,9 +73,16 @@ private: // types
 
 public: //methods
 
+  /*!
+   * Parameterized constructor sets all data members
+   * \param[in] occ, empty - base probabilities values of occupied (not occupied) cells (0.95 and 0.1 by default)
+   */
   AreaOccupancyEstimator(double occ, double empty) :
     CellOccupancyEstimator(occ, empty) {}
 
+  /*!
+   * Finds the probability of cell to be estimated based on areas appeared by laser beam way through a cell
+   */
   virtual Occupancy estimate_occupancy(const Beam &beam,
                                        const Rectangle &cell_bnds,
                                        bool is_occ) override {
@@ -73,6 +92,7 @@ public: //methods
   }
 
 private: // methods
+
   Intersections find_intersections(const Beam &beam,
                                    const Rectangle &bnds, bool is_occ) {
     Intersections intersections;
@@ -109,7 +129,18 @@ private: // methods
     }
 
     double corner_x = 0, corner_y = 0, area = 0;
+
     double chunk_is_triangle = inters[0].is_horiz() ^ inters[1].is_horiz();
+    /* inters[0].is_horis | inters[1].is_horiz | XOR (^)
+     * -------------------+--------------------+---------
+     *        false       |        false       |  false
+     * -------------------+--------------------+---------
+     *        false       |        true        |  true   - one intersection happens on horizontal line but another
+     * -------------------+--------------------+---------      (so chunk is a triangle)
+     *        true        |        false       |  true   - one intersection happens on horizontal line but another
+     * -------------------+--------------------+---------      (so chunk is a triangle)
+     *        true        |        true        |  false
+     */
     if (chunk_is_triangle) {
       // determine "base" corner (corner of cell that
       // is also a corner of the triangle

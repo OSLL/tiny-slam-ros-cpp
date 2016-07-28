@@ -10,7 +10,7 @@
     <remap from="laser_scan" to="/base_scan" />
 
     <!-- Modules setup -->
-    <param name="cell_type" value="avg" />
+    <param name="cell_type" value="base" />
     <param name="occupancy_estimator" value="const" />
     <param name="skip_exceeding_lsr_vals" value="false" />
 
