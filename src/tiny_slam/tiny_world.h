@@ -14,7 +14,8 @@
 #include "tiny_scan_matcher.h"
 
 /*!
- * \brief Structure-storage of two different quality of laser scanner - two values of trust for laser data
+ * \brief A container for the following tinySLAM parameters:
+ * TODO: params description
  */
 struct TinyWorldParams {
   double localized_scan_quality, raw_scan_quality;
@@ -28,10 +29,10 @@ struct TinyWorldParams {
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
   // Scan matcher
-  const double SIG_XY = 0.2; ///< data member \f$\sigma_{x,y}\f$
-  const double SIG_TH = 0.1; ///< data member \f$\sigma_{\theta}\f$
-  const double BAD_LMT = 20; ///< amount of bad steps for monte-carlo choice better robot position
-  const double TOT_LMT = BAD_LMT * 5; ///< maximum amount of steps are able to be done
+  const double SIG_XY = 0.2;
+  const double SIG_TH = 0.1;
+  const double BAD_LMT = 20;
+  const double TOT_LMT = BAD_LMT * 5;
 
   const double HOLE_WIDTH = 1.5; ///< the total width
 public:
@@ -39,7 +40,7 @@ public:
 public:
 
   /*!
-   * Parameterized constructor sets all data members
+   * Initialize the world to produce tiny SLAM
    * \param[in] gcs    - shared pointer on strategy for each cell (how does estimate occupancy, cost of laser data etc)
    * \param[in] params - the initial values of trust for laser data
    */
@@ -51,9 +52,9 @@ public:
                                       SIG_XY, SIG_TH)) {}
 
   /*!
-   * Updates robot pose and map
+   * Updates robot pose and map by prediction-correction scheme.
    * 
-   * Starts to find the most suitable place in the map to decrees an odnometry error. And sets the trust value "quality" for come laser data
+   * The scan quality used for map update depends on whether the robot pose have been changed during correction step.
    * \param[in] scan - data from laser scanner
    */
   virtual void handle_observation(TransformedLaserScan &scan) override {
@@ -70,10 +71,10 @@ public:
   }
 
   /*!
-   * Function estimates one point from scanner on its occupancy
+   * Updates the map with a given laser scan point.
    * 
-   * It takes the obstacle coordinates (beam_end_x, beam_end_y) and estimates the occupancy of the cell where this point locates.
-   * And after that all cells (where points from robot pose to the obstacle locate) changes its probability value to make "wall blur"
+   * estimates the occupancy of the cell where obstacle locates (beam_end_x, beam_end_y).
+   * And after there is a "wall blur"
    * \param[in] map - all built map
    * \param[in] laser_x,laser_y - the beginning coordinates of the laser ray
    * \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray
@@ -113,8 +114,7 @@ public:
   }
 
   /*!
-   * Getter of scanner matcher using in this world
-   * \rerurn the shared pointer on scan matcher
+   * Returns the scan matcher used for robot pose correction.
    */
   std::shared_ptr<GridScanMatcher> scan_matcher() {
     return _scan_matcher;

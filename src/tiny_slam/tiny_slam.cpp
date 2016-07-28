@@ -1,6 +1,6 @@
 /*!
  * \file
- * \brief Main file with the entry point
+ * \brief ROS node implementation that provides the tinySLAM method
  *
  * There are main and functions which parse initialization launch file.
  * Moreover there is a declaration of one class (PoseScanMatcherObserver is inherited from GridScanMatcherObserver).
@@ -35,7 +35,7 @@ class PoseScanMatcherObserver : public GridScanMatcherObserver {
 public:
 
   /*!
-   * Publishes the robot pose with child frame sm_curr_pose
+   * Publishes the robot pose that is tested by the scan matcher at the moment
    * \param[in] pose - robot location in space
    */
   virtual void on_scan_test(const RobotState &pose,
@@ -44,7 +44,7 @@ public:
     publish_transform("sm_curr_pose", pose);
   }
   /*!
-   * FPublishes the robot pose with child frame sm_best_pose
+   * Publishes the best found robot pose
    * \param[in] pose - robot location in space
    */
   virtual void on_pose_update(const RobotState &pose,
@@ -53,19 +53,13 @@ public:
     publish_transform("sm_best_pose", pose);
   }
 private:
-    /*!
-     * Publishes the robot state with variable child frame
-     * \param[in] frame_id - the child frame
-     * \param[in] p        - robot location in space
-     */
     void publish_transform(const std::string& frame_id, const RobotState& p) {
       publish_2D_transform(frame_id, "odom_combined", p.x, p.y, p.theta);
     }
 };
 
-
 /*!
- * Sets the cell factory based on parameters came from launch file
+ * Determines the cell factory based on parameters came from launch file
  * \param[in] params - values from launch files
  * \return The pointer (shared) on created factory of grid cells
  */
@@ -86,8 +80,9 @@ std::shared_ptr<GridCellFactory> init_cell_factory(TinyWorldParams &params) {
     std::exit(-1);
   }
 }
+
 /*!
- * Sets the estimator based on parameters came from launch file
+ * Determines the estimator based on parameters came from launch file
  * \param[in] params - values from launch files
  * \return The pointer (shared) on created estimator of map cost
  */
@@ -120,7 +115,7 @@ bool init_skip_exceeding_lsr() {
 }
 
 /*!
- * The entry point where it is created an environment world and main node "tiny slam" is launched.
+ * The entry point: creates an environment world and main node "tiny slam" launches.
  */
 int main(int argc, char** argv) {
   ros::init(argc, argv, "tinySLAM");

@@ -7,17 +7,16 @@
 #include "tiny_scan_cost_estimator.h"
 
 /*!
- * \brief Derived class from MonteCarloScanMatcher to replace robot pose in space
+ * \brief The scan matcher based on Monte Carlo simulation.
  *
- * There is a logic how to choose a place of robot in the world (by generating vector of randomize variables - shifts of robot coordinates in the space);
- * and how to change the search area when good place has been found.
+ * The simulation of based on pose movement by a random vector and rotation by a random angle. The vector distribution is dynamically adjusted.
  */
 class TinyScanMatcher : public MonteCarloScanMatcher {
 private:
   using ScePtr = std::shared_ptr<ScanCostEstimator>;
 public:
   /*!
-   * Parameterized constructor sets all data members
+   * Initializes the scan matcher
    * \param[in] cost_estimator           - the type of estimator for robot location
    * \param[in] bad_iter                 - max amount of failed iteration while it is not found better place for robot
    * \param[in] max_iter                 - max amount of all iteration while it is tried to find fine place for robot
@@ -30,7 +29,7 @@ public:
     _curr_sigma_coord(_sigma_coord), _curr_sigma_angle(_sigma_angle) {}
 
   /*!
-   * Function resets current value of \f$\sigma_{x,y,\theta}\f$ to its initial value
+   * Resets the scan matcher to the state it had right after initialization.
    */
   virtual void reset_state() override {
     _curr_sigma_coord = _sigma_coord;

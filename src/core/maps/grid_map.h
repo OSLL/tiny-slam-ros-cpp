@@ -8,9 +8,6 @@
 #include "grid_cell_factory.h"
 #include "../geometry_utils.h"
 
-const int WIDTH = 2000;
-const int HEIGHT = 2000;
-
 class GridMap {
 public:
   using Cell = std::shared_ptr<GridCell>;
@@ -18,7 +15,7 @@ public:
   // TODO: cp, mv ctors, dtor
   GridMap(std::shared_ptr<GridCellFactory> cell_factory):
     // TODO: replace hardcoded value with params
-    _width(WIDTH), _height(HEIGHT), _m_per_cell(0.1),
+    _width(500), _height(500), _m_per_cell(0.1),
     _cell_factory(cell_factory), _cells(_height) {
     for (auto &row : _cells) {
       for (int i = 0; i < _width; i++) {

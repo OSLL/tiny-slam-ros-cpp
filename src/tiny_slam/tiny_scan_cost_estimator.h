@@ -4,7 +4,7 @@
 #include "../core/grid_scan_matcher.h"
 
 /*!
- * \brief Derived class from ScanCostEstimator to calculate "cost" of one scan
+ * \brief An implementation of the scan cost function described in the original tinySLAM paper.
  *
  * This class presents one method to calculate a numeric value of one frame. This method is defined in the article.
  */
@@ -12,11 +12,9 @@ class TinyScanCostEstimator : public ScanCostEstimator {
 public:
 
   /*!
-   * Function to estimate cost of values from laser scan which are given from every direction from one pose of robot.
-   *
-   * It is summed up the all probabilities from cells in a map which came as occupied from laser scan.
-   * This value then lower then there is more coincidences between scanner data and data from built map.
-   *
+   * Calculates a discrepancy between a given scan and a map assuming a given robot position using the approach described in the tinySLAM paper
+   * The cost is calculated by summing up probabilities of being empty for the cells that are assumed to be occupied by laser scan.
+   * The lower the value the more probable the robot pose.
    * \param[in] pose     - the robot pose in the space
    * \param[in] scan     - array of points given from the laser scanner when robot was located in one place
    * \param[in] map      - the environment map built on the previous steps
