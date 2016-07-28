@@ -1,9 +1,3 @@
-/*!
- * \file
- * \brief Description of class file (TinyScanMatcher is inherited from MonteCarloScanMatcher)
- *
- * This file includes one class TinyScanMatcher which solves to generate new pose for robot in local area and to modify a ramdon distribution values.
- */
 #ifndef __TINY_SCAN_MATCHER_H
 #define __TINY_SCAN_MATCHER_H
 
@@ -15,9 +9,8 @@
 /*!
  * \brief Derived class from MonteCarloScanMatcher to replace robot pose in space
  *
- * This class presents a logic of a monte-carlo step in scan matcher work. Scan matcher tries to find the best location where got data from laser scanner is the most suitable to the environment.
- * So this class presents logic what will happen when this robot location will have found.
- * Besides there overrides the function which calculates the new pose of robot to find the cost of new location further
+ * There is a logic how to choose a place of robot in the world (by generating vector of randomize variables - shifts of robot coordinates in the space);
+ * and how to change the search area when good place has been found.
  */
 class TinyScanMatcher : public MonteCarloScanMatcher {
 private:
@@ -25,8 +18,10 @@ private:
 public:
   /*!
    * Parameterized constructor sets all data members
-   * \param[in] cost_estimator, bad_iter, max_iter - data member from base class MonteCarloScanMatcher
-   * \param[in] sigma_coord, sigma_angle           - the \f$\sigma\f$ value of normal distribution for random variables (\f$\Delta x\f$, \f$\Delta y\f$ and \f$\Delta \theta\f$)
+   * \param[in] cost_estimator           - the type of estimator for robot location
+   * \param[in] bad_iter                 - max amount of failed iteration while it is not found better place for robot
+   * \param[in] max_iter                 - max amount of all iteration while it is tried to find fine place for robot
+   * \param[in] sigma_coord, sigma_angle - the \f$\sigma\f$ value of normal distribution for random variables (\f$\Delta x\f$, \f$\Delta y\f$ and \f$\Delta \theta\f$)
    */
   TinyScanMatcher(ScePtr cost_estimator, unsigned bad_iter, unsigned max_iter,
                   double sigma_coord, double sigma_angle):
@@ -35,7 +30,7 @@ public:
     _curr_sigma_coord(_sigma_coord), _curr_sigma_angle(_sigma_angle) {}
 
   /*!
-   * Function moved the base parameters for distribution \f$\sigma_{x,y,\theta}\f$ to its current value
+   * Function resets current value of \f$\sigma_{x,y,\theta}\f$ to its initial value
    */
   virtual void reset_state() override {
     _curr_sigma_coord = _sigma_coord;
@@ -44,7 +39,7 @@ public:
 
 protected:
   /*!
-   * Function generates three normal distributed random variables for robot position (\f$\Delta x\f$, \f$\Delta y\f$ and \f$\Delta \theta\f$)
+   * Generates random vector of three normal distributed random variables for robot position (\f$\Delta x\f$, \f$\Delta y\f$ and \f$\Delta \theta\f$)
    * with distribution \f$N(0,\sigma_{x,y,\theta})\f$ and shifts robot pose (\f$x, y, \theta\f$) on these values
    * \param[in] base_pose - initial pose of robot
    */
@@ -60,9 +55,7 @@ protected:
   }
 
   /*!
-   * Function called when good position was found and derives values of \f$sigma\f$ by 2
-   * If amount of steps before good position has been found is small than there is no changes in \f$\sigma_{x,y,\theta}\f$ value happen and it is returned the number of these steps.
-   * Else the \f$\sigma_{x,y,\theta}\f$ value is derived by 2 and it is flushed the amount of steps to 0.
+   * When good robot position has been found it could changes the size of searching area and flush the amount of steps to 0 (or do nothing if good position has been found quickly)
    *
    * \param[in] sample_num   - the amount of algorithm steps before good position was found
    * \param[in] sample_limit - the total amount of bad position which supported by configuration of current system

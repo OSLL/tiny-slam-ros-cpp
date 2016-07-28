@@ -1,10 +1,3 @@
-/*!
- * \file
- * \brief Description of class file (TinyScanCostEstimator is inherited from ScanCostEstimator)
- *
- * This file includes one class TinyScanCostEstimator presented a realization of virtual methods of ScanCostEstimator class: the method to calculate the cost of scanner data based on existing built map.
- */
-
 #ifndef __TINY_SCAN_COST_ESTIMATOR
 #define __TINY_SCAN_COST_ESTIMATOR
 
@@ -13,20 +6,16 @@
 /*!
  * \brief Derived class from ScanCostEstimator to calculate "cost" of one scan
  *
- * This class presents one method to calculate a numeric value of one frame.
- * There is one overriding function were all logic presented.
+ * This class presents one method to calculate a numeric value of one frame. This method is defined in the article.
  */
 class TinyScanCostEstimator : public ScanCostEstimator {
 public:
 
   /*!
-   * Function to calculate cost of values from laser scan which are given from every direction from one pose of robot.
+   * Function to estimate cost of values from laser scan which are given from every direction from one pose of robot.
    *
-   * It is calculated a specific value "cost" which presented the sum all probabilities of cells which contain the points got from scanner.
-   * For every point come from laser scanner it is calculating its cell coordinates - coordinates of map grid cell where the current point locates.
-   * (if this cell do not exist (gets out of range) - this point data gets the max_cost_value=1)
-   * This this cell locates on the map, then it is returned a probability value of this cell and inversion of this value (\f$1-p_i\f$) is added to the cost of all scanner frame
-   * This procedure stops when the cost value becomes greater than min_cost value got as a parameter.
+   * It is summed up the all probabilities from cells in a map which came as occupied from laser scan.
+   * This value then lower then there is more coincidences between scanner data and data from built map.
    *
    * \param[in] pose     - the robot pose in the space
    * \param[in] scan     - array of points given from the laser scanner when robot was located in one place
@@ -36,7 +25,7 @@ public:
    */
   virtual double estimate_scan_cost(const RobotState &pose,
                                     const TransformedLaserScan &scan,
-                                    const GridMap &map,
+                                    GridMap &map,
                                     double min_cost) override {
     double cost = 0;
     for (const auto &sp : scan.points) {

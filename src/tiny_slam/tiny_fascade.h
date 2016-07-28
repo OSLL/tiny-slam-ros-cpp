@@ -1,10 +1,3 @@
-/*!
- * \file
- * \brief Description of class file (TinySlamFascade is inherited from LaserScanObserver)
- *
- * This file includes one class TinySlamFascade which is a fascade class which incapsulate and initiate all another abilities
- */
-
 #ifndef __TINY_SLAM_FASCADE_H
 #define __TINY_SLAM_FASCADE_H
 
@@ -19,8 +12,8 @@
 /*!
  * \brief Derived class from LaserScanObserver to manage all world
  *
- * This class derives from LaserScanObserver but doesn't override any functions.
- * Functions are added to handle a scan has given and robot pose.
+ * Handles data came from laser scanner and locates views if he is set.
+ * Presents a pattern fascade for all algorithm "tiny slam"
  *
  */
 class TinySlamFascade : public LaserScanObserver {
@@ -31,7 +24,7 @@ public: // methods
 
   /*!
    * Parameterized constructor sets all data members
-   * \param[in] gcs           - Grid Cell Strategy - configuration of one cell in map
+   * \param[in] gcs           - Grid Cell Strategy - configuration of cells in map
    * \param[in] params        - configuration of laser scan (sets the quality value)
    * \param[in] skip_max_vals - boolean variable - flag shows how are high values in messages will be handeled
    */
@@ -41,7 +34,7 @@ public: // methods
     LaserScanObserver(skip_max_vals), _world(new TinyWorld(gcs, params)) {}
 
   /*!
-   * Function-setter for data member "viewer"
+   * Setter for data member "viewer"
    * \param[in] viewer - new value of data member viewer
    */
   void set_viewer(std::shared_ptr<RvizGridViewer> viewer) {
@@ -49,7 +42,7 @@ public: // methods
   }
 
   /*!
-   * Function updates the building map and robot pose using scan data
+   * Updates the building map and robot pose using scan data
    * 
    * It shifts the robot pose on scanner odnometry parameters (\f$\Delta x, \Delta y, \Delta\theta\f$) and update the map using abilities presented in "world"
    * \param[in,out] scan - data from laser scanner, the view that robot has seen just a moment
@@ -66,14 +59,14 @@ public: // methods
   }
 
   /*!
-   * Function-setter of data member "world", which adds a scanner matcher
+   * Modifier of data member "world", which adds a scanner matcher
    * \param[in] obs - new scanner matcher
    */
   void add_scan_matcher_observer(ScanMatcherObsPtr obs) {
     _world->scan_matcher()->subscribe(obs);
   }
   /*!
-   * Function-setter of data member "world", which removes a scanner matcher
+   * Modifier of data member "world", which removes a scanner matcher
    * \param[in] obs - the scanner matcher
    */
   void remove_scan_matcher_observer(ScanMatcherObsPtr obs) {
