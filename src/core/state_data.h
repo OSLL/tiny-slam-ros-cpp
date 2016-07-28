@@ -19,6 +19,7 @@ public: // methods
    * \param x,y,theta position and orientation of robot
    */
   RobotState(double x, double y, double theta) : x(x), y(y), theta(theta) {}
+
   /**
    * increments position of robot on \param d_x, d_y, d_theta
    */

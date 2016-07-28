@@ -41,8 +41,7 @@ public:
 
   /**
    * initiates estimation of scan after changing sample_pose.
-   * First of all the sample pose of robot is set. Than the cost of current scan is estimated. than the sample pose of robot is changed and operation repears.
-   * Repeating stops when the limit of failed tries or total tries is reached. The pose where scan cost is lowest, is optimal.
+   * Calculates the position that best suits to a new scan. As better it suits as lower cost of scan.
    * \param init_pose The first approxiamtion of pose
    * \param scan Current scan
    * \param map Current GridMap
@@ -112,6 +111,7 @@ protected:
    * \param base_pose Basical pose of robot
    */
   virtual void sample_pose(RobotState &base_pose) = 0;
+
   /**
    * Virtual fuction. Will be called when the better estimate is found
    * \param sample_num Amount of tries that were complited to the current moment
@@ -121,10 +121,7 @@ protected:
                                       unsigned sample_limit) = 0;
 
 private:
-  /**
-   * Function that allowes to do any function to each observer.
-   * \param op Function that has Observer as input parameter
-   */
+
   void do_for_each_observer(std::function<void(ObsPtr)> op) {
     for (auto &obs : GridScanMatcher::observers()) {
       if (auto obs_ptr = obs.lock()) {

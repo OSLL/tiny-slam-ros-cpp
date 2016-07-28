@@ -76,6 +76,7 @@ public:
 
 /**
  * \brief  Class that matches scans
+ * When a new scan appears, it is requied to compare it with a current status of World. This class is to handle these situations
  */
 class GridScanMatcher {
 public:
@@ -119,10 +120,16 @@ public:
   }
 
 protected:
+  /**
+   * Getter of pointer on cost_estimator
+   */
   std::shared_ptr<ScanCostEstimator> cost_estimator() {
     return _cost_estimator;
   }
 
+  /**
+   * Getter of a link on pointer on vector of observers
+   */
   std::vector<std::weak_ptr<GridScanMatcherObserver>> & observers() {
     return _observers;
   }

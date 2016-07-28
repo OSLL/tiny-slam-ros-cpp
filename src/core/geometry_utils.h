@@ -19,11 +19,13 @@
  */
 
 struct Rectangle {
+
   /**
    * Default constructor
    * Creates a rectangle with zero area in point (0,0)
    */
   Rectangle() : Rectangle(0, 0, 0, 0) {}
+
   /**
    * Constructor with parameters.
    * Creates a rectangle where all contained points are bounded in limits l < x < r, b < y <t
@@ -57,11 +59,13 @@ struct Rectangle {
 		 left,	///< Left side of a rectangle
 		 right;	///< Right size of a rectangle
 };
+
 /**
  * \brief Structure describes a simple point in a plane
  */
 struct DiscretePoint2D {
 public:
+
   /**
    * Constructor with parametres
    * \param x_coord,y_coord Coordinates of a poinr in a plane
@@ -77,12 +81,14 @@ public:
   DiscretePoint2D operator+(const DiscretePoint2D &p) const {
     return DiscretePoint2D(x + p.x, y + p.y);
   }
+
   /**
    * Point subtraction operator
    */
   DiscretePoint2D operator-() const {
     return DiscretePoint2D(-x, -y);
   }
+
   /**
    * Calculates distance from current point to another
    * \param pt Target point to calculate distance
@@ -99,6 +105,7 @@ public:
 class DiscreteLine2D {
   using Point = DiscretePoint2D;
 public: // methods
+
   /**
    * \brief Constructor with parameters.
    * \param start Beginning of a segment
@@ -109,6 +116,7 @@ public: // methods
   }
   const std::vector<Point>& points() const { return _points; }
 private:
+
   /**
    * Creates a line segment on a grid
    *
@@ -165,7 +173,7 @@ private:
     }
   }
 private: // fields
-  std::vector<Point> _points;
+  std::vector<Point> _points;  ///< Vector of points that form 2D Line
 };
 
 #endif

@@ -18,8 +18,10 @@
 class Particle {
 public:
   Particle(): _weight(0) {}
+
   ///Getter function
   double weight() const { return _weight; }
+
   /// Setter function
   void set_weight(double w) { _weight = w; }
 
@@ -56,6 +58,7 @@ public:
     uint effective_particles_cnt = 1.0 / sq_sum;
     return effective_particles_cnt * 2 < particles.size();
   }
+
   /**
    * Excludes some random particles from vector.
    * Choosing is based on generation of random double and its comparation with sum of all weights of particles
@@ -94,6 +97,8 @@ class ParticleFilter {
 private:
   using ParticlePtr = std::shared_ptr<ParticleT>;
 public: // methods
+
+
   /**
    * Constructor with parameters. Sets as default weight of each particle equal to \f$ \frac{1}{n} \f$
    * \param p_ftry Pointer on Particle Factory
@@ -153,10 +158,10 @@ public: // methods
     return _particles;
   }
 private:
-  std::shared_ptr<ParticleFactory<ParticleT>> _particle_supplier; ///< Shared pointer on Particle factory
-  std::vector<ParticlePtr> _particles; ///< Vector of particles
+  std::shared_ptr<ParticleFactory<ParticleT>> _particle_supplier;
+  std::vector<ParticlePtr> _particles;
   /* TODO: make template parameter/set at runtime */
-  UniformResamling<ParticlePtr> _resampler; ///< Object of Resampler class
+  UniformResamling<ParticlePtr> _resampler;
 };
 
 

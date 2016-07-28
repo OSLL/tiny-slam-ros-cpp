@@ -30,14 +30,19 @@ public:
       }
     }
   }
+
   /// Getter of width of map
   int width() const { return _width; }
+
   /// Getter of height of map
   int height() const { return _height; }
+
   /// Getter of Scale
   double scale() const { return _m_per_cell; }
+
   /// Getter of vector of cells
   const std::vector<std::vector<Cell>> cells() const { return _cells; }
+
   /**
    * Setter of value of each cell
    * \param cell_coord Coordinates of a cell
@@ -49,22 +54,27 @@ public:
     // TODO: bounds check
     _cells[cell_coord.y][cell_coord.x]->set_value(new_value, quality);
   }
+
   /// Getter of the value of cell
   double cell_value(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x]->value();
   }
+
   /// Constant getter of cell by point
   const Cell &cell(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x];
   }
+
   /// Constant getter of cell by coordinates
   const Cell &cell(int x, int y) const {
       return _cells[x][y];
   }
+
   /// Getter of cell by point
   Cell &cell(const DiscretePoint2D& cell_coord) {
     return _cells[cell_coord.y][cell_coord.x];
   }
+
   /// Decides whether the point is in map
   bool has_cell(const DiscretePoint2D& cell_coord) const {
     return 0 <= cell_coord.x && cell_coord.y < _width &&
@@ -77,8 +87,10 @@ public:
 
     return DiscretePoint2D(cell_x, cell_y);
   }
+
   /// Getter scale
   double cell_scale() const { return _m_per_cell; }
+
   /// Getter of bounds of the world
   Rectangle world_cell_bounds(const DiscretePoint2D &cell_coord) {
     Rectangle bounds;
@@ -90,10 +102,10 @@ public:
   }
 
 private: // fields
-  int _width, _height; ///< Width and height of world
-  double _m_per_cell;  ///< Scale, meters per cell
-  std::shared_ptr<GridCellFactory> _cell_factory; ///< Factory for creating cells
-  std::vector<std::vector<Cell>> _cells; ///< Vector of cells
+  int _width, _height;
+  double _m_per_cell;
+  std::shared_ptr<GridCellFactory> _cell_factory;
+  std::vector<std::vector<Cell>> _cells;
 };
 
 #endif
