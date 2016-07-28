@@ -7,7 +7,7 @@ class TinyScanCostEstimator : public ScanCostEstimator {
 public:
   virtual double estimate_scan_cost(const RobotState &pose,
                                     const TransformedLaserScan &scan,
-                                    const GridMap &map,
+                                    GridMap &map,
                                     double min_cost) override {
     double cost = 0;
     for (const auto &sp : scan.points) {

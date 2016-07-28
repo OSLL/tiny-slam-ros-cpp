@@ -27,7 +27,7 @@ class ScanCostEstimator {
 public:
   virtual double estimate_scan_cost(const RobotState &pose,
                                     const TransformedLaserScan &scan,
-                                    const GridMap &map,
+                                    GridMap &map,
                                     double min_cost) = 0;
 };
 
@@ -38,7 +38,7 @@ public:
 
   virtual double process_scan(const RobotState &init_pose,
                               const TransformedLaserScan &scan,
-                              const GridMap &map,
+                              GridMap &map,
                               RobotState &pose_delta) = 0;
 
   virtual void reset_state() {};
