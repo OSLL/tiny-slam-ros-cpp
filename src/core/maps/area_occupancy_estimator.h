@@ -6,6 +6,7 @@
 #include <type_traits>
 
 #include "cell_occupancy_estimator.h"
+
 /*!
  * \brief A strategy that estimates grid cell's occupancy based on how a laser beam passes the cell.
  *
@@ -31,7 +32,6 @@ private: // types
   using Intersections = std::vector<Intersection>;
 
   struct Ray { // in parametric form
-
     Ray(double x_s, double x_d, double y_s, double y_d) :
       x_st(x_s), x_delta(x_d), y_st(y_s), y_delta(y_d) {}
 

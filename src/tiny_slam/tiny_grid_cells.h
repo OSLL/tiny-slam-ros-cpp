@@ -12,6 +12,7 @@
 
 //------------------------------------------------------------------------------
 // Base cell
+
 /*!
  * \brief The grid cell's model presented in original tinySLAM paper.
  *

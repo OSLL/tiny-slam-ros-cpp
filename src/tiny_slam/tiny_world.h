@@ -34,7 +34,7 @@ private: // internal params
   const double BAD_LMT = 20;
   const double TOT_LMT = BAD_LMT * 5;
 
-  const double HOLE_WIDTH = 1.5; ///< the total width
+  const double HOLE_WIDTH = 1.5;
 public:
   using Point = DiscretePoint2D;
 public:

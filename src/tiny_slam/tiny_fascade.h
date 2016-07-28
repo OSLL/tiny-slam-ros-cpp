@@ -64,6 +64,7 @@ public: // methods
   void add_scan_matcher_observer(ScanMatcherObsPtr obs) {
     _world->scan_matcher()->subscribe(obs);
   }
+  
   /*!
    * Unregisters a scan matcher observer
    * \param[in] obs - the scanner matcher
