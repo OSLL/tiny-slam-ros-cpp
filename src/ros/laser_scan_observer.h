@@ -1,4 +1,3 @@
-
 #ifndef __LASER_SCAN_OBSERVER_H
 #define __LASER_SCAN_OBSERVER_H
 
@@ -10,22 +9,19 @@
 #include "topic_with_transform.h"
 
 /**
- * \brief This class observes for LaserScan and stores information about location.
+ * \brief Class responsibilities: observe laser scans and odometry; convert ROS structures to internal representation.
  */
-
 class LaserScanObserver : public TopicObserver<sensor_msgs::LaserScan> {
   using ScanPtr = boost::shared_ptr<sensor_msgs::LaserScan>;
 public: //methods
-
   LaserScanObserver(bool skip_max_vals = false):
     _skip_max_vals(skip_max_vals),
-    _prev_x(0), _prev_y(0), _prev_yaw(0) {} /// < Constructor of this class
+    _prev_x(0), _prev_y(0), _prev_yaw(0) {}
 /**
- * Converts Transform and LaserScan after robot has moved.
- *\param msg The message between nodes of ROS's classes
- *\param t The object of TF that stores transform.
+ * Converts ROS-specific structures that hold sensor data to internal framework's structures. Laser scan filtering is performed as part of the conversion.
+ *\param msg ROS specific laser scan message
+ *\param t TF specific transform
  */
-
   virtual void handle_transformed_msg(
     const ScanPtr msg, const tf::StampedTransform& t) {
 

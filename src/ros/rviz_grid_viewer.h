@@ -1,4 +1,3 @@
-
 #ifndef __RVIZ_GRID_VIEWER_H
 #define __RVIZ_GRID_VIEWER_H
 
@@ -12,19 +11,17 @@
 #include "../core/maps/grid_map.h"
 
 /**
- * \brief This class converts our data into suitable for TF.
+ * \brief The class publishes information about robot's map and location in ROS-compatible format so it can be viewed with rviz.
  */
-
 class RvizGridViewer {
 public: // method
   RvizGridViewer(ros::Publisher pub):
     _map_pub(pub) {}
 
 /**
- * Converts by dint of TF our data of robot's position into understandable for Rviz.
- * \param r stores robot's position.
+ * Publishes robot state as TF message.
+ * \param r A robot state  in internal format
  */
-
   void show_robot_pose(const RobotState &r) {
     tf::Transform t;
     t.setOrigin(tf::Vector3(r.x, r.y, 0.0));
@@ -37,10 +34,9 @@ public: // method
   }
 
 /**
- * Converts by dint of TF our data of map into understandable for Rviz and publish this map.
- * \param map stores the map.
+ * Publishes given GridMap as a ROS message.
+ * \param map grid map in framework's internal format.
  */
-
   void show_map(const GridMap &map) {
     // TODO: move map publishing rate to parameter
     if ((ros::Time::now() - _last_pub_time).toSec() < 5.0) {

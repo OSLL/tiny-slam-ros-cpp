@@ -1,8 +1,3 @@
-/**
- * \file
- * \brief There is the function publish_2D_Transform in this file.
- */
-
 #ifndef __SLAM_FMWK_ROS_UTILS_H
 #define __SLAM_FMWK_ROS_UTILS_H
 
@@ -11,12 +6,11 @@
 #include <ros/ros.h>
 
 /**
- * This function transform coordinate.
+ * \brief Converts internal robot state in ROS-compatible format and publish it. 
  * \param base_frame The frame_id of the coordinate frame in which this transform is defined.
  * \param target_frame The frame_id of the coordinate frame this transform defines.
  * \param x,y,th The coordinate.
  */
-
 inline void publish_2D_transform(const std::string &target_frame,
                                  const std::string &base_frame,
                                  double x, double y, double th) {
