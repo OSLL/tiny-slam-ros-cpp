@@ -59,33 +59,33 @@ public:
 
   /*!
    * Function gets the number of a cell in the grid map where point \f$(x, y)\f$ locates.
-   * It calculates the coordinates in grid map using information about width and height (count in cells) and
+   * It calculates the coordinates in grid map using information about map width and height (count in cells) and
    * scale information (m/cell). If the cell coordinates are out of range in the map, so map is resized to become
    * bigger and then recalculate the cell coordinates.
    *
    * NOTE: this is the only function to get location in grid (count in cells) map
-   * from location in world (count in meters) map.Do not try to manipulate with map directly inputing
+   * from location in world (count in meters) map. Do not try to manipulate with grid map directly inputing
    * "DiscretePoint2D" object. Create it by using this method.
    */
   DiscretePoint2D world_to_cell(double x, double y){
-	//calculate location in grid map
-	int cell_x = std::floor(_width /2 + x/_m_per_cell);
+    //calculate location in grid map
+    int cell_x = std::floor(_width /2 + x/_m_per_cell);
     int cell_y = std::floor(_height/2 + y/_m_per_cell);
 
     //find if it needs to resize map
-	int width_added =  (cell_x<0 ? -cell_x : (cell_x>=width() ? cell_x-width()+1 : 0));
-	int height_added = (cell_y<0 ? -cell_y : (cell_y>=height()? cell_y-height()+1 : 0));
+    int width_added =  (cell_x<0 ? -cell_x : (cell_x>=width() ? cell_x-width()+1 : 0));
+    int height_added = (cell_y<0 ? -cell_y : (cell_y>=height()? cell_y-height()+1 : 0));
 
-	//resize with the rule: then farer new point locates then more "k" in *k*100% from map size
-	// states are 200%, 400%, 800% etc
-	int added_from_one_side_width  = std::ceil(std::log((double)width_added/width()  + 1)/std::log(2.0));
-	int added_from_one_side_height = std::ceil(std::log((double)height_added/height() + 1)/std::log(2.0));
-	resize_map_for_width(std::floor(2*added_from_one_side_width*width()));
-	resize_map_for_height(std::floor(2*added_from_one_side_height*height()));
+    //resize with the rule: then farer new point locates then more "k" in *k*100% from map size
+    // states are 200%, 400%, 800% etc
+    int added_from_one_side_width  = std::ceil(std::log((double)width_added/width()  + 1)/std::log(2.0));
+    int added_from_one_side_height = std::ceil(std::log((double)height_added/height() + 1)/std::log(2.0));
+    resize_map_for_width(std::floor(2*added_from_one_side_width*width()));
+    resize_map_for_height(std::floor(2*added_from_one_side_height*height()));
 
-	//recalculate the cell coordinates after map resizing
-	cell_x = std::floor(_width /2 + x/_m_per_cell);
-	cell_y = std::floor(_height/2 + y/_m_per_cell);
+    //recalculate the cell coordinates after map resizing
+    cell_x = std::floor(_width /2 + x/_m_per_cell);
+    cell_y = std::floor(_height/2 + y/_m_per_cell);
 
     return DiscretePoint2D(cell_x, cell_y);
   }
@@ -110,7 +110,7 @@ public:
    * \param[in] new_height - the new value of height for grid map
    */
   void resize_map_for_height(const int new_height){
-	if(new_height <= 0)
+    if(new_height <= 0)
       return;
     //If it is needed to make map bigger
     if(new_height > height()){
