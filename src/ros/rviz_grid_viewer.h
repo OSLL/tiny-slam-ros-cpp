@@ -11,8 +11,9 @@
 #include "../core/maps/grid_map.h"
 
 /**
- * \brief The class publishes information about robot's map and location in ROS-compatible format so it can be viewed with rviz.
+ * \brief This class publishes information about robot's map and location in ROS-compatible format so it can be viewed with rviz.
  */
+
 class RvizGridViewer {
 public: // method
   RvizGridViewer(ros::Publisher pub):
@@ -20,7 +21,7 @@ public: // method
 
 /**
  * Publishes robot state as TF message.
- * \param r A robot state  in internal format
+ * \param r A robot state in internal format.
  */
   void show_robot_pose(const RobotState &r) {
     tf::Transform t;

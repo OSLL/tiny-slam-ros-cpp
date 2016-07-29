@@ -1,8 +1,8 @@
 /**
  * \file
- * \brief In this file are implemented 2 classes.
- * TopicObserver - abstract base class.
- * TopicWithTransform - class, that synchronizes odometry and transform.
+ * \brief The following classes are defined in this file
+ * TopicObserver - abstract base class which subclasses observe odometry and laser scan.
+ * TopicWithTransform - class that synchronizes odometry and transform.
  */
 
 #ifndef __TOPIC_WITH_TRANSFORM_H
@@ -17,7 +17,7 @@
 #include <boost/shared_ptr.hpp>
 
 /**
- * \brief Base class; subclasses of this class observe laser scans and odometry.
+ * \brief Base class which subclasses converts laser scan and odometry data ROS structures in internal data structure.
  */
 
 // TODO: make this class inner
@@ -55,16 +55,16 @@ public: // methods
   }
 
 /**
- * Function which add the object of TopicObserver to _observers container.
- * \param obs Shared pointer on the TopicObserver
+ * \brief Registers a topic observer to be notified with sensor data.
+ * \param obs Shared pointer to the TopicObserver.
  */
 
   void subscribe(std::shared_ptr<TopicObserver<MsgType>> obs) {
     _observers.push_back(obs);
   }
 private: // consts
-  const uint32_t SUBSCR_QUEUE_SZ = 10000; ///< Size of the queue of subscribe.
-  const uint32_t FILTER_QUEUE_SZ = 10000; ///< Size of the queue of filters.
+  const uint32_t SUBSCR_QUEUE_SZ = 10000;
+  const uint32_t FILTER_QUEUE_SZ = 10000;
 private: // methods
   void transformed_msg_cb(const boost::shared_ptr<MsgType> msg) {
     tf::StampedTransform transform;

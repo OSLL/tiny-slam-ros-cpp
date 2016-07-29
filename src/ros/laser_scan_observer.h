@@ -11,6 +11,7 @@
 /**
  * \brief Class responsibilities: observe laser scans and odometry; convert ROS structures to internal representation.
  */
+
 class LaserScanObserver : public TopicObserver<sensor_msgs::LaserScan> {
   using ScanPtr = boost::shared_ptr<sensor_msgs::LaserScan>;
 public: //methods
@@ -18,9 +19,10 @@ public: //methods
     _skip_max_vals(skip_max_vals),
     _prev_x(0), _prev_y(0), _prev_yaw(0) {}
 /**
- * Converts ROS-specific structures that hold sensor data to internal framework's structures. Laser scan filtering is performed as part of the conversion.
- *\param msg ROS specific laser scan message
- *\param t TF specific transform
+ * \brief Converts ROS-specific structures that hold sensor data to internal framework's structures.
+ * Laser scan filtering is performed as part of the conversion.
+ * \param msg ROS specific laser scan message.
+ * \param t TF specific transform.
  */
   virtual void handle_transformed_msg(
     const ScanPtr msg, const tf::StampedTransform& t) {

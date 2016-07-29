@@ -4,22 +4,25 @@
 #include "cell_occupancy_estimator.h"
 
 /**
- * \brief ConstEstimator is responsible for occupancy estimation strategy that returns probability of being occupied for a cell depending only on the cell status predicted by a sensor.
+ * \brief ConstEstimator is responsible for occupancy estimation strategy
+ * that returns probability of being occupied for a cell depending only
+ * on the cell status predicted by a sensor.
  */
+
 class ConstOccupancyEstimator : public CellOccupancyEstimator {
 public:
 /**
- * This constructor uses constructor of CellOccupancyEstimator
- * \param occ probability of being a cell occupied
- * \param empty probability that cell is empty
+ * Initializes the estimator with base probabilities.
+ * \param occ probability of being occupied.
+ * \param empty probability of being empty.
  */
   ConstOccupancyEstimator(double occ, double empty) :
     CellOccupancyEstimator(occ, empty) {}
 /**
- * Returns base probability that cell is occupied uses only the cell status returned by a sensor for estimator.
- * \param beam Laser beam (ignored)
- * \param cell_bnds geometric representation of the cell (ignored)
- * \param is_occ flag is responsible for information about cell occupancy
+ * Returns base probability of being occupied for the cell defined by bounds.
+ * \param beam Laser beam (ignored).
+ * \param cell_bnds geometric representation of the cell (ignored).
+ * \param is_occ flag that indicates whether the cell is occupied according to sensor data.
  */
   virtual Occupancy estimate_occupancy(const Beam &beam,
                                        const Rectangle &cell_bnds,

@@ -20,20 +20,20 @@ public:
       _occupancy_estimator(occ_est) {}
 
 /**
- * \brief Returns a cell factory that creates cells that implements a specific model.
- * \return Pointer on GridCellFactory.
+ * \brief Returns a cell factory that creates cells that implement a specific model.
+ * \return Pointer to GridCellFactory.
  */
   std::shared_ptr<GridCellFactory> cell_factory() { return _cell_factory; }
 
 /**
- * \brief Returns a scan's cost.
- * \return Pointer on ScanCostEstimator.
+ * \brief Returns a scan cost estimator.
+ * \return Pointer to ScanCostEstimator.
  */
   std::shared_ptr<ScanCostEstimator> cost_est() { return _cost_estimator; }
 
 /**
- * \brief Gives information about strategy of new cell's occupancy.
- * \return Pointer on CellOccupancyEstimator.
+ * \brief Returns a occupancy estimator.
+ * \return Pointer to CellOccupancyEstimator.
  */
   std::shared_ptr<CellOccupancyEstimator> occupancy_est() {
     return _occupancy_estimator;

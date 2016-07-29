@@ -1,8 +1,8 @@
 /**
  * \file
- * There are classes in this file:
+ * The following classes are defined in this file
  * GridCell - base class for GridMap's cell;
- * GridCellFactory - abstract base class, whose subclasses create a new cell specific type.
+ * GridCellFactory - abstract base class which subclasses create a new cell specific type.
  */
 
 #ifndef __GRID_CELL_FACTORY_H
