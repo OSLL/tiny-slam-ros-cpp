@@ -14,17 +14,18 @@
 #include "tiny_scan_matcher.h"
 
 /*!
- * \brief A container for the following tinySLAM parameters:
- * TODO: params description
+ * \brief A container for the following tinySLAM parameters:\n
+ * TODO: params description.
  */
 struct TinyWorldParams {
   double localized_scan_quality, raw_scan_quality;
 };
 
 /*!
- * \brief Derived class from LaserScanGridWorld to estimate occupancy of each cell
+ * \brief The class implements the tinySLAM-specific map update logic.
  *
- * There is an robot state handle based on used scanner matcher rules and laser data handle based on algorithm from the article with wall blur
+ * There is an robot state handle based on used scanner matcher rules and
+ * laser data handle based on the algorithm from the paper with a wall blur.
  */
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
@@ -40,9 +41,10 @@ public:
 public:
 
   /*!
-   * Initialize the world to produce tiny SLAM
-   * \param[in] gcs    - shared pointer on strategy for each cell (how does estimate occupancy, cost of laser data etc)
-   * \param[in] params - the initial values of trust for laser data
+   * Initialize the world to produce tiny SLAM.
+   * \param[in] gcs    - shared pointer to a strategy for the each cell.
+   *                   (how does estimate the occupancy, cost of laser data etc)
+   * \param[in] params - the initial values of trust for laser data.
    */
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,
             const TinyWorldParams &params) :
@@ -52,10 +54,10 @@ public:
                                       SIG_XY, SIG_TH)) {}
 
   /*!
-   * Updates robot pose and map by prediction-correction scheme.
-   * 
-   * The scan quality used for map update depends on whether the robot pose have been changed during correction step.
-   * \param[in] scan - data from laser scanner
+   * Updates the robot pose and the map by a prediction-correction scheme.\n
+   * Updates the map depends on whether the robot pose have been changed during
+   * a correction step.
+   * \param[in] scan - data from a laser scanner.
    */
   virtual void handle_observation(TransformedLaserScan &scan) override {
     RobotState pose_delta;
@@ -71,15 +73,14 @@ public:
   }
 
   /*!
-   * Updates the map with a given laser scan point.
-   * 
-   * estimates the occupancy of the cell where obstacle locates (beam_end_x, beam_end_y).
-   * And after there is a "wall blur"
-   * \param[in] map - all built map
-   * \param[in] laser_x,laser_y - the beginning coordinates of the laser ray
+   * Updates the map with a given laser scan point.\n
+   * Estimates the occupancy of the cell with an obstacle
+   * (beam_end_x, beam_end_y).\n And after there is a "wall blur".
+   * \param[in] map - all built map.
+   * \param[in] laser_x,laser_y - the beginning coordinates of the laser ray.
    * \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray
-   * \param[in] is_occ - the parameter which shows is this cell occupied or not
-   * \param[in] quality - the quality of laser scanner
+   * \param[in] is_occ - the parameter which shows is this cell occupied or not.
+   * \param[in] quality - the quality of the laser scanner.
    */
   virtual void handle_scan_point(GridMap &map,
                                  double laser_x, double laser_y,
@@ -114,7 +115,7 @@ public:
   }
 
   /*!
-   * Returns the scan matcher used for robot pose correction.
+   * Returns the scan matcher used for the robot pose correction.
    */
   std::shared_ptr<GridScanMatcher> scan_matcher() {
     return _scan_matcher;

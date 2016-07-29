@@ -1,9 +1,13 @@
 /*!
  * \file
- * \brief Definition of classes file: BaseTinyCell, AvgTinyCell (are inherited from GidCell), TinyBaseCellFactory, TinyAvgCellFactory (from GridCellFactory)
+ * \brief Definition of classes file:\n
+ *   BaseTinyCell, AvgTinyCell (are inherited from GidCell),\n
+ *   TinyBaseCellFactory, TinyAvgCellFactory (from GridCellFactory)
  *
- * The classes inherited from GridCell implements different approaches of grid cell's occupancy maintaining.
- * Another ones inherited from GridCellFactory presents factories to produce cells meant before/
+ * The classes inherited from GridCell implements different approaches of a
+ * grid cell's occupancy maintaining.\n
+ * Another ones inherited from GridCellFactory presents factories to
+ * produce the cells meant before.
  */
 #ifndef __TINY_GRID_CELLS_H
 #define __TINY_GRID_CELLS_H
@@ -14,26 +18,27 @@
 // Base cell
 
 /*!
- * \brief The grid cell's model presented in original tinySLAM paper.
+ * \brief The grid cell's model presented in the original tinySLAM paper.
  *
  * The probability is updated by the following rule:
- * \f[p_i=(1-\alpha)\cdot p_{i-1}+\alpha\cdot p_{new}\f]
+ * \f[p_i=(1-\alpha)\cdot p_{i-1}+\alpha\cdot p_{new}.\f]
  */
 class BaseTinyCell : public GridCell {
 public:
   /*!
-   * Sets the value of probability \f$p_0=0.5\f$
+   * Sets the value of the probability \f$p_0=0.5\f$.
    */
   BaseTinyCell(): _prob(0.5) {}
   /*!
-   * Returns estimated probability
+   * Returns the estimated probability.
    */
   double value() const override { return _prob; }
   /*!
-   * Merges a given probability with already stored one using quality as a weight
-   * \param[in] value   - value of probability \f$p_{new}\f$
-   * \param[in] quality - the quality of experiment value \f$\alpha\f$
-   * \return the new value of probability of current cell based on the previous probability value of this cell and new value took from laser scanner
+   * Merges a given probability with stored one using a quality as a weight.
+   * \param[in] value   - value of probability \f$p_{new}\f$.
+   * \param[in] quality - the quality of the experiment value \f$\alpha\f$.
+   * \return The new probability value of the current cell based on
+   *         the previous probability and new one built from scanner's data.
    */
   void set_value(const Occupancy &value, double quality) override {
     _prob = (1.0 - quality) * _prob + quality * value.prob_occ;
@@ -43,14 +48,15 @@ private:
 };
 
 /*!
- * \brief A strategy that creates cells of base tiny model (BaseTinyCell)
+ * \brief A strategy creates cells of the base tiny model (BaseTinyCell).
  *
- * This class is inherited from abstract cell factory and generated cells with base rule of calculation probability.
+ * This class is inherited from an abstract cell factory
+ * and generated cells with the base rule of the probability calculation.
  */
 class TinyBaseCellFactory : public GridCellFactory {
 public:
   /*!
-   * Creates an instance of BaseTinyCell
+   * Creates an instance of BaseTinyCell.
    */
   std::shared_ptr<GridCell> create_cell() override {
     return std::shared_ptr<GridCell>(new BaseTinyCell());
@@ -61,26 +67,28 @@ public:
 // Modified cell
 
 /*!
- * \brief The grid cell's model presents calculation probabilities as average value.
+ * \brief The grid cell's model updates probabilities as an average value.
  *
  * The probability is updated by the following rule:
- * \f[p_n=\frac{p_{n-1}+0.5+(p_{new}-0.5)\cdot\alpha}{n}\f]
+ * \f[p_n=\frac{p_{n-1}+0.5+(p_{new}-0.5)\cdot\alpha}{n}.\f]
  */
 class AvgTinyCell : public GridCell {
 public:
   /*!
-   * Sets the value of probability \f$p_0=0\f$ and \f$n=0\f$
+   * Sets the value of the probability \f$p_0=0\f$ and \f$n=0\f$.
    */
   AvgTinyCell(): _cnt(0), _n(0) {}
   /*!
-   * Returns estimated probability
+   * Returns the estimated probability.
    */
   double value() const override { return _n == 0 ? -1 : _cnt / _n; }
   /*!
-   * Merges a given probability with already stored one as average value of all given probabilities also using quality as a weight
-   * \param[in] value   - value of probability \f$p_{new}\f$
-   * \param[in] quality - the quality of experiment value \f$\alpha\f$
-   * \return the new value of probability of current cell based on the previous probability value of this cell and new value took from laser scanner
+   * Merges a given probability with stored one as an average value
+   * of all given probabilities also using a quality as a weight.
+   * \param[in] value   - value of probability \f$p_{new}\f$.
+   * \param[in] quality - the quality of the experiment value \f$\alpha\f$.
+   * \return The new value of probability of current cell based on
+   *         the previous probability and new one built from scanner's data.
    */
   void set_value (const Occupancy &value, double quality) override {
     _n += 1;
@@ -91,14 +99,16 @@ private:
 };
 
 /*!
- * \brief A strategy that creates cells of base tiny model (AvgTinyCell)
+ * \brief A strategy creates cells with the average probability
+ *        calculation rule (AvgTinyCell).
  *
- * This class is inherited from abstract cell factory and generated cells with average rule of calculation probability.
+ * This class is inherited from an abstract cell factory
+ * and generated cells with the average rule of calculation probability.
  */
 class TinyAvgCellFactory : public GridCellFactory {
 public:
   /*!
-   * Creates an instance of AvgTinyCell
+   * Creates an instance of AvgTinyCell.
    */
   std::shared_ptr<GridCell> create_cell() override {
     return std::shared_ptr<GridCell>(new AvgTinyCell());

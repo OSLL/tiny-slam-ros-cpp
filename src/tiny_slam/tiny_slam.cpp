@@ -1,9 +1,10 @@
 /*!
  * \file
- * \brief ROS node implementation that provides the tinySLAM method
+ * \brief The ROS node implementation that provides the tinySLAM method.
  *
- * There are main and functions which parse initialization launch file.
- * Moreover there is a declaration of one class (PoseScanMatcherObserver is inherited from GridScanMatcherObserver).
+ * There are an entry point and functions which parse the initialization file.\n
+ * There is also a declaration of one class
+ * (PoseScanMatcherObserver is inherited from GridScanMatcherObserver).
  */
 
 #include <iostream>
@@ -27,16 +28,16 @@
 #include "tiny_grid_cells.h"
 
 /*!
- * \brief Derived class from GridScanMatcherObserver to publish robot pose
+ * \brief Derived class from GridScanMatcherObserver to publish the robot pose.
  *
- * This class provides to functions to publish robot pose in ros topic
+ * This class provides functions to publish the robot pose in a ros topic.
  */
 class PoseScanMatcherObserver : public GridScanMatcherObserver {
 public:
 
   /*!
-   * Publishes the robot pose that is tested by the scan matcher at the moment
-   * \param[in] pose - robot location in space
+   * Publishes the robot pose tested by the scan matcher at the moment.
+   * \param[in] pose - the robot location in the space.
    */
   virtual void on_scan_test(const RobotState &pose,
                             const TransformedLaserScan &scan,
@@ -44,8 +45,8 @@ public:
     publish_transform("sm_curr_pose", pose);
   }
   /*!
-   * Publishes the best found robot pose
-   * \param[in] pose - robot location in space
+   * Publishes the best found robot pose.
+   * \param[in] pose - the robot location in the space.
    */
   virtual void on_pose_update(const RobotState &pose,
                               const TransformedLaserScan &scan,
@@ -59,9 +60,9 @@ private:
 };
 
 /*!
- * Determines the cell factory based on parameters came from launch file
- * \param[in] params - values from launch files
- * \return The pointer (shared) on created factory of grid cells
+ * Determines the cell factory based on parameters came from a launch file.
+ * \param[in] params - values from the launch file.
+ * \return The pointer (shared) to a created factory of grid cells.
  */
 std::shared_ptr<GridCellFactory> init_cell_factory(TinyWorldParams &params) {
   std::string cell_type;
@@ -82,9 +83,9 @@ std::shared_ptr<GridCellFactory> init_cell_factory(TinyWorldParams &params) {
 }
 
 /*!
- * Determines the estimator based on parameters came from launch file
- * \param[in] params - values from launch files
- * \return The pointer (shared) on created estimator of map cost
+ * Determines the estimator based on parameters came from a launch file.
+ * \param[in] params - values from a launch file.
+ * \return The pointer (shared) to a created estimator of a map cost.
  */
 std::shared_ptr<CellOccupancyEstimator> init_occ_estimator() {
   double occ_prob, empty_prob;
@@ -106,7 +107,8 @@ std::shared_ptr<CellOccupancyEstimator> init_occ_estimator() {
 }
 
 /*!
- * Returns how to deal with exceeding values based on parameters came from launch file
+ * Returns how to deal with exceeding values based on parameters came
+ * from a launch file.
  */
 bool init_skip_exceeding_lsr() {
   bool param_value;
@@ -115,7 +117,7 @@ bool init_skip_exceeding_lsr() {
 }
 
 /*!
- * The entry point: creates an environment world and main node "tiny slam" launches.
+ * The entry point: creates an environment world and the main node "tiny slam".
  */
 int main(int argc, char** argv) {
   ros::init(argc, argv, "tinySLAM");

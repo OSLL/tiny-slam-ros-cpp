@@ -10,11 +10,12 @@
 #include "tiny_world.h"
 
 /*!
- * \brief TinySLAM access point. SLAM users are supposed to work with it.
+ * \brief The TinySLAM access point. SLAM users are supposed to work with it.
  *
- * Responsibilities:
- * Handles data came from laser scanner and locates viewer.
- * Connects internal frameworks components to a single tinySLAM method (the fascade pattern is applied)
+ * Responsibilities:\n
+ *   Handles data came from a scanner and locates viewer.\n
+ *   Connects internal frameworks components to a single tinySLAM method
+ *   (the fascade pattern is applied).
  *
  */
 class TinySlamFascade : public LaserScanObserver {
@@ -23,10 +24,11 @@ private:
 public: // methods
   // TODO: copy ctor, move ctor, dtor
   /*!
-   * Initializes the tinySLAM method
-   * \param[in] gcs           - Grid Cell Strategy - configuration of cells in map
-   * \param[in] params        - configuration of laser scan
-   * \param[in] skip_max_vals - boolean variable - flag shows how are the values that exceed the max one specific to laser scanner are handled
+   * Initializes the tinySLAM method.
+   * \param[in] gcs           - configuration of cells in a map (cell strategy).
+   * \param[in] params        - internal parameters tinySLAM.
+   * \param[in] skip_max_vals - how are the values that exceed the max one
+   *                            specific to the laser scanner handled.
    */
   TinySlamFascade(std::shared_ptr<GridCellStrategy> gcs,
                   const TinyWorldParams &params,
@@ -34,18 +36,18 @@ public: // methods
     LaserScanObserver(skip_max_vals), _world(new TinyWorld(gcs, params)) {}
 
   /*!
-   * Sets a viewer component that is notified by pose and map updates.
-   * \param[in] viewer - new value of data member viewer
+   * Sets a viewer component that is notified by the pose and the map updates.
+   * \param[in] viewer - new value of the data member viewer.
    */
   void set_viewer(std::shared_ptr<RvizGridViewer> viewer) {
     _viewer = viewer;
   }
 
   /*!
-   * Updates the map and robot pose with scan data
-   * 
-   * The update is done by prediction-correction approach (odometry is used for prediction, laser scan - for correction)
-   * \param[in] scan - data from laser scanner, the view that robot has seen just a moment
+   * Updates the map and the robot pose with scan data.\n
+   * The update is done by a prediction-correction approach.
+   * (the odometry is used for a prediction, the laser scan - for a correction).
+   * \param[in] scan - data from the robot's scanner has got just a moment.
    */
   virtual void handle_laser_scan(TransformedLaserScan &scan) {
     _world->update_robot_pose(scan.d_x, scan.d_y, scan.d_yaw);
@@ -58,16 +60,16 @@ public: // methods
   }
 
   /*!
-   * Registers a scan matcher observer
-   * \param[in] obs - new scanner matcher
+   * Registers a scan matcher observer.
+   * \param[in] obs - new scanner matcher observer.
    */
   void add_scan_matcher_observer(ScanMatcherObsPtr obs) {
     _world->scan_matcher()->subscribe(obs);
   }
-  
+
   /*!
-   * Unregisters a scan matcher observer
-   * \param[in] obs - the scanner matcher
+   * Unregisters a scan matcher observer.
+   * \param[in] obs - the scanner matcher observer to be removed.
    */
   void remove_scan_matcher_observer(ScanMatcherObsPtr obs) {
     _world->scan_matcher()->unsubscribe(obs);

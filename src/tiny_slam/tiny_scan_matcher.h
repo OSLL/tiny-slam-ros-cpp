@@ -9,18 +9,23 @@
 /*!
  * \brief The scan matcher based on Monte Carlo simulation.
  *
- * The simulation of based on pose movement by a random vector and rotation by a random angle. The vector distribution is dynamically adjusted.
+ * The simulation of the robot pose by shifting it on a random vector and
+ * rotation by a random angle. The vector distribution is dynamically adjusted.
  */
 class TinyScanMatcher : public MonteCarloScanMatcher {
 private:
   using ScePtr = std::shared_ptr<ScanCostEstimator>;
 public:
   /*!
-   * Initializes the scan matcher
-   * \param[in] cost_estimator           - the type of estimator for robot location
-   * \param[in] bad_iter                 - max amount of failed iteration while it is not found better place for robot
-   * \param[in] max_iter                 - max amount of all iteration while it is tried to find fine place for robot
-   * \param[in] sigma_coord, sigma_angle - the \f$\sigma\f$ value of normal distribution for random variables (\f$\Delta x\f$, \f$\Delta y\f$ and \f$\Delta \theta\f$)
+   * Initializes the scan matcher.
+   * \param[in] cost_estimator - the type of estimator for the robot location.
+   * \param[in] bad_iter       - max amount of failed iterations while
+   *                             it is not found a better place for the robot.
+   * \param[in] max_iter       - max amount of all iterations while
+   *                             it is tried to find a fine place for the robot.
+   * \param[in] sigma_coord, sigma_angle - the \f$\sigma\f$ value of a normal
+   *                                       distribution for random variables
+   *                   (\f$\Delta x\f$, \f$\Delta y\f$ and \f$\Delta \theta\f$).
    */
   TinyScanMatcher(ScePtr cost_estimator, unsigned bad_iter, unsigned max_iter,
                   double sigma_coord, double sigma_angle):
@@ -29,7 +34,7 @@ public:
     _curr_sigma_coord(_sigma_coord), _curr_sigma_angle(_sigma_angle) {}
 
   /*!
-   * Resets the scan matcher to the state it had right after initialization.
+   * Resets the scan matcher to the state it had right after the initialization.
    */
   virtual void reset_state() override {
     _curr_sigma_coord = _sigma_coord;
