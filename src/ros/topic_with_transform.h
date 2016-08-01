@@ -17,7 +17,8 @@
 #include <boost/shared_ptr.hpp>
 
 /**
- * \brief Base class which subclasses converts laser scan and odometry data ROS structures to internal data structure.
+ * \brief Base class which subclasses convert laser scan
+ * and odometry data ROS structures to internal data structure.
  */
 // TODO: make this class inner
 template <typename MType>
@@ -30,7 +31,6 @@ public: // methods
 /**
  * \brief This class synchronizes transform and odometry.
  */
-
 // TODO: add scan drop
 template <typename MsgType>
 class TopicWithTransform {
@@ -64,7 +64,6 @@ private: // consts
   const uint32_t SUBSCR_QUEUE_SZ = 10000; // elems
   const uint32_t FILTER_QUEUE_SZ = 10000; // elems
 private: // methods
-
   void transformed_msg_cb(const boost::shared_ptr<MsgType> msg) {
     tf::StampedTransform transform;
     std::string msg_frame_id =

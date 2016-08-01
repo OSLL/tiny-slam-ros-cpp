@@ -12,6 +12,9 @@
  */
 class GridCellStrategy {
 public:
+/**
+ * \brief Initializes specific grid cell model.
+ */
   GridCellStrategy(std::shared_ptr<GridCellFactory> factory,
                    std::shared_ptr<ScanCostEstimator> cost_est,
                    std::shared_ptr<CellOccupancyEstimator> occ_est)
