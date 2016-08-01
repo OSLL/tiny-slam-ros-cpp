@@ -10,7 +10,6 @@
 /**
  * \brief A container for strategies specific to a grid cell model.
  */
-
 class GridCellStrategy {
 public:
   GridCellStrategy(std::shared_ptr<GridCellFactory> factory,
@@ -32,7 +31,7 @@ public:
   std::shared_ptr<ScanCostEstimator> cost_est() { return _cost_estimator; }
 
 /**
- * \brief Returns a occupancy estimator.
+ * \brief Returns an occupancy estimator.
  * \return Pointer to CellOccupancyEstimator.
  */
   std::shared_ptr<CellOccupancyEstimator> occupancy_est() {

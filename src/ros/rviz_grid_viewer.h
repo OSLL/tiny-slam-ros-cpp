@@ -11,9 +11,9 @@
 #include "../core/maps/grid_map.h"
 
 /**
- * \brief This class publishes information about robot's map and location in ROS-compatible format so it can be viewed with rviz.
+ * \brief The class publishes information about robot's map and location
+ *  in ROS-compatible format so it can be viewed by rviz.
  */
-
 class RvizGridViewer {
 public: // method
   RvizGridViewer(ros::Publisher pub):
@@ -36,7 +36,7 @@ public: // method
 
 /**
  * Publishes given GridMap as a ROS message.
- * \param map grid map in framework's internal format.
+ * \param map Grid map in framework's internal format.
  */
   void show_map(const GridMap &map) {
     // TODO: move map publishing rate to parameter

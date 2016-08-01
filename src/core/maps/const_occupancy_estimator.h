@@ -8,21 +8,20 @@
  * that returns probability of being occupied for a cell depending only
  * on the cell status predicted by a sensor.
  */
-
 class ConstOccupancyEstimator : public CellOccupancyEstimator {
 public:
 /**
  * Initializes the estimator with base probabilities.
- * \param occ probability of being occupied.
- * \param empty probability of being empty.
+ * \param occ Probability of being occupied.
+ * \param empty Probability of being empty.
  */
   ConstOccupancyEstimator(double occ, double empty) :
     CellOccupancyEstimator(occ, empty) {}
 /**
  * Returns base probability of being occupied for the cell defined by bounds.
  * \param beam Laser beam (ignored).
- * \param cell_bnds geometric representation of the cell (ignored).
- * \param is_occ flag that indicates whether the cell is occupied according to sensor data.
+ * \param cell_bnds Geometric representation of the cell (ignored).
+ * \param is_occ A flag that indicates whether the cell is occupied according to sensor data.
  */
   virtual Occupancy estimate_occupancy(const Beam &beam,
                                        const Rectangle &cell_bnds,

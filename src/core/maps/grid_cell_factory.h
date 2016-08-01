@@ -1,6 +1,6 @@
 /**
  * \file
- * The following classes are defined in this file
+ * \brief The following classes are defined in this file
  * GridCell - base class for GridMap's cell;
  * GridCellFactory - abstract base class which subclasses create a new cell specific type.
  */
@@ -26,7 +26,8 @@ public:
 };
 
 /**
- * \brief The base class for factories that encapsulate creation of a specific cell (Factory method pattern is applied).
+ * \brief The base class for factories that encapsulate creation of a specific cell
+ * (Factory method pattern is applied).
  */
 class GridCellFactory {
 public:
