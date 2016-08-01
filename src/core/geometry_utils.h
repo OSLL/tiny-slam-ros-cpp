@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Discribes some simple geometry structs and classes
+ * \brief Defines some simple geometry structs and classes
  * There are struct Rectangle, struct DiscretePoint2D, class DiscreteLine2D
  */
 
@@ -15,20 +15,16 @@
   (std::abs((a) - (b)) < 0.0001)
 
 /**
- * \brief  Structure describes a simple horizontal rectangle
+ * \brief Defines an axis-aligned rectangle
  */
-
 struct Rectangle {
 
-  /**
-   * Default constructor
-   * Creates a rectangle with zero area in point (0,0)
-   */
+  ///Creates a rectangle with zero area in point (0,0)
   Rectangle() : Rectangle(0, 0, 0, 0) {}
 
   /**
-   * Constructor with parameters.
-   * Creates a rectangle where all contained points are bounded in limits l < x < r, b < y <t
+   * Creates a rectangle where all contained points are bounded in limits
+   * l < x < r, b < y <t
    * \param b Bottom of a rectangle
    * \param t Top of rectangle
    * \param l Left side of rectangle
@@ -54,43 +50,39 @@ struct Rectangle {
     return (top - bot)*(right - left);
   }
 
-  double bot,	///< Bottom of a rectangle
-  	  	 top,	///< Top of a rectangle
-		 left,	///< Left side of a rectangle
-		 right;	///< Right size of a rectangle
+  double bot,   ///< Bottom of a rectangle
+         top,   ///< Top of a rectangle
+         left,  ///< Left side of a rectangle
+         right; ///< Right size of a rectangle
 };
 
 /**
- * \brief Structure describes a simple point in a plane
+ * \brief Defines a point with integer coordinates on a plane
  */
 struct DiscretePoint2D {
 public:
 
   /**
-   * Constructor with parametres
-   * \param x_coord,y_coord Coordinates of a poinr in a plane
+   * Initializes a point in cartesian coordinates
+   * \param x_coord,y_coord Coordinates of a point in a plane
    */
   DiscretePoint2D(int x_coord, int y_coord):
     x{x_coord}, y{y_coord} {}
   // TODO: mv (!!), cpy ctors
   int x, y; ///< Coordinates of point
 
-  /**
-   * Point summation operator
-   */
+  /// Operator of points summation by element wise addition
   DiscretePoint2D operator+(const DiscretePoint2D &p) const {
     return DiscretePoint2D(x + p.x, y + p.y);
   }
 
-  /**
-   * Point subtraction operator
-   */
+  /// Returns additive inverse of the point
   DiscretePoint2D operator-() const {
     return DiscretePoint2D(-x, -y);
   }
 
   /**
-   * Calculates distance from current point to another
+   * Calculates distance from current point to a given one
    * \param pt Target point to calculate distance
    * \return Value of a distance between current point and target point
    */
@@ -100,14 +92,14 @@ public:
 };
 
 /**
- * \brief Class describes a line segment
+ * \brief Defines a line segment on a plane
  */
 class DiscreteLine2D {
   using Point = DiscretePoint2D;
 public: // methods
 
   /**
-   * \brief Constructor with parameters.
+   * Initializes a segment with end points
    * \param start Beginning of a segment
    * \param end Ending of a segment
    */
@@ -118,10 +110,10 @@ public: // methods
 private:
 
   /**
-   * Creates a line segment on a grid
-   *
-   * In case that the World consists of cells, it is required to transform coordinates of segment
-   * in a view that is useful for this representation of world. The result is put in vector (class data member)
+   * Creates a line segment on a grid with a Bresenham algorythm
+   * In case that the World consists of cells, it is required to transform
+   * coordinates of segment in a view that is useful for this representation of
+   * world. The result is put in vector (class data member)
    * \param x1,y1 Coordinates of the beginning of a line segment
    * \param x2,y2 Coordinates of the ending of a line segment
    */

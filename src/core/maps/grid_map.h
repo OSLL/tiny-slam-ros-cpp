@@ -1,3 +1,7 @@
+/**
+ * \file
+ * \brief Defines the Grid map
+ */
 #ifndef _GRID_MAP_H
 #define _GRID_MAP_H
 
@@ -9,7 +13,7 @@
 #include "../geometry_utils.h"
 
 /**
- * \brief Class describes Map that consists of Cells
+ * \brief Defines Map that consists of Cells
  */
 class GridMap {
 public:
@@ -17,8 +21,8 @@ public:
 public:
   // TODO: cp, mv ctors, dtor
   /**
-   * Constructor with parameters.
-   * \param cell_factory Object of class Factory that creates requied type of Cell.
+   * Creates a grid map which cells' type is defined by a given factory
+   * \param cell_factory Factory that creates requied type of Cell.
    */
   GridMap(std::shared_ptr<GridCellFactory> cell_factory):
     // TODO: replace hardcoded value with params
@@ -31,20 +35,20 @@ public:
     }
   }
 
-  /// Getter of width of map
+  /// Returns width of map
   int width() const { return _width; }
 
-  /// Getter of height of map
+  /// Returns height of map
   int height() const { return _height; }
 
-  /// Getter of Scale
+  /// Returns Scale
   double scale() const { return _m_per_cell; }
 
-  /// Getter of vector of cells
+  /// Returns vector of cells
   const std::vector<std::vector<Cell>> cells() const { return _cells; }
 
   /**
-   * Setter of value of each cell
+   * Update a cell with a new occupancy data
    * \param cell_coord Coordinates of a cell
    * \param new_value Probability for cell of being occupied
    * \param quality Measure of beleif to the data
@@ -55,32 +59,36 @@ public:
     _cells[cell_coord.y][cell_coord.x]->set_value(new_value, quality);
   }
 
-  /// Getter of the value of cell
+  /// Returns the value of cell
   double cell_value(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x]->value();
   }
 
-  /// Constant getter of cell by point
+  /// Returns a constant reference on cell by the point
   const Cell &cell(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x];
   }
 
-  /// Constant getter of cell by coordinates
+  /// Returns a cell by the coordinates
   const Cell &cell(int x, int y) const {
       return _cells[x][y];
   }
 
-  /// Getter of cell by point
+  /// Returns a reference on cell by the point
   Cell &cell(const DiscretePoint2D& cell_coord) {
     return _cells[cell_coord.y][cell_coord.x];
   }
 
-  /// Decides whether the point is in map
+  /// Defines whether the point is contained in a map
   bool has_cell(const DiscretePoint2D& cell_coord) const {
     return 0 <= cell_coord.x && cell_coord.y < _width &&
            0 <= cell_coord.y && cell_coord.y < _height;
   }
-  /// Projects coordinates in meters to world made of cells and returns coordinates of cell
+
+  /**
+   * Projects coordinates in meters to world made of cells and returns
+   * coordinates of corresponding cell
+   */
   DiscretePoint2D world_to_cell(double x, double y) const {
     int cell_x = std::floor(_width /2 + x/_m_per_cell);
     int cell_y = std::floor(_height/2 + y/_m_per_cell);
@@ -88,10 +96,10 @@ public:
     return DiscretePoint2D(cell_x, cell_y);
   }
 
-  /// Getter scale
+  /// Returnes the scale
   double cell_scale() const { return _m_per_cell; }
 
-  /// Getter of bounds of the world
+  /// Returns the bounds of the world
   Rectangle world_cell_bounds(const DiscretePoint2D &cell_coord) {
     Rectangle bounds;
     bounds.bot = (cell_coord.y + _height/2) * _m_per_cell;

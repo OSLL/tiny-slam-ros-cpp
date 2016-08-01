@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Discribes some interfaces for Scan Matchers
+ * \brief Defines some interfaces for Scan Matchers
  * There are class GridScanMatcherObserver, ScanCostEstimator, GridScanMatcher
  */
 
@@ -20,38 +20,38 @@
 class GridScanMatcherObserver {
 public:
   /**
-   * Virtual function. Starts matching.
+   * A callback that is invoked on scan matching start
    * \param RobotState Pose of a robot
-   * \param TransformedLaserScan Information about a scan
-   * \param GridMap Information about a map
+   * \param TransformedLaserScan A laser scan with a transformation
+   * \param GridMap A grid map that is used by the matcher
    */
   virtual void on_matching_start(const RobotState &,           /*pose*/
                                  const TransformedLaserScan &, /*scan*/
                                  const GridMap &) {}    /*map*/
+
   /**
-   * Virtual function. Tests the scan
+   * A callback that is invoked on scan testing
    * \param RobotState Pose of a robot
-   * \param TransformedLaserScan Information about a scan
-   * \param double Score
+   * \param TransformedLaserScan A laser scan with a transformation
    */
   virtual void on_scan_test(const RobotState &,           /*pose*/
                             const TransformedLaserScan &, /*scan*/
                             double) {};                  /*score*/
+
   /**
-   * Virtual function. Updates a pose of a robot
+   * A callback that is invoked on updating a pose of robot
    * \param RobotState Pose of a robot
-   * \param TransformedLaserScan Information about a scan
-   * \param double Score
+   * \param TransformedLaserScan A laser scan with a transformation
    */
   virtual void on_pose_update(const RobotState &,            /*pose*/
                               const TransformedLaserScan &,  /*scan*/
                               double) {};                    /*score*/
-  /*
-   * Virtual function. Stops matching
+
+  /**
+   * A callback that is invoked on scan matching stops
    * \param RobotState Pose of a robot
-   * \param double Score
    */
-	 virtual void on_matching_end(const RobotState &, /*delta*/
+  virtual void on_matching_end(const RobotState &, /*delta*/
                                double) {};         /*best_score*/
 };
 
@@ -63,10 +63,10 @@ class ScanCostEstimator {
 public:
 
   /**
-   * Estimates the cost of a scan
+   * A callback that is invoked on estimating the cost of scan
    * \param pose Pose of a robot
-   * \param scan Information about a scan
-   * \param map - Information about a map
+   * \param scan A laser scan with a transformation
+   * \param map A grid map that is used by the matcher
    */
   virtual double estimate_scan_cost(const RobotState &pose,
                                     const TransformedLaserScan &scan,
@@ -76,37 +76,35 @@ public:
 
 /**
  * \brief  Class that matches scans
- * When a new scan appears, it is requied to compare it with a current status of World. This class is to handle these situations
+ * Performes scan adjustment by altering robot pose in order to maximize
+ * correspondence between the scan and a grid map. The rule of correspondence
+ * computation is defined in ScanCostEstimator subclasses
  */
 class GridScanMatcher {
 public:
   GridScanMatcher(std::shared_ptr<ScanCostEstimator> estimator) :
     _cost_estimator(estimator) {}
-/**
- * virtual function that matches every current scan
- * \param init_pose Pose of a robot
- * \param scan Information about scan
- * \param map Information about map
- * \pose_delta Difference between real robot pose and estimation of pose
- */
+  /**
+   * A callback that is invoked on processing of scan
+   * \param init_pose Pose of a robot
+   * \param scan A laser scan with a transformation
+   * \param map A grid map that is used by the matcher
+   * \pose_delta Difference between real robot pose and estimation of pose
+   */
   virtual double process_scan(const RobotState &init_pose,
                               const TransformedLaserScan &scan,
                               const GridMap &map,
                               RobotState &pose_delta) = 0;
-  /**
-   * virtual function that resets state of something
-   */
+
+  /// A callback that is invoked on reset of scan matcher state
   virtual void reset_state() {};
 
-  /**
-   * Adds an observer
-   */
+  /// Adds an observer
   void subscribe(std::shared_ptr<GridScanMatcherObserver> obs) {
     _observers.push_back(obs);
   }
-  /**
-   * Removes an observer
-   */
+
+  /// Removes an observer
   void unsubscribe(std::shared_ptr<GridScanMatcherObserver> obs) {
     // TODO: replace with more ideomatic C++
     std::vector<std::weak_ptr<GridScanMatcherObserver>> new_observers;
@@ -120,16 +118,12 @@ public:
   }
 
 protected:
-  /**
-   * Getter of pointer on cost_estimator
-   */
+  /// Returns pointer to the cost estimator
   std::shared_ptr<ScanCostEstimator> cost_estimator() {
     return _cost_estimator;
   }
 
-  /**
-   * Getter of a link on pointer on vector of observers
-   */
+  /// Returns a reference to vector of pointers on observers
   std::vector<std::weak_ptr<GridScanMatcherObserver>> & observers() {
     return _observers;
   }

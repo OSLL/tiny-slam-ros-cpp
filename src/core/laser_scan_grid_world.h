@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Discribes the special type of World
+ * \brief Defines the special type of World
  * There is class LaserScanGridWorld derived from World
  */
 
@@ -15,8 +15,9 @@
 #include "maps/grid_map.h"
 
 /**
- * \brief Class deriver of World.
- * Considers Map as Grid Map, and input data as Laser Scan. Relies on information from robot, updates a map
+ * \brief Tracks a robots perception of an environment
+ * The environment is represented by a GridMap; laser scan with transformation
+ * is expected as sensor data
  */
 class LaserScanGridWorld : public World<TransformedLaserScan, GridMap> {
 public: //types
@@ -25,14 +26,15 @@ public: //types
 public: // methods
 
   /**
-   * Constructor with parameters. Creates a world as a Map consisting of Grid Cells
+   * Creates a world as a Map of Grid Cells
    * \param gcs Shared pointer on Cell
    */
   LaserScanGridWorld(std::shared_ptr<GridCellStrategy> gcs) :
     _map(gcs->cell_factory()) {}
 
   /**
-   * Gets pose of a Robot and calls handle_scan_point with some information about current location of robot
+   * Updates the map cells according to given sensor data. Straightforward scan
+   * points projection is used
    * \param scan Current scan from Laser Rangefinder
    */
   virtual void handle_observation(TransformedLaserScan &scan) {
@@ -46,8 +48,9 @@ public: // methods
                         sp.is_occupied, scan.quality);
     }
   }
+
   /**
-   * Udates cells of map, if new information is different from known information about a World
+   * Udates cells of map according to given parameters
    * \param map Current map
    * \param laser_x,lasery Coordinate of Laser
    * \param beam_end_x,beam_end_y Coordinates of a current point on scan

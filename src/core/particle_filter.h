@@ -1,9 +1,3 @@
-/**
- * \file
- * \brief Discribes some classes related to Particle
- * There are classes Particle, ParticleFactory, UniformResamling, ParticleFilter
- */
-
 #ifndef __PARTICLE_FILTER_H
 #define __PARTICLE_FILTER_H
 
@@ -12,28 +6,20 @@
 #include <random>
 #include <unordered_set>
 
-/**
-* \brief An element of ParticleFilter. Used to approximate target distribution
-*/
 class Particle {
 public:
   Particle(): _weight(0) {}
 
-  ///Getter function
   double weight() const { return _weight; }
 
-  /// Setter function
   void set_weight(double w) { _weight = w; }
 
   virtual void sample() = 0;
 private:
-  double _weight; ///< Weight of a particle
+  double _weight;
 };
 
 template <typename ParticleT>
-/**
- * \brief Factory for creating ParticleT (template)
- */
 class ParticleFactory {
 public:
   virtual std::shared_ptr<ParticleT> create_particle() = 0;
@@ -43,11 +29,6 @@ template <typename ParticlePtr>
 class UniformResamling { /* Strategy */
 public:
   // TODO: should be moved to separate strategy
-  /**
-   * Calculates whether resampling is requied. It's requied if \f$ \frac{2}{\sum_{i=1}^{n} w_{i}^{2}}<n \f$
-   * \param particles Vector of pointers on Particle
-   * \return Result of comparation
-   */
   bool resampling_is_required(std::vector<ParticlePtr> particles) {
     // TODO: resampling is not required if robot haven't traveled far enough
     // Computer N_eff from gMapping (based on Doucet work)
@@ -59,12 +40,6 @@ public:
     return effective_particles_cnt * 2 < particles.size();
   }
 
-  /**
-   * Excludes some random particles from vector.
-   * Choosing is based on generation of random double and its comparation with sum of all weights of particles
-   * \param particles Input vector of pointers on Particle
-   * \return Vector of indexes of some chosen points
-   */
   std::vector<unsigned> resample(std::vector<ParticlePtr> particles) {
     // TODO: implement O(n) resampling from gmapping
     //double total_weight = 0;
@@ -89,21 +64,12 @@ public:
   }
 };
 
-/**
- * \brief Class managing vector of Particles and Resumpler
- */
 template <typename ParticleT>
 class ParticleFilter {
 private:
   using ParticlePtr = std::shared_ptr<ParticleT>;
 public: // methods
 
-
-  /**
-   * Constructor with parameters. Sets as default weight of each particle equal to \f$ \frac{1}{n} \f$
-   * \param p_ftry Pointer on Particle Factory
-   * \param n Amount of particles
-   */
   ParticleFilter(std::shared_ptr<ParticleFactory<ParticleT>> p_ftry,
                  unsigned n = 1) : _particle_supplier{p_ftry} {
     for (unsigned i = 0; i < n; i++) {
@@ -113,10 +79,6 @@ public: // methods
     }
   }
 
-  /**
-   * Realizes whether resample is requied and makes a resampling if it's necessary
-   * \return True if resampling has happened and False otherwise
-   */
   bool try_resample() {
     // TODO: heuristic with traveled distange, move to common sample_particles
     if (!_resampler.resampling_is_required(_particles)) {
@@ -142,18 +104,13 @@ public: // methods
     return true;
   }
 
-  /**
-   * Sets weights of all particles to be equal to their average
-   */
   void normalize_weights() {
     double total_weight = 0;
     for (auto &p : _particles) { total_weight += p->weight(); }
     for (auto &p : _particles) { p->set_weight(p->weight() / total_weight); }
   }
 
-  ///Getter of link on particles
   inline std::vector<ParticlePtr>& particles() { return _particles; }
-  ///Getter of constant link on particles
   inline const std::vector<ParticlePtr>& particles() const {
     return _particles;
   }

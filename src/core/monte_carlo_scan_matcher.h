@@ -1,8 +1,10 @@
 /**
  * \file
- * \brief Discribes the class of Scan matcher using Mote-Carlo method
- * There is class MonteCarloScanMatcher  derived from GridScanMatcher. Class contains pure virtual methods
- * The main method consists of loop that should realize the best position of robot that suits to data from laser scan
+ * \brief Defines the class of Scan matcher that uses Mote-Carlo method
+ * There is class MonteCarloScanMatcher  derived from GridScanMatcher. Class
+ * contains virtual methods that should be overwritten. The main method
+ * consists of loop that realizes the best position of robot that suits to data
+ * from laser scan
  */
 
 
@@ -21,18 +23,19 @@
 
 /**
  * \brief Scan Matcher that uses Mone Carlo Method
- * The focus of scan matcher is to compare a scan and a build map. In this class the method of comparation is based on Mone-Carlo method
- * 
+ * The focus of scan matcher is to compare a scan and a built map. In this
+ * class the method of comparsion is based on Mone-Carlo method
  */
 class MonteCarloScanMatcher : public GridScanMatcher {
 public:
   using ObsPtr = std::shared_ptr<GridScanMatcherObserver>;
 public:
+
   /**
-   * \brief Constructor with parameters.
+   * \brief Initializes the scan matcher with a certan scan cost estimator
    * \param estimator Current estimator of Scan Cost
-   * \param failed_iter Shows max amount of failed tries allowed
-   * \param max_iter Shows max amount of total tries allowed
+   * \param failed_iter Maximum amount of failed tries allowed
+   * \param max_iter Maximum amount of total tries allowed
    */
   MonteCarloScanMatcher(std::shared_ptr<ScanCostEstimator> estimator,
                         unsigned failed_iter, unsigned max_iter):
@@ -40,8 +43,8 @@ public:
     _failed_tries_limit(failed_iter), _total_tries_limit(max_iter) {}
 
   /**
-   * initiates estimation of scan after changing sample_pose.
-   * Calculates the position that best suits to a new scan. As better it suits as lower cost of scan.
+   * Initiates estimation of scan and calculates the position that best suits
+   * to a new scan. As better it fits as lower cost of scan.
    * \param init_pose The first approxiamtion of pose
    * \param scan Current scan
    * \param map Current GridMap
@@ -107,21 +110,20 @@ public:
 
 protected:
   /**
-   * Virtual function. Will change pose of robot relatively base_pose
+   * Generates the pose of a robot in a vicinity of a base pose
    * \param base_pose Basical pose of robot
    */
   virtual void sample_pose(RobotState &base_pose) = 0;
 
   /**
-   * Virtual fuction. Will be called when the better estimate is found
-   * \param sample_num Amount of tries that were complited to the current moment
+   * A callback that is invoked on the better estimate is found
+   * \param sample_num Amount of tries that were complited
    * \param sample_limit Totla amount of tries allowed
    */
   virtual unsigned on_estimate_update(unsigned sample_num,
                                       unsigned sample_limit) = 0;
 
 private:
-
   void do_for_each_observer(std::function<void(ObsPtr)> op) {
     for (auto &obs : GridScanMatcher::observers()) {
       if (auto obs_ptr = obs.lock()) {

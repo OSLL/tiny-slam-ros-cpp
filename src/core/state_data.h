@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Discribes some classes related to Robot
+ * \brief Defines some classes related to Robot
  * There are classes RobotState and World
  */
 
@@ -8,20 +8,23 @@
 #define __STATE_DATA_H
 
 /**
- * \brief Class showing robot pose. Cartesian coordinates anf angle of rotation
+ * \brief Defines robot position in Cartesian coordinates and angle of rotation
  */
 class RobotState {
 public: // methods
-  /// Default constructors. Sets roboy in (0,0) oriented as zero angle
+
+  /// Sets robot in (0,0) oriented as zero angle
   RobotState(): x(0), y(0), theta(0) {}
+
   /**
-   * Costructor with parameters. All parameters are requied
+   * Initializes a state of a robot with given parameters
    * \param x,y,theta position and orientation of robot
    */
   RobotState(double x, double y, double theta) : x(x), y(y), theta(theta) {}
 
   /**
-   * increments position of robot on \param d_x, d_y, d_theta
+   * Increase a state of a robot by given parameters.
+   * \param d_x, d_y, d_theta Delta of position of robot
    */
   void update(double d_x, double d_y, double d_theta) {
     // TODO: move update policy to Strategy.
@@ -39,12 +42,13 @@ public:
 
 // TODO: try to simplify template params
 /**
- * Class that knows everything about robot state, can update its position and handle observation
+ * The holder of robot's merged perceptions of an environment
  */
 template <typename ObservationType, typename MapType>
 class World {
 public:
   // data-in
+
   /**
    * Sets new location of robot
    * \param x,y,theta new coordinates of robot
@@ -52,18 +56,21 @@ public:
   virtual void update_robot_pose(double x, double y, double theta) {
     _pose.update(x, y, theta);
   }
-  /// virtual function that will handle observation depending on Observation type
+
+  /// Updates a map according to ObservationType data
   virtual void handle_observation(ObservationType&) = 0;
 
   // data-out
-  /// Getter of this world
+  /// Returns this world
   virtual const World<ObservationType, MapType>& world() const { return *this; }
-  /// Getter of current robot pose
+
+  /// Returns the robot pose
   virtual const RobotState& pose() const { return _pose; }
-  /// Getter of map
+
+  /// Returns the map
   virtual const MapType& map() const = 0;
 private:
-  RobotState _pose; ///< Robot pose
+  RobotState _pose;
 };
 
 #endif
