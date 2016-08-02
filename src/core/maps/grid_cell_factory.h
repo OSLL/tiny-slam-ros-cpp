@@ -2,7 +2,7 @@
  * \file
  * \brief The following classes are defined in this file
  * GridCell - base class for GridMap's cell;
- * GridCellFactory - abstract base class which subclasses create a new cell of specific type.
+ * GridCellFactory - abstract base class which subclasses create a new cell of a specific type.
  */
 
 #ifndef __GRID_CELL_FACTORY_H
@@ -26,7 +26,7 @@ public:
  */
   virtual void set_value(const Occupancy &occ, double quality = 1.0) = 0;
 
-  // TODO: move to gmaping
+  // TODO: move to gmapping
   virtual double obst_x() const { return 0; }
   virtual double obst_y() const { return 0; }
 };
@@ -38,7 +38,7 @@ public:
 class GridCellFactory {
 public:
 /**
- * \brief Creates a new cell of specific type which selected by subclasses of this base class.
+ * \brief Creates a new cell of a specific type which selected by subclasses of this base class.
  * \return Pointer to GridCell.
  */
   virtual std::shared_ptr<GridCell> create_cell() = 0;

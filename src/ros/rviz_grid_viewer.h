@@ -12,10 +12,14 @@
 
 /**
  * \brief The class publishes information about robot's map and location
- *  in ROS-compatible format so it can be viewed by rviz.
+ *  in ROS-compatible format so it can be shown by rviz.
  */
 class RvizGridViewer {
 public: // method
+/**
+ * Initializes map and robot's position publisher.
+ * \param pub Map publisher to ROS.
+ */
   RvizGridViewer(ros::Publisher pub):
     _map_pub(pub) {}
 
