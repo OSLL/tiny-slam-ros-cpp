@@ -7,7 +7,7 @@ class TinyScanCostEstimator : public ScanCostEstimator {
 public:
   virtual double estimate_scan_cost(const RobotState &pose,
                                     const TransformedLaserScan &scan,
-                                    GridMap &map,
+                                    const GridMap &map,
                                     double min_cost) override {
     double cost = 0;
     for (const auto &sp : scan.points) {
@@ -19,10 +19,6 @@ public:
       double y_world = pose.y + sp.range * std::sin(sp.angle+pose.theta);
 
       DiscretePoint2D cell_coord = map.world_to_cell(x_world, y_world);
-      if (!map.has_cell(cell_coord)) {
-        cost += 1.0;
-        continue;
-      }
       double cell_value = map.cell_value(cell_coord);
       cost += 1.0 - cell_value;
       if (min_cost < cost) {

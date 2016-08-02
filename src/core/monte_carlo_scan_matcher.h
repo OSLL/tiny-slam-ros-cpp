@@ -21,7 +21,7 @@ public:
 
   virtual double process_scan(const RobotState &init_pose,
                       const TransformedLaserScan &scan,
-                      GridMap &map,
+                      const GridMap &map,
                       RobotState &pose_delta) override {
     do_for_each_observer([init_pose, scan, map](ObsPtr obs) {
       obs->on_matching_start(init_pose, scan, map);
