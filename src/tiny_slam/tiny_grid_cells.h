@@ -34,11 +34,9 @@ public:
    */
   double value() const override { return _prob; }
   /*!
-   * Merges a given probability with stored one using a quality as a weight.
-   * \param[in] value   - value of probability \f$p_{new}\f$.
+   * Merges a given probability with the stored one using a quality as a weight.
+   * \param[in] value   - a value of the probability \f$p_{new}\f$.
    * \param[in] quality - the quality of the experiment value \f$\alpha\f$.
-   * \return The new probability value of the current cell based on
-   *         the previous probability and new one built from scanner's data.
    */
   void set_value(const Occupancy &value, double quality) override {
     _prob = (1.0 - quality) * _prob + quality * value.prob_occ;
@@ -51,7 +49,7 @@ private:
  * \brief A strategy creates cells of the base tiny model (BaseTinyCell).
  *
  * This class is inherited from an abstract cell factory
- * and generated cells with the base rule of the probability calculation.
+ * and generates cells with the base rule of the probability calculation.
  */
 class TinyBaseCellFactory : public GridCellFactory {
 public:
@@ -83,12 +81,10 @@ public:
    */
   double value() const override { return _n == 0 ? -1 : _cnt / _n; }
   /*!
-   * Merges a given probability with stored one as an average value
+   * Merges a given probability with the stored one as an average value
    * of all given probabilities also using a quality as a weight.
    * \param[in] value   - value of probability \f$p_{new}\f$.
    * \param[in] quality - the quality of the experiment value \f$\alpha\f$.
-   * \return The new value of probability of current cell based on
-   *         the previous probability and new one built from scanner's data.
    */
   void set_value (const Occupancy &value, double quality) override {
     _n += 1;
@@ -103,7 +99,7 @@ private:
  *        calculation rule (AvgTinyCell).
  *
  * This class is inherited from an abstract cell factory
- * and generated cells with the average rule of calculation probability.
+ * and generates cells with the average rule of calculation probability.
  */
 class TinyAvgCellFactory : public GridCellFactory {
 public:

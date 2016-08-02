@@ -19,10 +19,8 @@ public:
   /*!
    * Initializes the scan matcher.
    * \param[in] cost_estimator - the type of estimator for the robot location.
-   * \param[in] bad_iter       - max amount of failed iterations while
-   *                             it is not found a better place for the robot.
-   * \param[in] max_iter       - max amount of all iterations while
-   *                             it is tried to find a fine place for the robot.
+   * \param[in] bad_iter, max_iter - see <b>failed_iter</b>, <b>max_iter</b> in
+   *                                 MonteCarloScanMatcher
    * \param[in] sigma_coord, sigma_angle - the \f$\sigma\f$ value of a normal
    *                                       distribution for random variables
    *                   (\f$\Delta x\f$, \f$\Delta y\f$ and \f$\Delta \theta\f$).

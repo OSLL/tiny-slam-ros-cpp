@@ -13,7 +13,7 @@
  * \brief The TinySLAM access point. SLAM users are supposed to work with it.
  *
  * Responsibilities:\n
- *   Handles data came from a scanner and locates viewer.\n
+ *   Handles data came from a scanner and locates a viewer.\n
  *   Connects internal frameworks components to a single tinySLAM method
  *   (the fascade pattern is applied).
  *
@@ -26,9 +26,9 @@ public: // methods
   /*!
    * Initializes the tinySLAM method.
    * \param[in] gcs           - configuration of cells in a map (cell strategy).
-   * \param[in] params        - internal parameters tinySLAM.
-   * \param[in] skip_max_vals - how are the values that exceed the max one
-   *                            specific to the laser scanner handled.
+   * \param[in] params        - the tinySLAM parameters (see TinyWorldParams)
+   * \param[in] skip_max_vals - whether the values that exceed the max one
+   *                            specific to the laser scanner should be skipped.
    */
   TinySlamFascade(std::shared_ptr<GridCellStrategy> gcs,
                   const TinyWorldParams &params,
@@ -47,7 +47,7 @@ public: // methods
    * Updates the map and the robot pose with scan data.\n
    * The update is done by a prediction-correction approach.
    * (the odometry is used for a prediction, the laser scan - for a correction).
-   * \param[in] scan - data from the robot's scanner has got just a moment.
+   * \param[in] scan - data from the robot's scanners (odnometry + laser scan).
    */
   virtual void handle_laser_scan(TransformedLaserScan &scan) {
     _world->update_robot_pose(scan.d_x, scan.d_y, scan.d_yaw);

@@ -24,8 +24,8 @@ struct TinyWorldParams {
 /*!
  * \brief The class implements the tinySLAM-specific map update logic.
  *
- * There is an robot state handle based on used scanner matcher rules and
- * laser data handle based on the algorithm from the paper with a wall blur.
+ * There is an robot state correction based on used scanner matcher rules and
+ * the map correction based on the algorithm from the paper with a wall blur.
  */
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
@@ -42,9 +42,9 @@ public:
 
   /*!
    * Initialize the world to produce tiny SLAM.
-   * \param[in] gcs    - shared pointer to a strategy for the each cell.
+   * \param[in] gcs    - a shared pointer to a strategy for the each cell.
    *                   (how does estimate the occupancy, cost of laser data etc)
-   * \param[in] params - the initial values of trust for laser data.
+   * \param[in] params - the initial values for tinySLAM (see TinyWorldParams).
    */
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,
             const TinyWorldParams &params) :
@@ -76,10 +76,11 @@ public:
    * Updates the map with a given laser scan point.\n
    * Estimates the occupancy of the cell with an obstacle
    * (beam_end_x, beam_end_y).\n And after there is a "wall blur".
-   * \param[in] map - all built map.
+   * \param[in] map - the map of the environment.
    * \param[in] laser_x,laser_y - the beginning coordinates of the laser ray.
    * \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray
-   * \param[in] is_occ - the parameter which shows is this cell occupied or not.
+   * \param[in] is_occ - the parameter which shows
+   *                     whether this cell is occupied or not.
    * \param[in] quality - the quality of the laser scanner.
    */
   virtual void handle_scan_point(GridMap &map,
@@ -115,7 +116,7 @@ public:
   }
 
   /*!
-   * Returns the scan matcher used for the robot pose correction.
+   * Returns a pointer to the scan matcher used for the robot pose correction.
    */
   std::shared_ptr<GridScanMatcher> scan_matcher() {
     return _scan_matcher;

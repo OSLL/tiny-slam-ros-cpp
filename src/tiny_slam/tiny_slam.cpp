@@ -30,7 +30,7 @@
 /*!
  * \brief Derived class from GridScanMatcherObserver to publish the robot pose.
  *
- * This class provides functions to publish the robot pose in a ros topic.
+ * This class provides functions to publish the robot pose in a ROS topic.
  */
 class PoseScanMatcherObserver : public GridScanMatcherObserver {
 public:
