@@ -17,15 +17,14 @@ struct TinyWorldParams {
   double localized_scan_quality, raw_scan_quality;
   const double SIG_XY;
   const double SIG_TH;
-  const double BAD_LMT;
-  const double TOT_LMT;
+  const unsigned BAD_LMT;
+  const unsigned TOT_LMT;
   const double HOLE_WIDTH;
 
-  TinyWorldParams(double const_params[]): SIG_XY(const_params[0]),
-                                          SIG_TH(const_params[1]),
-                                          BAD_LMT(const_params[2]),
-                                          TOT_LMT(const_params[3]),
-                                          HOLE_WIDTH(const_params[4]){}
+  TinyWorldParams(double sig_XY, double sig_T, unsigned lim_bad,
+                  unsigned lim_totl, double hole_width) :
+    SIG_XY(sig_XY), SIG_TH(sig_T), BAD_LMT(lim_bad), TOT_LMT(lim_totl),
+    HOLE_WIDTH(hole_width) {}
 };
 
 class TinyWorld : public LaserScanGridWorld {
@@ -34,8 +33,9 @@ public:
 public:
 
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,
-            const TinyWorldParams &params) :
-    LaserScanGridWorld(gcs), _gcs(gcs), _params(params),
+            const TinyWorldParams &params,
+            const GridMapParams &init_map_params) :
+    LaserScanGridWorld(gcs, init_map_params), _gcs(gcs), _params(params),
     _scan_matcher(new TinyScanMatcher(_gcs->cost_est(),
                                       params.BAD_LMT, params.TOT_LMT,
                                       params.SIG_XY, params.SIG_TH)) {}

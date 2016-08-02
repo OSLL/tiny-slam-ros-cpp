@@ -14,8 +14,9 @@ public: //types
   using Point = DiscretePoint2D;
 public: // methods
 
-  LaserScanGridWorld(std::shared_ptr<GridCellStrategy> gcs) :
-    _map(gcs->cell_factory()) {}
+  LaserScanGridWorld(std::shared_ptr<GridCellStrategy> gcs,
+                     const GridMapParams &init_params) :
+    _map(gcs->cell_factory(), init_params) {}
 
   virtual void handle_observation(TransformedLaserScan &scan) {
     const RobotState& pose = World<TransformedLaserScan, MapType>::pose();

@@ -16,8 +16,10 @@ public: // methods
   // TODO: copy ctor, move ctor, dtor
   TinySlamFascade(std::shared_ptr<GridCellStrategy> gcs,
                   const TinyWorldParams &params,
+                  const GridMapParams &init_map_params,
                   bool skip_max_vals):
-    LaserScanObserver(skip_max_vals), _world(new TinyWorld(gcs, params)) {}
+    LaserScanObserver(skip_max_vals),
+    _world(new TinyWorld(gcs, params, init_map_params)) {}
 
   void set_viewer(std::shared_ptr<RvizGridViewer> viewer) {
     _viewer = viewer;

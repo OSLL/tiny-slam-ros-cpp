@@ -79,15 +79,25 @@ bool init_skip_exceeding_lsr() {
   return param_value;
 }
 
-TinyWorldParams init_common_world_params(){
-  double array_of_params[5];
-  ros::param::param<double>("~sigma_XY_MonteCarlo",    array_of_params[0],0.2);
-  ros::param::param<double>("~sigma_theta_MonteCarlo", array_of_params[1],0.1);
-  ros::param::param<double>("~limit_of_bad_attempts",  array_of_params[2],20);
-  ros::param::param<double>("~limit_of_total_attempts",array_of_params[3],100);
-  ros::param::param<double>("~hole_width",             array_of_params[4],1.5);
+TinyWorldParams init_common_world_params() {
+  double sig_XY, sig_T, width;
+  int lim_bad, lim_totl;
+  ros::param::param<double>("~sigma_XY_MonteCarlo", sig_XY, 0.2);
+  ros::param::param<double>("~sigma_theta_MonteCarlo", sig_T, 0.1);
+  ros::param::param<int>("~limit_of_bad_attempts", lim_bad, 20);
+  ros::param::param<int>("~limit_of_total_attempts", lim_totl, 100);
+  ros::param::param<double>("~hole_width", width,1.5);
 
-  return TinyWorldParams(array_of_params);
+  return TinyWorldParams(sig_XY, sig_T, lim_bad, lim_totl, width);
+}
+
+GridMapParams init_grid_map_params() {
+  GridMapParams params;
+  ros::param::param<double>("~map_height_in_meters", params.height, 20);
+  ros::param::param<double>("~map_width_in_meters", params.width, 20);
+  ros::param::param<double>("~map_meters_per_cell", params.meters_per_cell,
+                                                                         0.1);
+  return params;
 }
 
 int main(int argc, char** argv) {
@@ -95,18 +105,23 @@ int main(int argc, char** argv) {
 
   ros::NodeHandle nh;
   TinyWorldParams params = init_common_world_params();
+  GridMapParams grid_map_params = init_grid_map_params();
   std::shared_ptr<ScanCostEstimator> cost_est{new TinyScanCostEstimator()};
   std::shared_ptr<GridCellStrategy> gcs{new GridCellStrategy{
     init_cell_factory(params), cost_est, init_occ_estimator()}};
   std::shared_ptr<TinySlamFascade> slam{new TinySlamFascade(gcs,
-    params, init_skip_exceeding_lsr())};
+    params, grid_map_params, init_skip_exceeding_lsr())};
 
   TopicWithTransform<sensor_msgs::LaserScan> scan_observer(nh,
       "laser_scan", "odom_combined");
   scan_observer.subscribe(slam);
 
+  double rviz_map_publishing_rate;
+  ros::param::param<double>("~map_publishing_rate_for_rviz",
+                            rviz_map_publishing_rate, 5);
   std::shared_ptr<RvizGridViewer> viewer(
-    new RvizGridViewer(nh.advertise<nav_msgs::OccupancyGrid>("/map", 5)));
+    new RvizGridViewer(nh.advertise<nav_msgs::OccupancyGrid>("/map", 5),
+                       rviz_map_publishing_rate));
   slam->set_viewer(viewer);
 
 #ifdef RVIZ_DEBUG
