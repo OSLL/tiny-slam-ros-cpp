@@ -85,7 +85,7 @@ public:
 
   /**
    * Returns a reference on cell by the point.
-   * \param cell_coord Point with coordinates onto a cell of the grid map
+   * \param cell_coord Point with coordinates of requied cell in Grid Map.
    */
   Cell &cell(const DiscretePoint2D& cell_coord) {
     return _cells[cell_coord.y][cell_coord.x];
@@ -101,8 +101,8 @@ public:
   }
 
   /**
-   * Projects coordinates in meters to world made of cells and returns
-   * coordinates of corresponding cell.
+   * Projects coordinates in meters onto a cell of the grid map.
+   * \return The cell point corresponding to a given coordinates.
    */
   DiscretePoint2D world_to_cell(double x, double y) const {
     int cell_x = std::floor(_width /2 + x/_m_per_cell);
