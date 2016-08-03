@@ -20,7 +20,7 @@
 class GridScanMatcherObserver {
 public:
   /**
-   * A callback that is invoked on scan matching start.
+   * A callback invoked on scan matching start.
    * \param RobotState Pose of a robot.
    * \param TransformedLaserScan A laser scan with a transformation.
    * \param GridMap A grid map that is used by the matcher.
@@ -30,7 +30,8 @@ public:
                                  const GridMap &) {}    /*map*/
 
   /**
-   * A callback that is invoked on a corrected robot pose evaluation.
+   * A callback invoked when a corrected pose better suits to a given scan than
+   * the previously estimated one.
    * \param RobotState Pose of a robot.
    * \param TransformedLaserScan A laser scan with a transformation.
    */
@@ -39,7 +40,7 @@ public:
                             double) {};                  /*score*/
 
   /**
-   * A callback that is invoked on updating a pose of robot.
+   * A callback invoked on updating a pose of robot.
    * \param RobotState Pose of a robot.
    * \param TransformedLaserScan A laser scan with a transformation.
    */
@@ -48,7 +49,7 @@ public:
                               double) {};                    /*score*/
 
   /**
-   * A callback that is invoked when scan matching is done.
+   * A callback invoked when scan matching is done.
    * \param RobotState Pose of a robot.
    */
   virtual void on_matching_end(const RobotState &, /*delta*/
@@ -57,13 +58,13 @@ public:
 
 /**
  * \brief Interface of Estimator of Scan Cost.
- * Cost - is a number that complies to a scan; as lower cost than better scan.
+ * Cost - is a number that complies to a scan; the lower cost the better scan.
  */
 class ScanCostEstimator {
 public:
 
   /**
-   * A callback that is invoked on estimating the cost of scan.
+   * A callback invoked on estimating the cost of scan.
    * \param pose Pose of a robot.
    * \param scan A laser scan with a transformation.
    * \param map A grid map that is used by the matcher.
@@ -75,7 +76,7 @@ public:
 };
 
 /**
- * \brief  Class that matches scans.
+ * \brief Class that matches scans.
  * Performes scan adjustment by altering robot pose in order to maximize
  * correspondence between the scan and a grid map; the rule of correspondence
  * computation is defined in ScanCostEstimator subclasses.
@@ -84,8 +85,9 @@ class GridScanMatcher {
 public:
   GridScanMatcher(std::shared_ptr<ScanCostEstimator> estimator) :
     _cost_estimator(estimator) {}
+
   /**
-   * A callback that is invoked on processing of scan.
+   * A callback invoked on scan processing.
    * \param init_pose Pose of a robot.
    * \param scan A laser scan with a transformation.
    * \param map A grid map that is used by the matcher.
@@ -96,15 +98,21 @@ public:
                               const GridMap &map,
                               RobotState &pose_delta) = 0;
 
-  /// A callback that is invoked on reset of scan matcher state.
+  /// A callback invoked on reset of scan matcher state.
   virtual void reset_state() {};
 
-  /// Adds an observer.
+  /**
+   * Adds an observer.
+   * \param obs Shared pointer to an observer to be added.
+   */
   void subscribe(std::shared_ptr<GridScanMatcherObserver> obs) {
     _observers.push_back(obs);
   }
 
-  /// Removes an observer.
+  /**
+   * Removes an observer.
+   * \param obs Shared pointer to an observer to be removed
+   */
   void unsubscribe(std::shared_ptr<GridScanMatcherObserver> obs) {
     // TODO: replace with more ideomatic C++
     std::vector<std::weak_ptr<GridScanMatcherObserver>> new_observers;

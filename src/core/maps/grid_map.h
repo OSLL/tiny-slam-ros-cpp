@@ -21,7 +21,7 @@ public:
 public:
   // TODO: cp, mv ctors, dtor
   /**
-   * Creates a grid map which cells' type is defined by a given factory.
+   * Creates a GridCell based map.
    * \param cell_factory Factory that creates requied type of Cell.
    */
   GridMap(std::shared_ptr<GridCellFactory> cell_factory):
@@ -59,27 +59,42 @@ public:
     _cells[cell_coord.y][cell_coord.x]->set_value(new_value, quality);
   }
 
-  /// Returns the value of cell.
+  /**
+   * Returns the probability of cell to be occupied.
+   * \param cell_coord Point with coordinates of requied cell in Grid Map.
+   */
   double cell_value(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x]->value();
   }
 
-  /// Returns a constant reference on cell by the point.
+  /**
+   * Returns a constant reference on cell by the point.
+   * \param cell_coord Point with coordinates of requied cell in Grid Map.
+   */
   const Cell &cell(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x];
   }
 
-  /// Returns a cell by the coordinates.
+  /**
+   * Returns a cell by the coordinates.
+   * \param x,y Coordinates of a cell in Grid Map in cartesian coordinates.
+   */
   const Cell &cell(int x, int y) const {
       return _cells[x][y];
   }
 
-  /// Returns a reference on cell by the point.
+  /**
+   * Returns a reference on cell by the point.
+   * \param cell_coord Point with coordinates onto a cell of the grid map
+   */
   Cell &cell(const DiscretePoint2D& cell_coord) {
     return _cells[cell_coord.y][cell_coord.x];
   }
 
-  /// Defines whether the point is contained in a map.
+  /**
+   * Defines whether the point is contained in a map.
+   * \param cell_coord Point with coordinates of requied cell in Grid Map.
+   */
   bool has_cell(const DiscretePoint2D& cell_coord) const {
     return 0 <= cell_coord.x && cell_coord.y < _width &&
            0 <= cell_coord.y && cell_coord.y < _height;
@@ -99,7 +114,10 @@ public:
   /// Returnes the scale.
   double cell_scale() const { return _m_per_cell; }
 
-  /// Returns the bounds of the world.
+  /**
+   * Returns the bounds of the cell in the World.
+   * \param cell_coord Point with coordinates of requied cell in Grid Map.
+   */
   Rectangle world_cell_bounds(const DiscretePoint2D &cell_coord) {
     Rectangle bounds;
     bounds.bot = (cell_coord.y + _height/2) * _m_per_cell;

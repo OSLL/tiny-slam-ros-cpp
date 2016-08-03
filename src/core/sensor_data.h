@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Defines some structures related to Scan.
+ * \brief Defines some structures related to data obtained from sensors.
  * There are structures ScanPoint and TransformedLaserScan.
  */
 

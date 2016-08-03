@@ -24,7 +24,7 @@ struct Rectangle {
 
   /**
    * Creates a rectangle where all contained points are bounded in limits
-   * l < x < r, b < y <t.
+   * l < x < r, b < y < t.
    * \param b Bottom of a rectangle.
    * \param t Top of rectangle.
    * \param l Left side of rectangle.
@@ -84,7 +84,7 @@ public:
   /**
    * Calculates distance from this point to a given one.
    * \param pt End point to calculate distance.
-   * \return Value of a distance between this point and end point.
+   * \return Distance between this point and end point.
    */
   double dist_sq(const DiscretePoint2D &pt) const {
     return std::pow(x - pt.x, 2) + std::pow(y - pt.y, 2);
@@ -112,8 +112,8 @@ private:
   /**
    * Creates a line segment on a grid with a Bresenham algorithm;
    * if the World consists of cells, it is required to transform coordinates
-   * of segment in a view that is useful for this representation of world;
-   * the result is put in vector (class data member).
+   * of segment in a view that is useful for this representation of the world;
+   * the result can be obtained by points() method.
    * \param x1,y1 Coordinates of the beginning of a line segment.
    * \param x2,y2 Coordinates of the ending of a line segment.
    */

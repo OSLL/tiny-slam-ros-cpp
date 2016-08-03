@@ -1,6 +1,6 @@
 /**
  * \file
- * \brief Defines some classes related to Robot.
+ * \brief Defines some classes related to a robot state.
  * There are classes RobotState and World.
  */
 
@@ -23,7 +23,7 @@ public: // methods
   RobotState(double x, double y, double theta) : x(x), y(y), theta(theta) {}
 
   /**
-   * Updates the state of a robot by given details.
+   * Updates the state of a robot by given deltas.
    * \param d_x, d_y, d_theta Delta of position of robot.
    */
   void update(double d_x, double d_y, double d_theta) {
