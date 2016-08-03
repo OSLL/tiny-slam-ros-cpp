@@ -8,8 +8,8 @@
 #include "cell_occupancy_estimator.h"
 
 /*!
- * \brief A strategy that estimates a grid cell's occupancy based on how does
- *        a laser beam pass through the cell.
+ * \brief A strategy that estimates a grid cell's occupancy based on how
+ *        a laser beam passes through the cell.
  *
  * The estimation is based on a ratio between cell's chunks produced by
  * cutting the cell with a laser beam.
@@ -76,7 +76,7 @@ public: //methods
     CellOccupancyEstimator(occ, empty) {}
 
   /*!
-   * Finds the probability of a cell to be occupied based on chunk's areas
+   * Finds the probability of a cell to be occupied based on chunk's areas.
    */
   virtual Occupancy estimate_occupancy(const Beam &beam,
                                        const Rectangle &cell_bnds,

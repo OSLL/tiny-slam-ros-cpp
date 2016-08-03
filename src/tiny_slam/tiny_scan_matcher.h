@@ -7,7 +7,7 @@
 #include "tiny_scan_cost_estimator.h"
 
 /*!
- * \brief The scan matcher based on Monte Carlo simulation.
+ * \brief The scan matcher based on the Monte Carlo simulation.
  *
  * The simulation of the robot pose by shifting it on a random vector and
  * rotation by a random angle. The vector distribution is dynamically adjusted.
@@ -22,7 +22,7 @@ public:
    * \param[in] bad_iter, max_iter - see <b>failed_iter</b>, <b>max_iter</b> in
    *                                 MonteCarloScanMatcher
    * \param[in] sigma_coord, sigma_angle - the \f$\sigma\f$ value of a normal
-   *                                       distribution for random variables
+   *                                      distribution for the random variables.
    *                   (\f$\Delta x\f$, \f$\Delta y\f$ and \f$\Delta \theta\f$).
    */
   TinyScanMatcher(ScePtr cost_estimator, unsigned bad_iter, unsigned max_iter,

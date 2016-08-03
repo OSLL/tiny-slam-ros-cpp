@@ -25,7 +25,7 @@ struct TinyWorldParams {
  * \brief The class implements the tinySLAM-specific map update logic.
  *
  * There is an robot state correction based on used scanner matcher rules and
- * the map correction based on the algorithm from the paper with a wall blur.
+ * the map update based on the algorithm from the paper with a wall blur.
  */
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
@@ -41,9 +41,9 @@ public:
 public:
 
   /*!
-   * Initialize the world to produce tiny SLAM.
+   * Initializes the world to produce tiny SLAM.
    * \param[in] gcs    - a shared pointer to a strategy for the each cell.
-   *                   (how does estimate the occupancy, cost of laser data etc)
+   *                  (how the occupancy, cost of laser data etc are estimated).
    * \param[in] params - the initial values for tinySLAM (see TinyWorldParams).
    */
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,
@@ -75,7 +75,7 @@ public:
   /*!
    * Updates the map with a given laser scan point.\n
    * Estimates the occupancy of the cell with an obstacle
-   * (beam_end_x, beam_end_y).\n And after there is a "wall blur".
+   * (beam_end_x, beam_end_y).\n And after that there is a "wall blur".
    * \param[in] map - the map of the environment.
    * \param[in] laser_x,laser_y - the beginning coordinates of the laser ray.
    * \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray

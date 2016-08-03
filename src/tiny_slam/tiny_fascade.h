@@ -25,8 +25,9 @@ public: // methods
   // TODO: copy ctor, move ctor, dtor
   /*!
    * Initializes the tinySLAM method.
-   * \param[in] gcs           - configuration of cells in a map (cell strategy).
-   * \param[in] params        - the tinySLAM parameters (see TinyWorldParams)
+   * \param[in] gcs           - a configuration of cells in a map
+   *                            (a cell strategy).
+   * \param[in] params        - the tinySLAM parameters (see TinyWorldParams).
    * \param[in] skip_max_vals - whether the values that exceed the max one
    *                            specific to the laser scanner should be skipped.
    */
@@ -37,7 +38,7 @@ public: // methods
 
   /*!
    * Sets a viewer component that is notified by the pose and the map updates.
-   * \param[in] viewer - new value of the data member viewer.
+   * \param[in] viewer - a new value of the data member viewer.
    */
   void set_viewer(std::shared_ptr<RvizGridViewer> viewer) {
     _viewer = viewer;
@@ -61,7 +62,7 @@ public: // methods
 
   /*!
    * Registers a scan matcher observer.
-   * \param[in] obs - new scanner matcher observer.
+   * \param[in] obs - a new scanner matcher observer.
    */
   void add_scan_matcher_observer(ScanMatcherObsPtr obs) {
     _world->scan_matcher()->subscribe(obs);

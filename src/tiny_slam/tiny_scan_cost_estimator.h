@@ -19,7 +19,7 @@ public:
    * \param[in] pose     - the robot pose in the space.
    * \param[in] scan     - data from the robot's scanner.
    * \param[in] map      - the environment map built on the previous steps.
-   * \param[in] min_cost - the minimum found cost for the scan at the moment.
+   * \param[in] min_cost - the minimum found cost of the scan at the moment.
    * \return The value cost of the given scan.
    */
   virtual double estimate_scan_cost(const RobotState &pose,

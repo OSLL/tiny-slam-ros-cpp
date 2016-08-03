@@ -6,7 +6,7 @@
  *
  * The classes inherited from GridCell implements different approaches of a
  * grid cell's occupancy maintaining.\n
- * Another ones inherited from GridCellFactory presents factories to
+ * The another ones inherited from GridCellFactory presents factories to
  * produce the cells meant before.
  */
 #ifndef __TINY_GRID_CELLS_H
@@ -54,7 +54,7 @@ private:
 class TinyBaseCellFactory : public GridCellFactory {
 public:
   /*!
-   * Creates an instance of BaseTinyCell.
+   * Creates a pointer to an instance of BaseTinyCell.
    */
   std::shared_ptr<GridCell> create_cell() override {
     return std::shared_ptr<GridCell>(new BaseTinyCell());
@@ -73,7 +73,7 @@ public:
 class AvgTinyCell : public GridCell {
 public:
   /*!
-   * Sets the value of the probability \f$p_0=0\f$ and \f$n=0\f$.
+   * Sets the values of the probability \f$p_0=0\f$ and \f$n=0\f$.
    */
   AvgTinyCell(): _cnt(0), _n(0) {}
   /*!
@@ -83,7 +83,7 @@ public:
   /*!
    * Merges a given probability with the stored one as an average value
    * of all given probabilities also using a quality as a weight.
-   * \param[in] value   - value of probability \f$p_{new}\f$.
+   * \param[in] value   - a value of the probability \f$p_{new}\f$.
    * \param[in] quality - the quality of the experiment value \f$\alpha\f$.
    */
   void set_value (const Occupancy &value, double quality) override {
@@ -99,12 +99,12 @@ private:
  *        calculation rule (AvgTinyCell).
  *
  * This class is inherited from an abstract cell factory
- * and generates cells with the average rule of calculation probability.
+ * and generates cells with the average rule of the probability calculation.
  */
 class TinyAvgCellFactory : public GridCellFactory {
 public:
   /*!
-   * Creates an instance of AvgTinyCell.
+   * Creates a pointer to an instance of AvgTinyCell.
    */
   std::shared_ptr<GridCell> create_cell() override {
     return std::shared_ptr<GridCell>(new AvgTinyCell());
