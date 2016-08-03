@@ -1,7 +1,7 @@
 /**
  * \file
- * \brief Defines some simple geometry structs and classes
- * There are struct Rectangle, struct DiscretePoint2D, class DiscreteLine2D
+ * \brief Defines some simple geometry structs and classes.
+ * There are struct Rectangle, struct DiscretePoint2D, class DiscreteLine2D.
  */
 
 #ifndef __GEOMETRY_UTILS_H
@@ -15,76 +15,76 @@
   (std::abs((a) - (b)) < 0.0001)
 
 /**
- * \brief Defines an axis-aligned rectangle
+ * \brief Defines an axis-aligned rectangle.
  */
 struct Rectangle {
 
-  ///Creates a rectangle with zero area in point (0,0)
+  ///Creates a rectangle with zero area in point (0,0).
   Rectangle() : Rectangle(0, 0, 0, 0) {}
 
   /**
    * Creates a rectangle where all contained points are bounded in limits
-   * l < x < r, b < y <t
-   * \param b Bottom of a rectangle
-   * \param t Top of rectangle
-   * \param l Left side of rectangle
-   * \param r Right side of rectangle
+   * l < x < r, b < y <t.
+   * \param b Bottom of a rectangle.
+   * \param t Top of rectangle.
+   * \param l Left side of rectangle.
+   * \param r Right side of rectangle.
    */
   Rectangle(double b, double t, double l, double r) :
     bot(b), top(t), left(l), right(r) {}
 
   /**
-   * Calculates whether a rectangle contains a point
-   * \param x,y Coordinates of a target point
-   * \return Returns True if rectangle contains a point and False otherwise
+   * Tests whether a rectangle contains a point.
+   * \param x,y Coordinates of a target point.
+   * \return Returns True if rectangle contains a point and False otherwise.
    */
   bool does_contain(double x, double y) const {
     return ((bot < y) && (y < top)) && ((left < x) && (x < right));
   }
 
   /**
-   * Calculates an area of a rectangle
-   * \return Value of an area
+   * Returns an area of a rectangle.
+   * \return Value of an area.
    */
   double area() const {
     return (top - bot)*(right - left);
   }
 
-  double bot,   ///< Bottom of a rectangle
-         top,   ///< Top of a rectangle
-         left,  ///< Left side of a rectangle
-         right; ///< Right size of a rectangle
+  double bot,   ///< Bottom of a rectangle.
+         top,   ///< Top of a rectangle.
+         left,  ///< Left side of a rectangle.
+         right; ///< Right size of a rectangle.
 };
 
 /**
- * \brief Defines a point with integer coordinates on a plane
+ * \brief Defines a point with integer coordinates on a plane.
  */
 struct DiscretePoint2D {
 public:
 
   /**
-   * Initializes a point in cartesian coordinates
-   * \param x_coord,y_coord Coordinates of a point in a plane
+   * Initializes a point in cartesian coordinates.
+   * \param x_coord,y_coord Coordinates of a point on a plane.
    */
   DiscretePoint2D(int x_coord, int y_coord):
     x{x_coord}, y{y_coord} {}
   // TODO: mv (!!), cpy ctors
   int x, y; ///< Coordinates of point
 
-  /// Operator of points summation by element wise addition
+  /// Operator of points summation by element-wise addition.
   DiscretePoint2D operator+(const DiscretePoint2D &p) const {
     return DiscretePoint2D(x + p.x, y + p.y);
   }
 
-  /// Returns additive inverse of the point
+  /// Returns additive inverse of the point.
   DiscretePoint2D operator-() const {
     return DiscretePoint2D(-x, -y);
   }
 
   /**
-   * Calculates distance from current point to a given one
-   * \param pt Target point to calculate distance
-   * \return Value of a distance between current point and target point
+   * Calculates distance from this point to a given one.
+   * \param pt End point to calculate distance.
+   * \return Value of a distance between this point and end point.
    */
   double dist_sq(const DiscretePoint2D &pt) const {
     return std::pow(x - pt.x, 2) + std::pow(y - pt.y, 2);
@@ -92,16 +92,16 @@ public:
 };
 
 /**
- * \brief Defines a line segment on a plane
+ * \brief Defines a line segment on a plane.
  */
 class DiscreteLine2D {
   using Point = DiscretePoint2D;
 public: // methods
 
   /**
-   * Initializes a segment with end points
-   * \param start Beginning of a segment
-   * \param end Ending of a segment
+   * Initializes a segment with end points.
+   * \param start Beginning of a segment.
+   * \param end Ending of a segment.
    */
   DiscreteLine2D(const Point &start, const Point &end) {
     generatePointsWithBresenham(start.x, start.y, end.x, end.y);
@@ -110,12 +110,12 @@ public: // methods
 private:
 
   /**
-   * Creates a line segment on a grid with a Bresenham algorythm
-   * In case that the World consists of cells, it is required to transform
-   * coordinates of segment in a view that is useful for this representation of
-   * world. The result is put in vector (class data member)
-   * \param x1,y1 Coordinates of the beginning of a line segment
-   * \param x2,y2 Coordinates of the ending of a line segment
+   * Creates a line segment on a grid with a Bresenham algorithm;
+   * if the World consists of cells, it is required to transform coordinates
+   * of segment in a view that is useful for this representation of world;
+   * the result is put in vector (class data member).
+   * \param x1,y1 Coordinates of the beginning of a line segment.
+   * \param x2,y2 Coordinates of the ending of a line segment.
    */
   void generatePointsWithBresenham(int x1, int y1, int x2, int y2) {
     // TODO: copypasted from
@@ -165,7 +165,7 @@ private:
     }
   }
 private: // fields
-  std::vector<Point> _points;  ///< Vector of points that form 2D Line
+  std::vector<Point> _points;
 };
 
 #endif

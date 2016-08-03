@@ -3,8 +3,8 @@
  * \brief Defines the class of Scan matcher that uses Mote-Carlo method
  * There is class MonteCarloScanMatcher  derived from GridScanMatcher. Class
  * contains virtual methods that should be overwritten. The main method
- * consists of loop that realizes the best position of robot that suits to data
- * from laser scan
+ * consists of loop that estimates the best position of robot that suits to
+ * data from laser scan.
  */
 
 
@@ -22,9 +22,10 @@
 // TODO: move publish transform to observer
 
 /**
- * \brief Scan Matcher that uses Mone Carlo Method
- * The focus of scan matcher is to compare a scan and a built map. In this
- * class the method of comparsion is based on Mone-Carlo method
+ * \brief Scan Matcher that uses Mone Carlo Method.
+ * The focus of scan matcher is to compare a scan and a built map; in this
+ * class the method of scan comparison is performed by comparing corresponding
+ * scan costs.
  */
 class MonteCarloScanMatcher : public GridScanMatcher {
 public:
@@ -32,10 +33,12 @@ public:
 public:
 
   /**
-   * \brief Initializes the scan matcher with a certan scan cost estimator
-   * \param estimator Current estimator of Scan Cost
-   * \param failed_iter Maximum amount of failed tries allowed
-   * \param max_iter Maximum amount of total tries allowed
+   * \brief Initializes the scan matcher with a certain scan cost estimator.
+   * \param estimator Current estimator of Scan Cost.
+   * \param failed_iter Maximum amount of comparison of costs for scan at each
+   *                                                                      pose.
+   * \param max_iter Maximum amount of comparison of costs for scan at all
+   *                                                                     poses.
    */
   MonteCarloScanMatcher(std::shared_ptr<ScanCostEstimator> estimator,
                         unsigned failed_iter, unsigned max_iter):
@@ -45,11 +48,11 @@ public:
   /**
    * Initiates estimation of scan and calculates the position that best suits
    * to a new scan. As better it fits as lower cost of scan.
-   * \param init_pose The first approxiamtion of pose
-   * \param scan Current scan
-   * \param map Current GridMap
-   * \param pose_delta Output parametr of the best pose_delta
-   * \return The lowest scan cost that complies to output pose_delta
+   * \param init_pose The first approxiamtion of pose.
+   * \param scan Current scan.
+   * \param map Current GridMap.
+   * \param pose_delta Output parametr of the best pose_delta.
+   * \return The lowest scan cost that complies to output pose_delta.
    */
   virtual double process_scan(const RobotState &init_pose,
                       const TransformedLaserScan &scan,
@@ -110,15 +113,15 @@ public:
 
 protected:
   /**
-   * Generates the pose of a robot in a vicinity of a base pose
-   * \param base_pose Basical pose of robot
+   * Generates the pose of a robot in a vicinity of a base pose.
+   * \param base_pose Basical pose of robot.
    */
   virtual void sample_pose(RobotState &base_pose) = 0;
 
   /**
-   * A callback that is invoked on the better estimate is found
-   * \param sample_num Amount of tries that were complited
-   * \param sample_limit Totla amount of tries allowed
+   * A callback that is invoked on the better estimate is found.
+   * \param sample_num Amount of tries that were complited.
+   * \param sample_limit Totla amount of tries allowed.
    */
   virtual unsigned on_estimate_update(unsigned sample_num,
                                       unsigned sample_limit) = 0;
