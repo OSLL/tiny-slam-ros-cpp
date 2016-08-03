@@ -22,7 +22,7 @@ public:
  */
   virtual double value() const = 0;
 /**
- * \brief Calculate probability of being occupied for a cell.
+ * \brief Calculates probability of being occupied for a cell.
  */
   virtual void set_value(const Occupancy &occ, double quality = 1.0) = 0;
 

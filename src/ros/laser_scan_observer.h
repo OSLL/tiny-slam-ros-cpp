@@ -9,15 +9,15 @@
 #include "topic_with_transform.h"
 
 /**
- * \brief Class responsibilities: observe laser scans and odometry;
- * convert ROS structures to internal representation.
+ * \brief Class responsibilities: observes laser scans and odometry;
+ * converts ROS structures to internal representation.
  */
 class LaserScanObserver : public TopicObserver<sensor_msgs::LaserScan> {
   using ScanPtr = boost::shared_ptr<sensor_msgs::LaserScan>;
 public: //methods
 /**
  * Initializes base laser scan observer.
- * \param _skip_max_vals A flag that indicates accuracy lasr scan's data.
+ * \param skip_max_vals A flag that indicates accuracy lasr scan's data.
  */
   LaserScanObserver(bool skip_max_vals = false):
     _skip_max_vals(skip_max_vals),
