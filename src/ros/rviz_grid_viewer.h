@@ -1,3 +1,8 @@
+/**
+ * \file
+ * \brief In this file, is implemented a class that can show the map and the position of the robot.
+ */
+
 #ifndef __RVIZ_GRID_VIEWER_H
 #define __RVIZ_GRID_VIEWER_H
 
@@ -11,22 +16,19 @@
 #include "../core/maps/grid_map.h"
 
 /**
- * \brief The class publishes information about robot's map and location
- *  in ROS-compatible format so it can be shown by rviz.
+ * \brief This class show the map and robot position on this map.
  */
+
 class RvizGridViewer {
 public: // method
-/**
- * Initializes map and robot's position publisher.
- * \param pub Map publisher to ROS.
- */
   RvizGridViewer(ros::Publisher pub):
     _map_pub(pub) {}
 
-/**
- * Publishes robot state as TF message.
- * \param r A robot state in internal format.
- */
+  /**
+   * This function shows robot's position.
+   * \param r stores robot's position.
+   */
+
   void show_robot_pose(const RobotState &r) {
     tf::Transform t;
     t.setOrigin(tf::Vector3(r.x, r.y, 0.0));
@@ -38,10 +40,11 @@ public: // method
                            "odom_combined", "robot_pose"));
   }
 
-/**
- * Publishes given GridMap as a ROS message.
- * \param map Grid map in framework's internal format.
- */
+  /**
+   * This function shows the map.
+   * \param map stores the map.
+   */
+
   void show_map(const GridMap &map) {
     // TODO: move map publishing rate to parameter
     if ((ros::Time::now() - _last_pub_time).toSec() < 5.0) {
@@ -71,9 +74,9 @@ public: // method
   }
 
 private: // fields
-  ros::Publisher _map_pub;
-  ros::Time _last_pub_time;
-  tf::TransformBroadcaster _tf_brcst;
+  ros::Publisher _map_pub; ///< This data member stores map publisher by ROS
+  ros::Time _last_pub_time;  ///< This data member stores last map publisher time.
+  tf::TransformBroadcaster _tf_brcst; ///< This data member store publish information of coordinate frame transform
 };
 
 #endif

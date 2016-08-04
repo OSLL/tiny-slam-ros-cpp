@@ -1,8 +1,8 @@
 /**
  * \file
- * \brief The following classes are defined in this file
- * GridCell - base class for GridMap's cell;
- * GridCellFactory - abstract base class which subclasses create a new cell of a specific type.
+ * \brief There is 2 classes in this file.
+ * GridCell - abstract base class, whose heirs return information about cell occupancy.
+ * GridCellFactory - abstract base class, whose heirs can create a new cell.
  */
 
 #ifndef __GRID_CELL_FACTORY_H
@@ -13,34 +13,25 @@
 #include "cell_occupancy_estimator.h"
 
 /**
- * \brief The base class for GridMap's cell that defines a model of occupancy tracking.
+ * \brief This is abstract class. Derived classes of this class calculate the probability that a cell is occupied.
  */
+
 class GridCell {
 public:
-/**
- *\brief Returns probability of being occupied for a cell.
- */
   virtual double value() const = 0;
-/**
- * \brief Calculates probability of being occupied for a cell.
- */
   virtual void set_value(const Occupancy &occ, double quality = 1.0) = 0;
 
-  // TODO: move to gmapping
+  // estimated obstacle center
   virtual double obst_x() const { return 0; }
   virtual double obst_y() const { return 0; }
 };
 
 /**
- * \brief The base class for factories that encapsulate creation of a specific cell
- * (Factory method pattern is applied).
+ * \brief This class is abstract. Derived classes of this class create a new cell.
  */
+
 class GridCellFactory {
 public:
-/**
- * \brief Creates a new cell of a specific type which selected by subclasses of this base class.
- * \return Pointer to GridCell.
- */
   virtual std::shared_ptr<GridCell> create_cell() = 0;
 };
 

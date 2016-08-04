@@ -1,8 +1,8 @@
 /**
  * \file
- * \brief The following classes are defined in this file
- * TopicObserver - abstract base class which subclasses observe odometry and laser scan;
- * TopicWithTransform - class that synchronizes odometry and transform.
+ * \brief In this file are implemented 2 classes.
+ * TopicObserver - abstract base class.
+ * TopicWithTransform - class, that synchronizes odometry and transform.
  */
 
 #ifndef __TOPIC_WITH_TRANSFORM_H
@@ -17,9 +17,9 @@
 #include <boost/shared_ptr.hpp>
 
 /**
- * \brief Base class which subclasses convert laser scan
- * and odometry data ROS structures to internal data structure.
+ * \brief This is abstract base class. Derived classes of this class stores information about the world.s
  */
+
 // TODO: make this class inner
 template <typename MType>
 class TopicObserver { // iface
@@ -31,6 +31,7 @@ public: // methods
 /**
  * \brief This class synchronizes transform and odometry.
  */
+
 // TODO: add scan drop
 template <typename MsgType>
 class TopicWithTransform {
@@ -53,17 +54,25 @@ public: // methods
                                   this);
   }
 
-/**
- * \brief Registers a topic observer to be notified with sensor data.
- * \param obs Pointer to the TopicObserver.
- */
+  /**
+   * Function which add the object of TopicObserver to _observers container.
+   * \param obs Shared pointer on the TopicObserver
+   */
+
   void subscribe(std::shared_ptr<TopicObserver<MsgType>> obs) {
     _observers.push_back(obs);
   }
 private: // consts
-  const uint32_t SUBSCR_QUEUE_SZ = 10000; // elems
-  const uint32_t FILTER_QUEUE_SZ = 10000; // elems
+  const uint32_t SUBSCR_QUEUE_SZ = 10000; ///< Size of the queue of subscribe.
+  const uint32_t FILTER_QUEUE_SZ = 10000; ///< Size of the queue of filters.
 private: // methods
+
+  /**
+   * Method which subscribes to ROS transform message and
+   * writes in the _observer container change of the robot location
+   * \param msg Shared Pointer on MsgType.
+   */
+
   void transformed_msg_cb(const boost::shared_ptr<MsgType> msg) {
     tf::StampedTransform transform;
     std::string msg_frame_id =
@@ -89,11 +98,11 @@ private: // methods
     }
   }
 private: // fields
-  std::string _target_frame;
-  message_filters::Subscriber<MsgType> _subscr;
-  tf::TransformListener _tf_lsnr;
-  std::unique_ptr<tf::MessageFilter<MsgType>> _msg_flt;
-  std::vector<std::weak_ptr<TopicObserver<MsgType>>> _observers;
+  std::string _target_frame; ///< The frame_id of the coordinate frame this transform defines.
+  message_filters::Subscriber<MsgType> _subscr; ///< This data member acts as a highest-level filter, simply passing messages from a ROS subscription through to the filters which have connected to it.
+  tf::TransformListener _tf_lsnr; ///< This data member inherits from Transformer and automatically subscribes to ROS transform messages.
+  std::unique_ptr<tf::MessageFilter<MsgType>> _msg_flt; ///< Data member which stores unique pointer on object of tf::MessegeFilter.
+  std::vector<std::weak_ptr<TopicObserver<MsgType>>> _observers; ///< Data member which stores weak pointers on the objects of TopicObserv<MsgType>.
 };
 
 #endif // macro guard
