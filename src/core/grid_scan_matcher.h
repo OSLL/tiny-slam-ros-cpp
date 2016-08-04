@@ -21,7 +21,7 @@ class GridScanMatcherObserver {
 public:
   /**
    * A callback invoked on scan matching start.
-   * \param RobotState Pose of a robot.
+   * \param RobotState A pose of a robot.
    * \param TransformedLaserScan A laser scan with a transformation.
    * \param GridMap A grid map that is used by the matcher.
    */
@@ -32,7 +32,7 @@ public:
   /**
    * A callback invoked when a corrected pose better suits to a given scan than
    * the previously estimated one.
-   * \param RobotState Pose of a robot.
+   * \param RobotState A pose of a robot.
    * \param TransformedLaserScan A laser scan with a transformation.
    */
   virtual void on_scan_test(const RobotState &,           /*pose*/
@@ -40,8 +40,8 @@ public:
                             double) {};                  /*score*/
 
   /**
-   * A callback invoked on updating a pose of robot.
-   * \param RobotState Pose of a robot.
+   * A callback invoked on updating a pose of a robot.
+   * \param RobotState A pose of a robot.
    * \param TransformedLaserScan A laser scan with a transformation.
    */
   virtual void on_pose_update(const RobotState &,            /*pose*/
@@ -50,7 +50,7 @@ public:
 
   /**
    * A callback invoked when scan matching is done.
-   * \param RobotState Pose of a robot.
+   * \param RobotState A pose of a robot.
    */
   virtual void on_matching_end(const RobotState &, /*delta*/
                                double) {};         /*best_score*/
@@ -64,8 +64,8 @@ class ScanCostEstimator {
 public:
 
   /**
-   * A callback invoked on estimating the cost of scan.
-   * \param pose Pose of a robot.
+   * A callback invoked on estimating the cost of a scan.
+   * \param pose A pose of a robot.
    * \param scan A laser scan with a transformation.
    * \param map A grid map that is used by the matcher.
    */
@@ -77,8 +77,8 @@ public:
 
 /**
  * \brief Class that matches scans.
- * Performes scan adjustment by altering robot pose in order to maximize
- * correspondence between the scan and a grid map; the rule of correspondence
+ * Performes a scan adjustment by altering a robot pose in order to maximize
+ * the correspondence between a scan and a grid map; the rule of correspondence
  * computation is defined in ScanCostEstimator subclasses.
  */
 class GridScanMatcher {
@@ -88,22 +88,23 @@ public:
 
   /**
    * A callback invoked on scan processing.
-   * \param init_pose Pose of a robot.
+   * \param init_pose A pose of a robot.
    * \param scan A laser scan with a transformation.
    * \param map A grid map that is used by the matcher.
-   * \param pose_delta Difference between real robot pose and its estimation.
+   * \param pose_delta The difference between the real robot pose and its
+   * estimation.
    */
   virtual double process_scan(const RobotState &init_pose,
                               const TransformedLaserScan &scan,
                               const GridMap &map,
                               RobotState &pose_delta) = 0;
 
-  /// A callback invoked on reset of scan matcher state.
+  /// Invoked to reset the scan matcher's state.
   virtual void reset_state() {};
 
   /**
    * Adds an observer.
-   * \param obs Shared pointer to an observer to be added.
+   * \param obs A shared pointer to an observer to be added.
    */
   void subscribe(std::shared_ptr<GridScanMatcherObserver> obs) {
     _observers.push_back(obs);
@@ -111,7 +112,7 @@ public:
 
   /**
    * Removes an observer.
-   * \param obs Shared pointer to an observer to be removed
+   * \param obs A shared pointer to an observer to be removed
    */
   void unsubscribe(std::shared_ptr<GridScanMatcherObserver> obs) {
     // TODO: replace with more ideomatic C++
@@ -131,7 +132,7 @@ protected:
     return _cost_estimator;
   }
 
-  /// Returns a reference to vector of pointers on observers.
+  /// Returns a reference to the vector of pointers on observers.
   std::vector<std::weak_ptr<GridScanMatcherObserver>> & observers() {
     return _observers;
   }

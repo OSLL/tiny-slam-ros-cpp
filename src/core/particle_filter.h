@@ -6,12 +6,11 @@
 #include <random>
 #include <unordered_set>
 
+/* An element of ParticleFilter. Used to approximate target distribution */
 class Particle {
 public:
   Particle(): _weight(0) {}
-
   double weight() const { return _weight; }
-
   void set_weight(double w) { _weight = w; }
 
   virtual void sample() = 0;
@@ -69,7 +68,6 @@ class ParticleFilter {
 private:
   using ParticlePtr = std::shared_ptr<ParticleT>;
 public: // methods
-
   ParticleFilter(std::shared_ptr<ParticleFactory<ParticleT>> p_ftry,
                  unsigned n = 1) : _particle_supplier{p_ftry} {
     for (unsigned i = 0; i < n; i++) {

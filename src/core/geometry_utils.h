@@ -25,10 +25,10 @@ struct Rectangle {
   /**
    * Creates a rectangle where all contained points are bounded in limits
    * l < x < r, b < y < t.
-   * \param b Bottom of a rectangle.
-   * \param t Top of rectangle.
-   * \param l Left side of rectangle.
-   * \param r Right side of rectangle.
+   * \param b The bottom of a rectangle.
+   * \param t The top of a rectangle.
+   * \param l The left side of a rectangle.
+   * \param r The right side of a rectangle.
    */
   Rectangle(double b, double t, double l, double r) :
     bot(b), top(t), left(l), right(r) {}
@@ -36,7 +36,7 @@ struct Rectangle {
   /**
    * Tests whether a rectangle contains a point.
    * \param x,y Coordinates of a target point.
-   * \return Returns True if rectangle contains a point and False otherwise.
+   * \return True if the rectangle contains a point and False otherwise.
    */
   bool does_contain(double x, double y) const {
     return ((bot < y) && (y < top)) && ((left < x) && (x < right));
@@ -50,10 +50,10 @@ struct Rectangle {
     return (top - bot)*(right - left);
   }
 
-  double bot,   ///< Bottom of a rectangle.
-         top,   ///< Top of a rectangle.
-         left,  ///< Left side of a rectangle.
-         right; ///< Right size of a rectangle.
+  double bot,   ///< The bottom of a rectangle.
+         top,   ///< The top of a rectangle.
+         left,  ///< The left side of a rectangle.
+         right; ///< The right side of a rectangle.
 };
 
 /**
@@ -83,8 +83,8 @@ public:
 
   /**
    * Calculates distance from this point to a given one.
-   * \param pt End point to calculate distance.
-   * \return Distance between this point and end point.
+   * \param pt The end point to calculate distance.
+   * \return The distance between this point and the end point.
    */
   double dist_sq(const DiscretePoint2D &pt) const {
     return std::pow(x - pt.x, 2) + std::pow(y - pt.y, 2);
@@ -106,6 +106,7 @@ public: // methods
   DiscreteLine2D(const Point &start, const Point &end) {
     generatePointsWithBresenham(start.x, start.y, end.x, end.y);
   }
+  /// Returns the line's component points
   const std::vector<Point>& points() const { return _points; }
 private:
 

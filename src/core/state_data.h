@@ -8,7 +8,8 @@
 #define __STATE_DATA_H
 
 /**
- * \brief Defines robot position in Cartesian coordinates and angle of rotation.
+ * \brief Defines a robot position in cartesian coordinates and an angle of
+ * rotation.
  */
 class RobotState {
 public: // methods
@@ -18,13 +19,13 @@ public: // methods
 
   /**
    * Initializes a state of a robot with given parameters.
-   * \param x,y,theta position and orientation of robot.
+   * \param x,y,theta The position and the orientation of robot.
    */
   RobotState(double x, double y, double theta) : x(x), y(y), theta(theta) {}
 
   /**
-   * Updates the state of a robot by given deltas.
-   * \param d_x, d_y, d_theta Delta of position of robot.
+   * Updates the state of a robot by the given deltas.
+   * \param d_x, d_y, d_theta Delta of the position of a robot.
    */
   void update(double d_x, double d_y, double d_theta) {
     // TODO: move update policy to Strategy.
@@ -34,7 +35,7 @@ public: // methods
     theta += d_theta;
   }
 public:
-  double x, y, theta; ///< Position of robot.
+  double x, y, theta; ///< The position of robot.
 };
 
 
@@ -50,8 +51,8 @@ public:
   // data-in
 
   /**
-   * Sets new location of robot.
-   * \param x,y,theta new coordinates of robot.
+   * Sets a new location of a robot.
+   * \param x,y,theta New coordinates of a robot.
    */
   virtual void update_robot_pose(double x, double y, double theta) {
     _pose.update(x, y, theta);

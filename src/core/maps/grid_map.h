@@ -13,7 +13,7 @@
 #include "../geometry_utils.h"
 
 /**
- * \brief Defines Map that consists of Cells.
+ * \brief An occupancy grid implementation.
  */
 class GridMap {
 public:
@@ -22,7 +22,7 @@ public:
   // TODO: cp, mv ctors, dtor
   /**
    * Creates a GridCell based map.
-   * \param cell_factory Factory that creates requied type of Cell.
+   * \param cell_factory The factory that a creates requied type of Cell.
    */
   GridMap(std::shared_ptr<GridCellFactory> cell_factory):
     // TODO: replace hardcoded value with params
@@ -35,23 +35,23 @@ public:
     }
   }
 
-  /// Returns width of map.
+  /// Returns the width of map.
   int width() const { return _width; }
 
-  /// Returns height of map.
+  /// Returns thr height of map.
   int height() const { return _height; }
 
-  /// Returns Scale.
+  /// Returns the acale.
   double scale() const { return _m_per_cell; }
 
-  /// Returns vector of cells.
+  /// Returns map's cells.
   const std::vector<std::vector<Cell>> cells() const { return _cells; }
 
   /**
    * Updates a cell with a new occupancy data.
    * \param cell_coord Coordinates of a cell.
-   * \param new_value Probability for cell of being occupied.
-   * \param quality Measure of beleif to the data.
+   * \param new_value The probability for cell of being occupied.
+   * \param quality The Measure of beleif to the data.
    */
   void update_cell(const DiscretePoint2D& cell_coord,
                    const Occupancy &new_value, double quality = 1.0) {
@@ -60,16 +60,16 @@ public:
   }
 
   /**
-   * Returns the probability of cell to be occupied.
-   * \param cell_coord Point with coordinates of requied cell in Grid Map.
+   * Returns the probability of the cell to be occupied.
+   * \param cell_coord A point with coordinates of requied cell in Grid Map.
    */
   double cell_value(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x]->value();
   }
 
   /**
-   * Returns a constant reference on cell by the point.
-   * \param cell_coord Point with coordinates of requied cell in Grid Map.
+   * Returns a constant reference on a cell by the point.
+   * \param cell_coord The point with coordinates of requied cell in Grid Map.
    */
   const Cell &cell(const DiscretePoint2D& cell_coord) const {
     return _cells[cell_coord.y][cell_coord.x];
@@ -85,15 +85,15 @@ public:
 
   /**
    * Returns a reference on cell by the point.
-   * \param cell_coord Point with coordinates of requied cell in Grid Map.
+   * \param cell_coord The point with coordinates of requied cell in Grid Map.
    */
   Cell &cell(const DiscretePoint2D& cell_coord) {
     return _cells[cell_coord.y][cell_coord.x];
   }
 
   /**
-   * Defines whether the point is contained in a map.
-   * \param cell_coord Point with coordinates of requied cell in Grid Map.
+   * Tests whether the point is contained in a map.
+   * \param cell_coord The point with coordinates of requied cell in Grid Map.
    */
   bool has_cell(const DiscretePoint2D& cell_coord) const {
     return 0 <= cell_coord.x && cell_coord.y < _width &&
@@ -116,7 +116,7 @@ public:
 
   /**
    * Returns the bounds of the cell in the World.
-   * \param cell_coord Point with coordinates of requied cell in Grid Map.
+   * \param cell_coord The point with coordinates of requied cell in Grid Map.
    */
   Rectangle world_cell_bounds(const DiscretePoint2D &cell_coord) {
     Rectangle bounds;

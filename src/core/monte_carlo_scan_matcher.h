@@ -34,8 +34,8 @@ public:
 
   /**
    * \brief Initializes the scan matcher with a certain scan cost estimator.
-   * \param estimator Current estimator of Scan Cost.
-   * \param failed_iter A limit of generated samples that have higher cost
+   * \param estimator An estimator of Scan Cost.
+   * \param failed_iter A limit of generated samples that have a higher cost
    * comparing with the best estimated pose.
    * \param max_iter A maximum number of hypothesis to be tested.
    */
@@ -45,12 +45,12 @@ public:
     _failed_tries_limit(failed_iter), _total_tries_limit(max_iter) {}
 
   /**
-   * Initiates estimation of scan and calculates the position that best suits
-   * to a new scan; the better it fits the lower cost of scan.
+   * Estimates the most probable position according to a given scan;
+   * the greater this probability, the lower cost of the scan.
    * \param init_pose The first approxiamtion of pose.
    * \param scan A current scan.
    * \param map A current GridMap.
-   * \param pose_delta Output parameter of the best pose_delta.
+   * \param pose_delta An output parameter of the best pose_delta.
    * \return The lowest scan cost that corresponds to output pose_delta.
    */
   virtual double process_scan(const RobotState &init_pose,
@@ -113,7 +113,7 @@ public:
 protected:
   /**
    * Generates the pose of a robot in a vicinity of a base pose.
-   * \param base_pose Basical pose of robot.
+   * \param base_pose A basical pose of a robot.
    */
   virtual void sample_pose(RobotState &base_pose) = 0;
 
