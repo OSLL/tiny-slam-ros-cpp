@@ -82,10 +82,10 @@ bool init_skip_exceeding_lsr() {
 TinyWorldParams init_common_world_params() {
   double sig_XY, sig_T, width;
   int lim_bad, lim_totl;
-  ros::param::param<double>("~sigma_XY_MonteCarlo", sig_XY, 0.2);
-  ros::param::param<double>("~sigma_theta_MonteCarlo", sig_T, 0.1);
-  ros::param::param<int>("~limit_of_bad_attempts", lim_bad, 20);
-  ros::param::param<int>("~limit_of_total_attempts", lim_totl, 100);
+  ros::param::param<double>("~scmtch_sigma_XY_MonteCarlo", sig_XY, 0.2);
+  ros::param::param<double>("~scmtch_sigma_theta_MonteCarlo", sig_T, 0.1);
+  ros::param::param<int>("~scmtch_limit_of_bad_attempts", lim_bad, 20);
+  ros::param::param<int>("~scmtch_limit_of_total_attempts", lim_totl, 100);
   ros::param::param<double>("~hole_width", width,1.5);
 
   return TinyWorldParams(sig_XY, sig_T, lim_bad, lim_totl, width);
@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
   scan_observer.subscribe(slam);
 
   double rviz_map_publishing_rate;
-  ros::param::param<double>("~map_publishing_rate_for_rviz",
+  ros::param::param<double>("~rviz_map_publishing_rate",
                             rviz_map_publishing_rate, 5);
   std::shared_ptr<RvizGridViewer> viewer(
     new RvizGridViewer(nh.advertise<nav_msgs::OccupancyGrid>("/map", 5),
