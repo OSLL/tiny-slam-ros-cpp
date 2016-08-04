@@ -98,8 +98,8 @@ private:
  * \brief A strategy creates cells with the average probability
  *        calculation rule (AvgTinyCell).
  *
- * This class is inherited from an abstract cell factory
- * and generates cells with the average rule of the probability calculation.
+ * This class is inherited from an abstract cell factory and generates cells
+ * with the AvgTinyCell model of the probability calculation.
  */
 class TinyAvgCellFactory : public GridCellFactory {
 public:

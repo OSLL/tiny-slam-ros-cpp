@@ -24,7 +24,7 @@ struct TinyWorldParams {
 /*!
  * \brief The class implements the tinySLAM-specific map update logic.
  *
- * There is an robot state correction based on used scanner matcher rules and
+ * There is an robot state correction based on used scan matcher rules and
  * the map update based on the algorithm from the paper with a wall blur.
  */
 class TinyWorld : public LaserScanGridWorld {
@@ -42,8 +42,7 @@ public:
 
   /*!
    * Initializes the world to produce tiny SLAM.
-   * \param[in] gcs    - a shared pointer to a strategy for the each cell.
-   *                  (how the occupancy, cost of laser data etc are estimated).
+   * \param[in] gcs    - a shared pointer to a cell-specific strategy.
    * \param[in] params - the initial values for tinySLAM (see TinyWorldParams).
    */
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,

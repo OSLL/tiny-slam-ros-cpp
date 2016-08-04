@@ -37,7 +37,7 @@ public: // methods
     LaserScanObserver(skip_max_vals), _world(new TinyWorld(gcs, params)) {}
 
   /*!
-   * Sets a viewer component that is notified by the pose and the map updates.
+   * Sets a viewer component that is notified by a pose and map updates.
    * \param[in] viewer - a new value of the data member viewer.
    */
   void set_viewer(std::shared_ptr<RvizGridViewer> viewer) {
@@ -46,7 +46,7 @@ public: // methods
 
   /*!
    * Updates the map and the robot pose with scan data.\n
-   * The update is done by a prediction-correction approach.
+   * The update is done according to a prediction-correction approach.
    * (the odometry is used for a prediction, the laser scan - for a correction).
    * \param[in] scan - data from the robot's scanners (odnometry + laser scan).
    */

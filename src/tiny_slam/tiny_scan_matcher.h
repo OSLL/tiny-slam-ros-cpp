@@ -9,7 +9,7 @@
 /*!
  * \brief The scan matcher based on the Monte Carlo simulation.
  *
- * The simulation of the robot pose by shifting it on a random vector and
+ * The robot pose is updated by shifting it on a random vector and
  * rotation by a random angle. The vector distribution is dynamically adjusted.
  */
 class TinyScanMatcher : public MonteCarloScanMatcher {
