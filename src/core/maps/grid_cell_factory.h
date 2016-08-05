@@ -33,7 +33,7 @@ public:
 
 /**
  * \brief The base class for factories that encapsulate creation of a specific cell
- * (The factory method pattern is applied).
+ * (The Factory method pattern is applied).
  */
 class GridCellFactory {
 public:

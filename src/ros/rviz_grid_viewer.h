@@ -40,7 +40,7 @@ public: // method
 
 /**
  * Publishes given GridMap as a ROS message.
- * \param map Grid map in framework's internal format.
+ * \param map A grid map in framework's internal format.
  */
   void show_map(const GridMap &map) {
     // TODO: move map publishing rate to parameter

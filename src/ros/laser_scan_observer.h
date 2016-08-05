@@ -17,7 +17,7 @@ class LaserScanObserver : public TopicObserver<sensor_msgs::LaserScan> {
 public: //methods
 /**
  * Initializes the base laser scan observer.
- * \param skip_max_vals A flag that indicates whether skip a scan from the max range.
+ * \param skip_max_vals Whether scan points that exceed the max reliable scan-specific distance be skipped.
  */
   LaserScanObserver(bool skip_max_vals = false):
     _skip_max_vals(skip_max_vals),
