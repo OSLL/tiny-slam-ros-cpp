@@ -1,3 +1,26 @@
+## tiny_slam (jade) - 0.1.2-2
+
+The packages in the `tiny_slam` repository were released into the `jade` distro by running `/usr/bin/bloom-release tiny_slam --track jade --rosdistro jade` on `Fri, 05 Aug 2016 12:13:59 -0000`
+
+The `tiny_slam` package was released.
+
+Version of package(s) in repository `tiny_slam`:
+
+- upstream repository: https://github.com/OSLL/tiny-slam-ros-cpp.git
+- release repository: https://github.com/OSLL/tiny-slam-ros-release.git
+- rosdistro version: `0.1.2-1`
+- old version: `0.1.2-1`
+- new version: `0.1.2-2`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.38`
+
+
 ## git@github.com:OSLL/tiny_slam-release.git (jade) - 0.1.2-1
 
 The packages in the `git@github.com:OSLL/tiny_slam-release.git` repository were released into the `jade` distro by running `/usr/bin/bloom-release --rosdistro jade --track jade git@github.com:OSLL/tiny_slam-release.git` on `Fri, 15 Jul 2016 20:44:23 -0000`
