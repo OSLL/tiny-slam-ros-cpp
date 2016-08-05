@@ -8,7 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   message_filters
   sensor_msgs
-  rosbag_storage	
+  rosbag_storage
 )
 
 catkin_package()
@@ -22,6 +22,3 @@ catkin_add_gtest(ptest test/utest.cpp)
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 
 target_link_libraries(tiny_slam ${catkin_LIBRARIES} ${GTEST_LIBRARY})
-
-
-
