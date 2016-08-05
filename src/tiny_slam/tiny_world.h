@@ -13,10 +13,20 @@
 #include "tiny_grid_cells.h"
 #include "tiny_scan_matcher.h"
 
+/*!
+ * \brief A container for the following tinySLAM parameters:\n
+ * TODO: params description.
+ */
 struct TinyWorldParams {
   double localized_scan_quality, raw_scan_quality;
 };
 
+/*!
+ * \brief The class implements the tinySLAM-specific map update logic.
+ *
+ * There is an robot state correction based on used scan matcher rules and
+ * the map update based on the algorithm from the paper with a wall blur.
+ */
 class TinyWorld : public LaserScanGridWorld {
 private: // internal params
   // Scan matcher
@@ -30,6 +40,11 @@ public:
   using Point = DiscretePoint2D;
 public:
 
+  /*!
+   * Initializes the world to produce tiny SLAM.
+   * \param[in] gcs    - a shared pointer to a cell-specific strategy.
+   * \param[in] params - the initial values for tinySLAM (see TinyWorldParams).
+   */
   TinyWorld(std::shared_ptr<GridCellStrategy> gcs,
             const TinyWorldParams &params) :
     LaserScanGridWorld(gcs), _gcs(gcs), _params(params),
@@ -37,6 +52,12 @@ public:
                                       BAD_LMT, TOT_LMT,
                                       SIG_XY, SIG_TH)) {}
 
+  /*!
+   * Updates the robot pose and the map by a prediction-correction scheme.\n
+   * Updates the map depends on whether the robot pose have been changed during
+   * a correction step.
+   * \param[in] scan - data from a laser scanner.
+   */
   virtual void handle_observation(TransformedLaserScan &scan) override {
     RobotState pose_delta;
     _scan_matcher->reset_state();
@@ -50,6 +71,17 @@ public:
     LaserScanGridWorld::handle_observation(scan);
   }
 
+  /*!
+   * Updates the map with a given laser scan point.\n
+   * Estimates the occupancy of the cell with an obstacle
+   * (beam_end_x, beam_end_y).\n And after that there is a "wall blur".
+   * \param[in] map - the map of the environment.
+   * \param[in] laser_x,laser_y - the beginning coordinates of the laser ray.
+   * \param[in] beam_end_x, beam_end_y - the ending coordinates of the laser ray
+   * \param[in] is_occ - the parameter which shows
+   *                     whether this cell is occupied or not.
+   * \param[in] quality - the quality of the laser scanner.
+   */
   virtual void handle_scan_point(GridMap &map,
                                  double laser_x, double laser_y,
                                  double beam_end_x, double beam_end_y,
@@ -82,6 +114,9 @@ public:
     }
   }
 
+  /*!
+   * Returns a pointer to the scan matcher used for the robot pose correction.
+   */
   std::shared_ptr<GridScanMatcher> scan_matcher() {
     return _scan_matcher;
   }

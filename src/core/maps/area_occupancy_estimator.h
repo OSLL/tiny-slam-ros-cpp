@@ -7,6 +7,13 @@
 
 #include "cell_occupancy_estimator.h"
 
+/*!
+ * \brief A strategy that estimates a grid cell's occupancy based on how
+ *        a laser beam passes through the cell.
+ *
+ * The estimation is based on a ratio between cell's chunks produced by
+ * cutting the cell with a laser beam.
+ */
 class AreaOccupancyEstimator : public CellOccupancyEstimator {
 private: // types
   enum class IntersLocation : char {
@@ -61,9 +68,16 @@ private: // types
 
 public: //methods
 
+  /*!
+   * Initializes the estimator with base probabilities.
+   * \param[in] occ, empty - base probabilities of occupied/empty cells.
+   */
   AreaOccupancyEstimator(double occ, double empty) :
     CellOccupancyEstimator(occ, empty) {}
 
+  /*!
+   * Finds the probability of a cell to be occupied based on chunk's areas.
+   */
   virtual Occupancy estimate_occupancy(const Beam &beam,
                                        const Rectangle &cell_bnds,
                                        bool is_occ) override {
