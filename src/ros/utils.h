@@ -5,12 +5,6 @@
 #include <tf/transform_broadcaster.h>
 #include <ros/ros.h>
 
-/**
- * \brief Converts internal robot state to 2D robot pose and publishes it.
- * \param base_frame The frame_id of the coordinate frame in which this transform is defined.
- * \param target_frame The frame_id of the coordinate frame this transform defines.
- * \param x,y,th The pose.
- */
 inline void publish_2D_transform(const std::string &target_frame,
                                  const std::string &base_frame,
                                  double x, double y, double th) {

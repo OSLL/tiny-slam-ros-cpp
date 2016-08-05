@@ -1,10 +1,3 @@
-/**
- * \file
- * \brief The following classes are defined in this file
- * TopicObserver - abstract base class which subclasses observe odometry and laser scan;
- * TopicWithTransform - class that synchronizes odometry and transform.
- */
-
 #ifndef __TOPIC_WITH_TRANSFORM_H
 #define __TOPIC_WITH_TRANSFORM_H
 
@@ -16,10 +9,6 @@
 #include <tf/transform_listener.h>
 #include <boost/shared_ptr.hpp>
 
-/**
- * \brief Base class which subclasses convert laser scan
- * and odometry data ROS structures to internal data structure.
- */
 // TODO: make this class inner
 template <typename MType>
 class TopicObserver { // iface
@@ -28,9 +17,6 @@ public: // methods
                                       const tf::StampedTransform&) = 0;
 };
 
-/**
- * \brief This class synchronizes transform and odometry.
- */
 // TODO: add scan drop
 template <typename MsgType>
 class TopicWithTransform {
@@ -53,10 +39,6 @@ public: // methods
                                   this);
   }
 
-/**
- * \brief Registers a topic observer to be notified with sensor data.
- * \param obs Pointer to the TopicObserver.
- */
   void subscribe(std::shared_ptr<TopicObserver<MsgType>> obs) {
     _observers.push_back(obs);
   }

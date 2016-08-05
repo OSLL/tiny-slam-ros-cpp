@@ -17,7 +17,7 @@ find_package(GTest)
 include_directories(${catkin_INCLUDE_DIRS} ${GTEST_INCLUDE_DIRS})
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-catkin_add_gtest(ptest test/utest.cpp)
+catkin_add_gtest(utest test/AreaEstimator/utest_area_estimator.cpp)
 
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 
