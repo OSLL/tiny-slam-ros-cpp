@@ -13,9 +13,12 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package()
 
-include_directories(${catkin_INCLUDE_DIRS})
+find_package(GTest)
+include_directories(${catkin_INCLUDE_DIRS} ${GTEST_INCLUDE_DIRS})
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+catkin_add_gtest(utest test/AreaEstimator/utest_area_estimator.cpp)
 
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 
-target_link_libraries(tiny_slam ${catkin_LIBRARIES})
-
+target_link_libraries(tiny_slam ${catkin_LIBRARIES} ${GTEST_LIBRARY})
