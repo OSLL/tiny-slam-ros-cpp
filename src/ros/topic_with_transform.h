@@ -29,10 +29,15 @@ public: // methods
   // TODO: copy, move ctrs, dtor
   TopicWithTransform(ros::NodeHandle nh,
                      const std::string& topic_name,
-                     const std::string& target_frame):
+                     const std::string& target_frame,
+                     const double& buffer_duration,
+                     const double& tf_filter_queue_size,
+                     const double& subscribers_queue_size):
+     FILTER_QUEUE_SZ(tf_filter_queue_size),
+     SUBSCR_QUEUE_SZ(subscribers_queue_size),
     _target_frame{target_frame},
     _subscr{nh, topic_name, SUBSCR_QUEUE_SZ},
-    _tf_lsnr{ros::Duration(5.0)},
+    _tf_lsnr{ros::Duration(buffer_duration)},
     _msg_flt{new tf::MessageFilter<MsgType>{
       _subscr, _tf_lsnr, _target_frame, FILTER_QUEUE_SZ}} {
       _msg_flt->registerCallback(&TopicWithTransform::transformed_msg_cb,
