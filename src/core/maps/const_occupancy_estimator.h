@@ -7,7 +7,6 @@ class ConstOccupancyEstimator : public CellOccupancyEstimator {
 public:
   ConstOccupancyEstimator(double occ, double empty) :
     CellOccupancyEstimator(occ, empty) {}
-
   virtual Occupancy estimate_occupancy(const Beam &beam,
                                        const Rectangle &cell_bnds,
                                        bool is_occ) override {

@@ -16,9 +16,7 @@ public:
       _occupancy_estimator(occ_est) {}
 
   std::shared_ptr<GridCellFactory> cell_factory() { return _cell_factory; }
-
   std::shared_ptr<ScanCostEstimator> cost_est() { return _cost_estimator; }
-
   std::shared_ptr<CellOccupancyEstimator> occupancy_est() {
     return _occupancy_estimator;
   }

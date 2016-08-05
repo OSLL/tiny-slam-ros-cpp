@@ -11,10 +11,11 @@
 class LaserScanObserver : public TopicObserver<sensor_msgs::LaserScan> {
   using ScanPtr = boost::shared_ptr<sensor_msgs::LaserScan>;
 public: //methods
+  
   LaserScanObserver(bool skip_max_vals = false):
     _skip_max_vals(skip_max_vals),
     _prev_x(0), _prev_y(0), _prev_yaw(0) {}
-  
+
   virtual void handle_transformed_msg(
     const ScanPtr msg, const tf::StampedTransform& t) {
 

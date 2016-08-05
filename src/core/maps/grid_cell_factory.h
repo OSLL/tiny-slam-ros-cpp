@@ -10,7 +10,7 @@ public:
   virtual double value() const = 0;
   virtual void set_value(const Occupancy &occ, double quality = 1.0) = 0;
 
-  // TODO: move to gmapping
+  // TODO: estimated obstacle center
   virtual double obst_x() const { return 0; }
   virtual double obst_y() const { return 0; }
 };
