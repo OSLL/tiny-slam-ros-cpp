@@ -16,8 +16,8 @@ class LaserScanObserver : public TopicObserver<sensor_msgs::LaserScan> {
   using ScanPtr = boost::shared_ptr<sensor_msgs::LaserScan>;
 public: //methods
 /**
- * Initializes base laser scan observer.
- * \param skip_max_vals A flag that indicates accuracy lasr scan's data.
+ * Initializes the base laser scan observer.
+ * \param skip_max_vals A flag that indicates whether skip a scan from the max range.
  */
   LaserScanObserver(bool skip_max_vals = false):
     _skip_max_vals(skip_max_vals),

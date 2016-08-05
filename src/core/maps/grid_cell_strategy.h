@@ -14,7 +14,7 @@ class GridCellStrategy {
 public:
 /**
  * \brief Initializes a grid cell model.
- * \param factory Cell factory that creates cells of a specific type.
+ * \param factory The Cell factory that creates cells of a specific type.
  * \param cost_est A scan cost estimator.
  * \param occ_ess An occupancy estimator.
  */

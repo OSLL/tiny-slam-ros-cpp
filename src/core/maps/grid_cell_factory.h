@@ -18,11 +18,11 @@
 class GridCell {
 public:
 /**
- *\brief Returns probability of being occupied for a cell.
+ *\brief Returns the probability of being occupied for a cell.
  */
   virtual double value() const = 0;
 /**
- * \brief Calculates probability of being occupied for a cell.
+ * \brief Calculates the probability of being occupied for a cell.
  */
   virtual void set_value(const Occupancy &occ, double quality = 1.0) = 0;
 
@@ -33,12 +33,12 @@ public:
 
 /**
  * \brief The base class for factories that encapsulate creation of a specific cell
- * (Factory method pattern is applied).
+ * (The factory method pattern is applied).
  */
 class GridCellFactory {
 public:
 /**
- * \brief Creates a new cell of a specific type which selected by subclasses of this base class.
+ * \brief Creates a new cell of a specific type.
  * \return Pointer to GridCell.
  */
   virtual std::shared_ptr<GridCell> create_cell() = 0;

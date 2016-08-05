@@ -17,7 +17,7 @@
 #include <boost/shared_ptr.hpp>
 
 /**
- * \brief Base class which subclasses convert laser scan
+ * \brief The base class which subclasses convert laser scan
  * and odometry data ROS structures to internal data structure.
  */
 // TODO: make this class inner
@@ -29,7 +29,7 @@ public: // methods
 };
 
 /**
- * \brief This class synchronizes transform and odometry.
+ * \brief This class synchronizes the transform and odometry.
  */
 // TODO: add scan drop
 template <typename MsgType>

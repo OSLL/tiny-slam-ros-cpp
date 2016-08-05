@@ -6,7 +6,7 @@
 #include <ros/ros.h>
 
 /**
- * \brief Converts internal robot state to 2D robot pose and publishes it.
+ * \brief Converts internal a robot state to a 2D robot pose and publishes it.
  * \param base_frame The frame_id of the coordinate frame in which this transform is defined.
  * \param target_frame The frame_id of the coordinate frame this transform defines.
  * \param x,y,th The pose.

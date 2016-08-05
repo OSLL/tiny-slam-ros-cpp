@@ -17,14 +17,14 @@
 class RvizGridViewer {
 public: // method
 /**
- * Initializes map and robot's position publisher.
- * \param pub Map publisher to ROS.
+ * Initializes a map and robot's position publisher.
+ * \param pub A map publisher to ROS.
  */
   RvizGridViewer(ros::Publisher pub):
     _map_pub(pub) {}
 
 /**
- * Publishes robot state as TF message.
+ * Publishes a robot state as TF message.
  * \param r A robot state in internal format.
  */
   void show_robot_pose(const RobotState &r) {
