@@ -100,11 +100,11 @@ GridMapParams init_grid_map_params() {
   return params;
 }
 
-void init_constants_for_ros(double &ros_topic_buffer,
+void init_constants_for_ros(double &ros_tf_buffer_size,
                             double &ros_map_rate,
                             int &ros_filter_queue,
                             int &ros_subscr_queue) {
-  ros::param::param<double>("~ros_topic_duration_buffer",ros_topic_buffer,5.0);
+  ros::param::param<double>("~ros_tf_buffer_duration",ros_tf_buffer_size,5.0);
   ros::param::param<double>("~ros_rviz_map_publishing_rate", ros_map_rate, 5.0);
   ros::param::param<int>("~ros_filter_queue_size",ros_filter_queue,1000);
   ros::param::param<int>("~ros_subscribers_queue_size",ros_subscr_queue,1000);
@@ -122,12 +122,13 @@ int main(int argc, char** argv) {
   std::shared_ptr<TinySlamFascade> slam{new TinySlamFascade(gcs,
     params, grid_map_params, init_skip_exceeding_lsr())};
 
-  double ros_map_publishing_rate, ros_topic_buffer;
-  int filter_queue, subscr_queue;
-  init_constants_for_ros(ros_map_publishing_rate, ros_topic_buffer,
-                         filter_queue, subscr_queue);
+  double ros_map_publishing_rate, ros_tf_buffer_size;
+  int ros_filter_queue, ros_subscr_queue;
+  init_constants_for_ros(ros_tf_buffer_size, ros_map_publishing_rate,
+                         ros_filter_queue, ros_subscr_queue);
   TopicWithTransform<sensor_msgs::LaserScan> scan_observer(nh,
-    "laser_scan", "odom_combined", ros_topic_buffer,filter_queue,subscr_queue);
+    "laser_scan", "odom_combined", ros_tf_buffer_size,
+    ros_filter_queue, ros_subscr_queue);
   scan_observer.subscribe(slam);
 
   std::shared_ptr<RvizGridViewer> viewer(

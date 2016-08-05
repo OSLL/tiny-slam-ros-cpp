@@ -12,7 +12,7 @@
 
 class RvizGridViewer {
 public: // method
-  RvizGridViewer(ros::Publisher pub, const double &show_map_rate) :
+  RvizGridViewer(ros::Publisher pub, const double show_map_rate) :
     _map_pub(pub), map_publishing_rate(show_map_rate) {}
 
   void show_robot_pose(const RobotState &r) {

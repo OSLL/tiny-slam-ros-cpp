@@ -30,9 +30,9 @@ public: // methods
   TopicWithTransform(ros::NodeHandle nh,
                      const std::string& topic_name,
                      const std::string& target_frame,
-                     const double& buffer_duration,
-                     const double& tf_filter_queue_size,
-                     const double& subscribers_queue_size):
+                     const double buffer_duration,
+                     const double tf_filter_queue_size,
+                     const double subscribers_queue_size):
      FILTER_QUEUE_SZ(tf_filter_queue_size),
      SUBSCR_QUEUE_SZ(subscribers_queue_size),
     _target_frame{target_frame},
