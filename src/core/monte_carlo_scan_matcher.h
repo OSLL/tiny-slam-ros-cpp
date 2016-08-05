@@ -3,7 +3,7 @@
  * \brief Defines the class of Scan matcher that uses Mote-Carlo method
  * There is class MonteCarloScanMatcher derived from GridScanMatcher. Class
  * contains virtual methods that should be overwritten. The main method
- * consists of loop that estimates the best position of robot that suits to
+ * consists of loop that estimates the best position of robot that fits to
  * data from laser scan.
  */
 
@@ -118,7 +118,7 @@ protected:
   virtual void sample_pose(RobotState &base_pose) = 0;
 
   /**
-   * A callback invoked when the better estimate is found.
+   * A callback invoked when a better estimate is found.
    * \param sample_num Amount of tries that were complited.
    * \param sample_limit Totla amount of tries allowed.
    */

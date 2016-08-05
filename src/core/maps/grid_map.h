@@ -35,13 +35,13 @@ public:
     }
   }
 
-  /// Returns the width of map.
+  /// Returns the width of the map.
   int width() const { return _width; }
 
-  /// Returns thr height of map.
+  /// Returns thr height of the map.
   int height() const { return _height; }
 
-  /// Returns the acale.
+  /// Returns the scale.
   double scale() const { return _m_per_cell; }
 
   /// Returns map's cells.
@@ -68,7 +68,7 @@ public:
   }
 
   /**
-   * Returns a constant reference on a cell by the point.
+   * Returns a constant cell reference by the point.
    * \param cell_coord The point with coordinates of requied cell in Grid Map.
    */
   const Cell &cell(const DiscretePoint2D& cell_coord) const {
@@ -84,8 +84,9 @@ public:
   }
 
   /**
-   * Returns a reference on cell by the point.
-   * \param cell_coord The point with coordinates of requied cell in Grid Map.
+   * Returns a cell reference by the point.
+   * \param cell_coord The point with coordinates of requied cell in the grid
+   *                                                                       map.
    */
   Cell &cell(const DiscretePoint2D& cell_coord) {
     return _cells[cell_coord.y][cell_coord.x];
@@ -93,7 +94,8 @@ public:
 
   /**
    * Tests whether the point is contained in a map.
-   * \param cell_coord The point with coordinates of requied cell in Grid Map.
+   * \param cell_coord The point with coordinates of requied cell in the grid
+   *                                                                       map.
    */
   bool has_cell(const DiscretePoint2D& cell_coord) const {
     return 0 <= cell_coord.x && cell_coord.y < _width &&
@@ -102,7 +104,7 @@ public:
 
   /**
    * Projects coordinates in meters onto a cell of the grid map.
-   * \return The cell point corresponding to a given coordinates.
+   * \return The cell point corresponding to given coordinates.
    */
   DiscretePoint2D world_to_cell(double x, double y) const {
     int cell_x = std::floor(_width /2 + x/_m_per_cell);
@@ -116,7 +118,8 @@ public:
 
   /**
    * Returns the bounds of the cell in the World.
-   * \param cell_coord The point with coordinates of requied cell in Grid Map.
+   * \param cell_coord The point with coordinates of requied cell in the grid
+   *                                                                       map.
    */
   Rectangle world_cell_bounds(const DiscretePoint2D &cell_coord) {
     Rectangle bounds;

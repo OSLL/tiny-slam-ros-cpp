@@ -30,8 +30,7 @@ public:
                                  const GridMap &) {}    /*map*/
 
   /**
-   * A callback invoked when a corrected pose better suits to a given scan than
-   * the previously estimated one.
+   * A callback invoked when a new pose is about to be tested.
    * \param RobotState A pose of a robot.
    * \param TransformedLaserScan A laser scan with a transformation.
    */
@@ -40,7 +39,8 @@ public:
                             double) {};                  /*score*/
 
   /**
-   * A callback invoked on updating a pose of a robot.
+   * A callback invoked when a given pose better fits to a given scan than
+   * the previously estimated one.
    * \param RobotState A pose of a robot.
    * \param TransformedLaserScan A laser scan with a transformation.
    */

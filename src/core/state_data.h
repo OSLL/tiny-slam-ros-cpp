@@ -14,12 +14,12 @@
 class RobotState {
 public: // methods
 
-  /// Sets robot in (0,0) oriented as zero angle.
+  /// Sets a robot in (0,0) oriented as zero angle.
   RobotState(): x(0), y(0), theta(0) {}
 
   /**
    * Initializes a state of a robot with given parameters.
-   * \param x,y,theta The position and the orientation of robot.
+   * \param x,y,theta The position and the orientation of a robot.
    */
   RobotState(double x, double y, double theta) : x(x), y(y), theta(theta) {}
 
