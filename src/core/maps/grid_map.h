@@ -10,14 +10,12 @@
 
 class GridMap {
 private: //flag constants
-  const int RESIZE_DOWN  = 1; // 0b0001
-  const int RESIZE_UP    = 2; // 0b0010
-  const int RESIZE_LEFT  = 4; // 0b0100
-  const int RESIZE_RIGHT = 8; // 0b1000
-  //NOTE: RIGHT := LEFT<<1; UP := DOWN<<1
-  const int RESIZE_VERT  = RESIZE_DOWN | RESIZE_UP;   // 0b0011
-  const int RESIZE_HORZ  = RESIZE_LEFT | RESIZE_RIGHT;// 0b1100
-  const int RESIZE_NEED  = RESIZE_HORZ | RESIZE_VERT; // 0b1111
+    const int RESIZE_UP    = 0; // 0b00
+    const int RESIZE_DOWN  = 1; // 0b01
+    const int RESIZE_RIGHT = 2; // 0b10
+    const int RESIZE_LEFT  = 3; // 0b11
+    const int RESIZE_VERT  = RESIZE_DOWN & RESIZE_UP;   // 0b0x
+    const int RESIZE_HORZ  = RESIZE_LEFT & RESIZE_RIGHT;// 0b1x
 public: // typedefs
   using Cell = std::shared_ptr<GridCell>;
 private: // typedefs
@@ -121,9 +119,7 @@ private: // methods
     //expands map with the exponential rule
     // states are +100%, +300%, +700% etc ( -100% + [2^n*100%] )
     int expand_coef = closest_bounded_power_two(new_bound/bound) - 1;
-    bool push_begin = (container_coord < 0);
-    int dir = (directions == RESIZE_HORZ ? RESIZE_LEFT : RESIZE_DOWN);
-    resize_in_direction(expand_coef*bound,(push_begin ? dir : dir<<1));
+    resize_in_direction(expand_coef*bound, directions | (container_coord<0) );
   }
 
   int calc_sufficient_bound(const int container_coord, const int map_bound) {
@@ -149,22 +145,18 @@ private: // methods
 
   void resize_in_direction(const int delta, const int direction_flags) {
 
-    if (delta <= 0 || !(direction_flags & RESIZE_NEED))
+    if (delta <= 0)
       return;
 
-    if (direction_flags & RESIZE_DOWN) {
+    if (direction_flags == RESIZE_DOWN) {
       add_empty_rows(delta,_cells.begin());
       _map_center_y  += delta;
-    }
-    if (direction_flags & RESIZE_UP) {
+    }else if (direction_flags == RESIZE_UP) {
       add_empty_rows(delta,_cells.end());
-    }
-
-    if (direction_flags & RESIZE_LEFT) {
+    }else if (direction_flags == RESIZE_LEFT) {
       add_empty_cols(delta, [](Row& vector){return vector.begin();} );
       _map_center_x += delta;
-    }
-    if (direction_flags & RESIZE_RIGHT) {
+    }else if (direction_flags == RESIZE_RIGHT) {
       add_empty_cols(delta, [](Row& vector){return vector.end();} );
     }
   }
