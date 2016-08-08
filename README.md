@@ -149,15 +149,8 @@ The initial probability of cell to be empty (i.e. the probability of out of rang
 ### Credentials
 
 Copyright (c) 2016 JetBrains Research, Mobile Robot Algorithms Laboratory
-<<<<<<< HEAD
-
-Contributors:
-
-  - Artur Huletski
-=======
 
 Contributors: 
   - Artur Huletski 
->>>>>>> master
   - Dmitriy Kartashov
   - Kirill Krinkin
