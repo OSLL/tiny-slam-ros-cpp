@@ -10,12 +10,23 @@
 
 class GridMap {
 private: //flag constants
-    const int RESIZE_UP    = 0; // 0b00
-    const int RESIZE_DOWN  = 1; // 0b01
-    const int RESIZE_RIGHT = 2; // 0b10
-    const int RESIZE_LEFT  = 3; // 0b11
-    const int RESIZE_VERT  = RESIZE_DOWN & RESIZE_UP;   // 0b0x
-    const int RESIZE_HORZ  = RESIZE_LEFT & RESIZE_RIGHT;// 0b1x
+  const int RESIZE_VERT    = 0;
+  const int RESIZE_HORZ    = 1;
+  const int RESIZE_DIM_BIT = 1;
+
+  const int RESIZE_FWD     = 0;
+  const int RESIZE_BWD     = 1;
+  const int RESIZE_DIR_BIT = 0;
+#define RESIZE_DIR_BUILD(DIM,DIM_BIT,DIR,DIR_BIT) \
+  ((DIM) << (DIM_BIT)) | ((DIR) << (DIR_BIT))
+  const int RESIZE_UP    = RESIZE_DIR_BUILD(RESIZE_VERT,RESIZE_DIM_BIT,
+                                            RESIZE_FWD,RESIZE_DIR_BIT);
+  const int RESIZE_DOWN  = RESIZE_DIR_BUILD(RESIZE_VERT,RESIZE_DIM_BIT,
+                                            RESIZE_BWD,RESIZE_DIR_BIT);
+  const int RESIZE_RIGHT = RESIZE_DIR_BUILD(RESIZE_HORZ,RESIZE_DIM_BIT,
+                                            RESIZE_FWD,RESIZE_DIR_BIT);
+  const int RESIZE_LEFT  = RESIZE_DIR_BUILD(RESIZE_HORZ,RESIZE_DIM_BIT,
+                                            RESIZE_BWD,RESIZE_DIR_BIT);
 public: // typedefs
   using Cell = std::shared_ptr<GridCell>;
 private: // typedefs
@@ -76,9 +87,9 @@ public:
 
   Rectangle world_cell_bounds(const DiscretePoint2D &cell_coord) {
     Rectangle bounds;
-    bounds.bot = cell_coord.y * _m_per_cell;
-    bounds.top = bounds.bot + _m_per_cell;
-    bounds.left = cell_coord.x * _m_per_cell;
+    bounds.bot   = cell_coord.y * _m_per_cell;
+    bounds.top   = bounds.bot + _m_per_cell;
+    bounds.left  = cell_coord.x * _m_per_cell;
     bounds.right = bounds.left + _m_per_cell;
     return bounds;
   }
@@ -104,22 +115,23 @@ private: // methods
 
 
   void update_size(const DiscretePoint2D& cell_coord) {
-    resize_bound(RESIZE_HORZ,cell_coord.x+_map_center_x);
-    resize_bound(RESIZE_VERT,cell_coord.y+_map_center_y);
+    resize_bound(RESIZE_HORZ, cell_coord.x+_map_center_x);
+    resize_bound(RESIZE_VERT, cell_coord.y+_map_center_y);
   }
 
-  void resize_bound(const int directions, const int container_coord) {
-    if (directions != RESIZE_HORZ && directions != RESIZE_VERT)
+  void resize_bound(const int res_dim, const int container_coord) {
+    if (res_dim != RESIZE_HORZ && res_dim != RESIZE_VERT)
       return;
-    int bound = (directions == RESIZE_HORZ ? width() : height());
+    int bound = (res_dim == RESIZE_HORZ ? width() : height());
     //find if it needs to resize map
-    int new_bound = calc_sufficient_bound(container_coord,bound);
+    int new_bound = calc_sufficient_bound(container_coord, bound);
     if (new_bound == bound)
       return;
     //expands map with the exponential rule
     // states are +100%, +300%, +700% etc ( -100% + [2^n*100%] )
     int expand_coef = closest_bounded_power_two(new_bound/bound) - 1;
-    resize_in_direction(expand_coef*bound, directions | (container_coord<0) );
+    resize_in_direction(expand_coef*bound,
+                        res_dim<<RESIZE_DIM_BIT | (container_coord<0) );
   }
 
   int calc_sufficient_bound(const int container_coord, const int map_bound) {
@@ -137,27 +149,27 @@ private: // methods
    */
   long closest_bounded_power_two(long x) {
     long p2 = 1;
-    while (p2 <= x){
+    while (p2 <= x) {
       p2 <<= 1;
     }
     return p2;
   }
 
-  void resize_in_direction(const int delta, const int direction_flags) {
+  void resize_in_direction(const int delta, const int direction_flag) {
 
     if (delta <= 0)
       return;
 
-    if (direction_flags == RESIZE_DOWN) {
-      add_empty_rows(delta,_cells.begin());
+    if (direction_flag == RESIZE_DOWN) {
+      add_empty_rows(delta, _cells.begin());
       _map_center_y  += delta;
-    }else if (direction_flags == RESIZE_UP) {
-      add_empty_rows(delta,_cells.end());
-    }else if (direction_flags == RESIZE_LEFT) {
-      add_empty_cols(delta, [](Row& vector){return vector.begin();} );
+    } else if (direction_flag == RESIZE_UP) {
+      add_empty_rows(delta, _cells.end());
+    } else if (direction_flag == RESIZE_LEFT) {
+      add_empty_cols(delta, [](Row& vector) { return vector.begin(); } );
       _map_center_x += delta;
-    }else if (direction_flags == RESIZE_RIGHT) {
-      add_empty_cols(delta, [](Row& vector){return vector.end();} );
+    } else if (direction_flag == RESIZE_RIGHT) {
+      add_empty_cols(delta, [](Row& vector) { return vector.end(); } );
     }
   }
 
@@ -182,7 +194,7 @@ private: // methods
       }
     }
 
-    for (size_t i = 0; i < empty_cols.size();i++) {
+    for (size_t i = 0; i < empty_cols.size(); i++) {
       _cells[i].insert(pos(_cells[i]),
                        empty_cols[i].begin(), empty_cols[i].end());
     }
