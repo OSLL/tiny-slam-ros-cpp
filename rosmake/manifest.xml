@@ -1,15 +1,13 @@
 <package>
-  <description brief="tiny_slam">  </description>
+  <description brief="tiny_slam">tinySLAM C++ implementation</description>
   <author>OSLL</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://wiki.ros.org/tiny_slam</url>
   <depend package="std_msgs"/>
   <depend package="sensor_msgs"/>
+  <depend package="nav_msgs"/>
   <depend package="roscpp"/>
   <depend package="tf"/>
   <depend package="message_filters"/>
-  <depend package="rosbag_storage"/>
 </package>
-
-
