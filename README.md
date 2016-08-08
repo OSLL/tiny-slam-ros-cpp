@@ -1,7 +1,96 @@
-Copyright (c) 2016 JetBrains Research, Mobile Robot Algorithms Laboratory
+## tiny_slam (kinetic) - 0.1.2-0
 
-Authors: Artur Huletski, Dmitriy Kartashov
-TinySLAM C++ implementation for ROS
+The packages in the `tiny_slam` repository were released into the `kinetic` distro by running `/usr/bin/bloom-release tiny_slam --track kinetic --rosdistro kinetic` on `Fri, 05 Aug 2016 12:20:55 -0000`
+
+The `tiny_slam` package was released.
+
+Version of package(s) in repository `tiny_slam`:
+
+- upstream repository: https://github.com/OSLL/tiny-slam-ros-cpp.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `0.1.2-0`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.38`
+
+
+## tiny_slam (jade) - 0.1.2-2
+
+The packages in the `tiny_slam` repository were released into the `jade` distro by running `/usr/bin/bloom-release tiny_slam --track jade --rosdistro jade` on `Fri, 05 Aug 2016 12:13:59 -0000`
+
+The `tiny_slam` package was released.
+
+Version of package(s) in repository `tiny_slam`:
+
+- upstream repository: https://github.com/OSLL/tiny-slam-ros-cpp.git
+- release repository: https://github.com/OSLL/tiny-slam-ros-release.git
+- rosdistro version: `0.1.2-1`
+- old version: `0.1.2-1`
+- new version: `0.1.2-2`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.38`
+
+
+## git@github.com:OSLL/tiny_slam-release.git (jade) - 0.1.2-1
+
+The packages in the `git@github.com:OSLL/tiny_slam-release.git` repository were released into the `jade` distro by running `/usr/bin/bloom-release --rosdistro jade --track jade git@github.com:OSLL/tiny_slam-release.git` on `Fri, 15 Jul 2016 20:44:23 -0000`
+
+The `tiny_slam` package was released.
+
+Version of package(s) in repository `git@github.com:OSLL/tiny_slam-release.git`:
+
+- upstream repository: https://github.com/OSLL/tiny-slam-ros-cpp.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `0.1.2-0`
+- new version: `0.1.2-1`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.38`
+
+
+## git@github.com:OSLL/tiny_slam-release.git (jade) - 0.1.2-0
+
+The packages in the `git@github.com:OSLL/tiny_slam-release.git` repository were released into the `jade` distro by running `/usr/bin/bloom-release --rosdistro jade --track jade git@github.com:OSLL/tiny_slam-release.git` on `Fri, 15 Jul 2016 20:38:08 -0000`
+
+The `tiny_slam` package was released.
+
+Version of package(s) in repository `git@github.com:OSLL/tiny_slam-release.git`:
+
+- upstream repository: https://github.com/OSLL/tiny-slam-ros-cpp.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `0.1.2-0`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.38`
+
+
+### TinySLAM C++ implementation for ROS
 
 [![Build Status](http://build.ros.org/buildStatus/icon?job=Jdoc__tiny_slam__ubuntu_trusty_amd64)](http://build.ros.org/job/Jdoc__tiny_slam__ubuntu_trusty_amd64/)
 
@@ -57,4 +146,12 @@ The initial probability of cell to be empty (i.e. the probability of out of rang
 ### Provided tf Transforms
 *map → robot_pose*: the current estimate of the robot's pose within the map frame 
 
+### Credentials
 
+Copyright (c) 2016 JetBrains Research, Mobile Robot Algorithms Laboratory
+
+Contributors:
+
+  - Artur Huletski
+  - Dmitriy Kartashov
+  - Kirill Krinkin
