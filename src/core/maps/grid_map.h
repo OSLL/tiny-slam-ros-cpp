@@ -17,16 +17,14 @@ private: //flag constants
   const int RESIZE_FWD     = 0;
   const int RESIZE_BWD     = 1;
   const int RESIZE_DIR_BIT = 0;
-#define RESIZE_DIR_BUILD(DIM,DIM_BIT,DIR,DIR_BIT) \
-  ((DIM) << (DIM_BIT)) | ((DIR) << (DIR_BIT))
-  const int RESIZE_UP    = RESIZE_DIR_BUILD(RESIZE_VERT,RESIZE_DIM_BIT,
-                                            RESIZE_FWD,RESIZE_DIR_BIT);
-  const int RESIZE_DOWN  = RESIZE_DIR_BUILD(RESIZE_VERT,RESIZE_DIM_BIT,
-                                            RESIZE_BWD,RESIZE_DIR_BIT);
-  const int RESIZE_RIGHT = RESIZE_DIR_BUILD(RESIZE_HORZ,RESIZE_DIM_BIT,
-                                            RESIZE_FWD,RESIZE_DIR_BIT);
-  const int RESIZE_LEFT  = RESIZE_DIR_BUILD(RESIZE_HORZ,RESIZE_DIM_BIT,
-                                            RESIZE_BWD,RESIZE_DIR_BIT);
+
+  #define RESIZE_DIR(DIM,DIR)                            \
+    ((DIM) << RESIZE_DIM_BIT) | ((DIR) << RESIZE_DIR_BIT)
+
+  const int RESIZE_UP    = RESIZE_DIR(RESIZE_VERT, RESIZE_FWD);
+  const int RESIZE_DOWN  = RESIZE_DIR(RESIZE_VERT, RESIZE_BWD);
+  const int RESIZE_RIGHT = RESIZE_DIR(RESIZE_HORZ, RESIZE_FWD);
+  const int RESIZE_LEFT  = RESIZE_DIR(RESIZE_HORZ, RESIZE_BWD);
 public: // typedefs
   using Cell = std::shared_ptr<GridCell>;
 private: // typedefs
@@ -58,12 +56,18 @@ public:
 
   const std::vector<std::vector<Cell>> cells() const { return _cells; }
 
+  #define INDEX_J(cell_coord)     \
+      (cell_coord.x) + _map_center_x
+  #define INDEX_I(cell_coord)     \
+      (cell_coord.y) + _map_center_y
+
   void update_cell(const DiscretePoint2D& cell_coord,
                    const Occupancy &new_value, double quality = 1.0) {
     // TODO: bounds check
     update_size(cell_coord);
-    int row = cell_coord.y + _map_center_y;
-    int col = cell_coord.x + _map_center_x;
+
+    int row = INDEX_I(cell_coord);
+    int col = INDEX_J(cell_coord);
     _cells[row][col]->set_value(new_value, quality);
   }
 
@@ -71,16 +75,15 @@ public:
     if (!has_cell(cell_coord))
       return _unvisited_cell->value();
 
-    int row = cell_coord.y+_map_center_y;
-    int col = cell_coord.x+_map_center_x;
-    return _cells[row][col]->value();
+    return _cells[INDEX_I(cell_coord)][INDEX_J(cell_coord)]->value();
   }
 
   DiscretePoint2D world_to_cell(double x, double y) const {
-    int cell_x = std::floor(x/_m_per_cell);
-    int cell_y = std::floor(y/_m_per_cell);
+    #define METERS_TO_CELLS(var) \
+      std::floor((var)/_m_per_cell)
 
-    return DiscretePoint2D(cell_x, cell_y);
+    return DiscretePoint2D(METERS_TO_CELLS(x), METERS_TO_CELLS(y));
+    #undef METERS_TO_CELLS
   }
 
   double cell_scale() const { return _m_per_cell; }
@@ -95,34 +98,32 @@ public:
   }
 
   /*!
-   * Returns the column number in container -
+   * Returns the column index in container -
    * the \f$x\f$ coordinate of the map center
    */
   int map_center_x() const {return _map_center_x;}
   /*!
-   * Returns the row number in container -
+   * Returns the row index in container -
    * the \f$y\f$ coordinate of the map center
    */
   int map_center_y() const {return _map_center_y;}
 
 private: // methods
   bool has_cell(const DiscretePoint2D& cell_coord) const {
-    return 0 <= (cell_coord.x + _map_center_x)          &&
-                (cell_coord.x + _map_center_x) < _width &&
-           0 <= (cell_coord.y + _map_center_y)          &&
-                (cell_coord.y + _map_center_y) < _height;
+    return 0 <= INDEX_J(cell_coord) && INDEX_J(cell_coord) < _width &&
+           0 <= INDEX_I(cell_coord) && INDEX_I(cell_coord) < _height;
   }
-
 
   void update_size(const DiscretePoint2D& cell_coord) {
     resize_bound(RESIZE_HORZ, cell_coord.x+_map_center_x);
     resize_bound(RESIZE_VERT, cell_coord.y+_map_center_y);
   }
 
-  void resize_bound(const int res_dim, const int container_coord) {
-    if (res_dim != RESIZE_HORZ && res_dim != RESIZE_VERT)
+  void resize_bound(const int dim, const int container_coord) {
+    if (dim != RESIZE_HORZ && dim != RESIZE_VERT)
       return;
-    int bound = (res_dim == RESIZE_HORZ ? width() : height());
+
+    int bound = (dim == RESIZE_HORZ ? width() : height());
     //find if it needs to resize map
     int new_bound = calc_sufficient_bound(container_coord, bound);
     if (new_bound == bound)
@@ -130,8 +131,7 @@ private: // methods
     //expands map with the exponential rule
     // states are +100%, +300%, +700% etc ( -100% + [2^n*100%] )
     int expand_coef = closest_bounded_power_two(new_bound/bound) - 1;
-    resize_in_direction(expand_coef*bound,
-                        res_dim<<RESIZE_DIM_BIT | (container_coord<0) );
+    resize_in_direction(expand_coef*bound,RESIZE_DIR(dim,container_coord<0) );
   }
 
   int calc_sufficient_bound(const int container_coord, const int map_bound) {
@@ -156,7 +156,6 @@ private: // methods
   }
 
   void resize_in_direction(const int delta, const int direction_flag) {
-
     if (delta <= 0)
       return;
 
@@ -166,40 +165,40 @@ private: // methods
     } else if (direction_flag == RESIZE_UP) {
       add_empty_rows(delta, _cells.end());
     } else if (direction_flag == RESIZE_LEFT) {
-      add_empty_cols(delta, [](Row& vector) { return vector.begin(); } );
+      add_empty_cols(delta, [](Row& vector) { return vector.begin(); });
       _map_center_x += delta;
     } else if (direction_flag == RESIZE_RIGHT) {
-      add_empty_cols(delta, [](Row& vector) { return vector.end(); } );
+      add_empty_cols(delta, [](Row& vector) { return vector.end(); });
     }
   }
 
-  void add_empty_rows(const int expand_value, Map::iterator pos) {
-    Map empty_rows(expand_value, Row(width()));
-    for (auto& row : empty_rows) {
+  void add_empty_rows(const int expand_value, Map::iterator it) {
+    Map zero_rows(expand_value, Row(width()));
+    for (auto& row : zero_rows) {
       for (auto& cell : row) {
         cell = _cell_factory->create_cell();
       }
     }
-
-    _cells.insert(pos, empty_rows.begin(), empty_rows.end());
+    _cells.insert(it, zero_rows.begin(), zero_rows.end());
     _height += expand_value;
   }
 
   void add_empty_cols(const int expand_value,
-                      std::function<Row::iterator(Row&)> pos) {
-    Map empty_cols(height(), Row(expand_value));
-    for (auto& row : empty_cols) {
+                      std::function<Row::iterator(Row&)> it) {
+    Map zero_cols(height(), Row(expand_value));
+    for (auto& row : zero_cols) {
       for (auto& cell : row) {
         cell = _cell_factory->create_cell();
       }
     }
-
-    for (size_t i = 0; i < empty_cols.size(); i++) {
-      _cells[i].insert(pos(_cells[i]),
-                       empty_cols[i].begin(), empty_cols[i].end());
+    for (size_t i = 0; i < zero_cols.size(); i++) {
+      _cells[i].insert(it(_cells[i]), zero_cols[i].begin(), zero_cols[i].end());
     }
     _width += expand_value;
   }
+  #undef INDEX_I
+  #undef INDEX_J
+  #undef RESIZE_DIR
 private: // fields
   int _width, _height;
   int _map_center_x, _map_center_y;
