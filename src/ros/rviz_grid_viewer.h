@@ -55,8 +55,8 @@ public: // method
     map_msg.info.resolution = map.scale();
     // move map to the middle
     nav_msgs::MapMetaData &info = map_msg.info;
-    info.origin.position.x = -info.resolution * info.height / 2;
-    info.origin.position.y = -info.resolution * info.width  / 2;
+    info.origin.position.x = -info.resolution * map.map_center_x();
+    info.origin.position.y = -info.resolution * map.map_center_y();
     info.origin.position.z = 0;
 
     for (const auto &row : map.cells()) {
