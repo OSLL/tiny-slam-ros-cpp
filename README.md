@@ -1,7 +1,4 @@
-Copyright (c) 2016 JetBrains Research, Mobile Robot Algorithms Laboratory
-
-Authors: Artur Huletski, Dmitriy Kartashov
-TinySLAM C++ implementation for ROS
+### TinySLAM C++ implementation for ROS
 
 [![Build Status](http://build.ros.org/buildStatus/icon?job=Jdoc__tiny_slam__ubuntu_trusty_amd64)](http://build.ros.org/job/Jdoc__tiny_slam__ubuntu_trusty_amd64/)
 
@@ -57,4 +54,10 @@ The initial probability of cell to be empty (i.e. the probability of out of rang
 ### Provided tf Transforms
 *map → robot_pose*: the current estimate of the robot's pose within the map frame 
 
+### Contributors
 
+  - Artur Huletski 
+  - Dmitriy Kartashov
+  - Kirill Krinkin
+
+Copyright (c) 2016 JetBrains Research, Mobile Robot Algorithms Laboratory
