@@ -119,13 +119,11 @@ public:
   }
 
   /*!
-   * Returns the column index in container -
-   * the \f$x\f$ coordinate of the map center
+   * Returns the \f$x\f$ coordinate of the map center
    */
   int map_center_x() const { return _map_center_x; }
   /*!
-   * Returns the row index in container -
-   * the \f$y\f$ coordinate of the map center
+   * Returns the \f$y\f$ coordinate of the map center
    */
   int map_center_y() const { return _map_center_y; }
 
