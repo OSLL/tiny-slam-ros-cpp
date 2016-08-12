@@ -81,9 +81,23 @@ public: //methods
   virtual Occupancy estimate_occupancy(const Beam &beam,
                                        const Rectangle &cell_bnds,
                                        bool is_occ) override {
+    if(!beam_intersects_cell(beam, cell_bnds)){
+      return Occupancy(is_occ, 0);
+    }
+    if(beam_encounters_cell(beam,cell_bnds)){
+      return is_occ ? Occupancy(1, 0.1) : Occupancy(0.01, 0.1);
+    }
+    if(beam_reaches_bound_passing_through(beam, cell_bnds)){
+      return is_occ ? Occupancy(0.1, 0.1) : Occupancy(0.01, 0.9);
+    }
+
     Intersections intrs = find_intersections(beam, cell_bnds, is_occ);
     double chunk_area = compute_chunk_area(beam, cell_bnds, is_occ, intrs);
-    return estimate_occupancy(chunk_area, cell_bnds.area(), is_occ);
+    Occupancy result = estimate_occupancy(chunk_area, cell_bnds.area(), is_occ);
+    if (beam_tangents_cell(beam,cell_bnds)){
+      result.prob_occ = 0.01;
+    }
+    return result;
   }
 
 private: // methods
@@ -188,6 +202,103 @@ private: // methods
       return Occupancy{base_empty_prob(), area_rate};
     }
   }
+
+  #define X_END beam.x_end
+  #define X_ST beam.x_st
+  #define Y_END beam.y_end
+  #define Y_ST beam.y_st
+  #define LEFT cell_bnds.left
+  #define RIGHT cell_bnds.right
+  #define BOT cell_bnds.bot
+  #define TOP cell_bnds.top
+
+  #define min(a,b)                              \
+    ((a) < (b) ? (a) : (b))
+  #define max(a,b)                              \
+    ((a) < (b) ? (b) : (a))
+  bool beam_tangents_cell(const Beam &beam, const Rectangle &cell_bnds) {
+
+    /*if (EQ_DOUBLE(X_END, LEFT) && EQ_DOUBLE(X_ST, LEFT)) {
+      return true;
+    }
+    if (EQ_DOUBLE(Y_END, BOT )&& EQ_DOUBLE(Y_ST, BOT)) {
+     return true;
+          }
+    if (EQ_DOUBLE(X_END, LEFT) && EQ_DOUBLE(Y_END, BOT)) {
+      return !(X_ST < LEFT && Y_END < BOT);
+    }
+    return false;*/
+
+    return ((EQ_DOUBLE(X_END, LEFT) && EQ_DOUBLE(X_ST, LEFT)) ||
+           (EQ_DOUBLE(Y_END, BOT )&& EQ_DOUBLE(Y_ST, BOT)) ||
+           ((EQ_DOUBLE(X_END, LEFT) && EQ_DOUBLE(Y_END, BOT)) &&
+             !(X_ST < LEFT && Y_END < BOT)));
+    // I missed you, LISP!
+    // Или оставить то, что было выше?
+  }
+
+  bool beam_encounters_cell(const Beam &beam, const Rectangle &cell_bnds) {
+    bool is_on_board = cell_bnds.contains_on_board(beam.x_end, beam.y_end);
+      return  is_on_board &&
+             (!beam_tangents_cell(beam,cell_bnds)) &&
+             ((Y_END == BOT && (Y_ST < BOT) && (!EQ_DOUBLE(X_END,RIGHT))) ||
+             ((X_END == LEFT && (X_ST < LEFT)) && (!EQ_DOUBLE(Y_END,TOP))));
+  }
+
+  bool beam_reaches_bound_passing_through(const Beam &beam,
+                                          const Rectangle &cell_bnds) {
+    bool is_on_board = cell_bnds.contains_on_board(beam.x_end, beam.y_end);
+    return is_on_board && !beam_tangents_cell(beam, cell_bnds) &&
+           !beam_encounters_cell(beam, cell_bnds);
+  }
+
+  #define SET_FLAG(x,y,flag) \
+    if((x) < (LEFT))  (flag) |= 2;               \
+    if((RIGHT) < (x)) (flag) |= 1;              \
+    if((y) < (BOT))   (flag) |= 4;                \
+    if((TOP) < (y))   (flag) |= 8;
+public:
+  bool beam_intersects_cell(const Beam &beam, const Rectangle &cell_bnds) {
+    /*int start_point_flag = 0;
+    int end_point_flag = 0;
+    SET_FLAG(X_ST, Y_ST, start_point_flag)
+    SET_FLAG(X_END, Y_END, end_point_flag)
+
+    if (start_point_flag & end_point_flag){
+      return false;
+    }*/
+    Ray ray(X_ST, X_END-X_ST, Y_ST, Y_END-Y_ST);
+    Intersections intersections;
+    ray.intersect_horiz_segm(LEFT, RIGHT, TOP,
+                                 IntersLocation::Top, intersections);
+    ray.intersect_horiz_segm(LEFT, RIGHT, BOT,
+                                 IntersLocation::Bot, intersections);
+    ray.intersect_vert_segm(BOT, TOP, LEFT,
+                                IntersLocation::Left, intersections);
+    ray.intersect_vert_segm(BOT, TOP, RIGHT,
+                                IntersLocation::Right, intersections);
+    bool result = false;
+    for (auto i : intersections){
+      result |= (((X_ST - i.x) * (X_END - i.x)) < 0) ||
+                (((Y_ST - i.y) * (Y_END - i.y)) < 0) ||
+                (EQ_DOUBLE(i.x, LEFT) && EQ_DOUBLE(i.y, BOT));
+      if ((EQ_DOUBLE(i.x, X_END) && EQ_DOUBLE(X_END, LEFT) && !EQ_DOUBLE(Y_END, TOP)) ||
+          (EQ_DOUBLE(i.y, Y_END) && EQ_DOUBLE(Y_END, BOT) && !EQ_DOUBLE(X_END, RIGHT))) {
+        result = true;
+      }
+    }
+    return result;
+  }
+#undef X_END
+#undef X_ST
+#undef Y_END
+#undef Y_ST
+#undef LEFT
+#undef RIGHT
+#undef BOT
+#undef TOP
+#undef min
+#undef max
 };
 
 #endif
