@@ -42,7 +42,7 @@ private: // types
 
     void intersect_horiz_segm(double st_x, double end_x, double y,
                               IntersLocation loc, Intersections &consumer) {
-      if (EQ_DOUBLE(y_delta, 0))
+      if (equal(y_delta, 0))
         return;
 
       double inters_alpha = (y - y_st) / y_delta;
@@ -55,7 +55,7 @@ private: // types
 
     void intersect_vert_segm(double st_y, double end_y, double x,
                              IntersLocation loc, Intersections &consumer) {
-      if (EQ_DOUBLE(x_delta, 0))
+      if (equal(x_delta, 0))
         return;
 
       double inters_alpha = (x - x_st) / x_delta;
@@ -218,36 +218,21 @@ private: // methods
     ((a) < (b) ? (b) : (a))
   bool beam_tangents_cell(const Beam &beam, const Rectangle &cell_bnds) {
 
-    /*if (EQ_DOUBLE(X_END, LEFT) && EQ_DOUBLE(X_ST, LEFT)) {
-      return true;
-    }
-    if (EQ_DOUBLE(Y_END, BOT )&& EQ_DOUBLE(Y_ST, BOT)) {
-     return true;
-          }
-    if (EQ_DOUBLE(X_END, LEFT) && EQ_DOUBLE(Y_END, BOT)) {
-      return !(X_ST < LEFT && Y_END < BOT);
-    }
-    return false;*/
+    return equal(X_END,X_ST,LEFT) || equal(Y_END,Y_ST,BOT);
 
-    return ((EQ_DOUBLE(X_END, LEFT) && EQ_DOUBLE(X_ST, LEFT)) ||
-           (EQ_DOUBLE(Y_END, BOT )&& EQ_DOUBLE(Y_ST, BOT)) ||
-           ((EQ_DOUBLE(X_END, LEFT) && EQ_DOUBLE(Y_END, BOT)) &&
-             !(X_ST < LEFT && Y_END < BOT)));
-    // I missed you, LISP!
-    // Или оставить то, что было выше?
   }
 
   bool beam_encounters_cell(const Beam &beam, const Rectangle &cell_bnds) {
-    bool is_on_board = cell_bnds.contains_on_board(beam.x_end, beam.y_end);
+    bool is_on_board = cell_bnds.is_on_border(beam.x_end, beam.y_end);
       return  is_on_board &&
              (!beam_tangents_cell(beam,cell_bnds)) &&
-             ((Y_END == BOT && (Y_ST < BOT) && (!EQ_DOUBLE(X_END,RIGHT))) ||
-             ((X_END == LEFT && (X_ST < LEFT)) && (!EQ_DOUBLE(Y_END,TOP))));
+             ((Y_END == BOT && (Y_ST < BOT) && (!equal(X_END,RIGHT))) ||
+             ((X_END == LEFT && (X_ST < LEFT)) && (!equal(Y_END,TOP))));
   }
 
   bool beam_reaches_bound_passing_through(const Beam &beam,
                                           const Rectangle &cell_bnds) {
-    bool is_on_board = cell_bnds.contains_on_board(beam.x_end, beam.y_end);
+    bool is_on_board = cell_bnds.is_on_border(beam.x_end, beam.y_end);
     return is_on_board && !beam_tangents_cell(beam, cell_bnds) &&
            !beam_encounters_cell(beam, cell_bnds);
   }
@@ -281,9 +266,9 @@ public:
     for (auto i : intersections){
       result |= (((X_ST - i.x) * (X_END - i.x)) < 0) ||
                 (((Y_ST - i.y) * (Y_END - i.y)) < 0) ||
-                (EQ_DOUBLE(i.x, LEFT) && EQ_DOUBLE(i.y, BOT));
-      if ((EQ_DOUBLE(i.x, X_END) && EQ_DOUBLE(X_END, LEFT) && !EQ_DOUBLE(Y_END, TOP)) ||
-          (EQ_DOUBLE(i.y, Y_END) && EQ_DOUBLE(Y_END, BOT) && !EQ_DOUBLE(X_END, RIGHT))) {
+                (equal(i.x, LEFT) && equal(i.y, BOT));
+      if ((equal(i.x, X_END) && equal(X_END, LEFT) && !equal(Y_END, TOP)) ||
+          (equal(i.y, Y_END) && equal(Y_END, BOT) && !equal(X_END, RIGHT))) {
         result = true;
       }
     }

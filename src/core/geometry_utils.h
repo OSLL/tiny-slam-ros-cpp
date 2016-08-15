@@ -11,11 +11,34 @@
 #include <cmath>
 
 
-#define EQ_DOUBLE(a, b)                         \
-  (std::abs((a) - (b)) < 0.0001)
+inline bool equal(double a, double b) {
+  return (std::abs((a) - (b)) < 0.0001);
+}
 
-#define EQ_LOW_DOUBLE(a, b)                     \
-  (((a) < (b)) || EQ_DOUBLE(a, b))
+inline bool equal(double a, double b, double c) {
+  return (equal(a,b) && equal(a,c));
+}
+
+inline bool less_or_equal(double a, double b) {
+  return (equal(a,b) || (a < b));
+}
+
+inline bool is_between(double point, double left, double right) {
+  return (less_or_equal(left, point) && less_or_equal(point, right)) ||
+      (less_or_equal(right, point) && less_or_equal(point, left));
+}
+
+inline bool is_between_with_left(double point, double left, double right) {
+  return less_or_equal(left, point) && (point < right);
+}
+
+inline bool both_less(double x, double y, double threshold) {
+  return (x < threshold) && (y < threshold);
+}
+
+inline bool both_higher(double x, double y, double threshold) {
+  return (threshold < x) && (threshold < y);
+}
 
 /**
  * \brief Defines an axis-aligned rectangle.
@@ -42,14 +65,15 @@ struct Rectangle {
    * \return True if the rectangle contains a point and False otherwise.
    */
   bool contains(double x, double y) const {
-    return (EQ_LOW_DOUBLE(bot, y) && (y < top)) && (EQ_LOW_DOUBLE(left, x) && (x < right));
+    return (less_or_equal(bot, y) && less_or_equal(y, top)) &&
+           (less_or_equal(left, x) && less_or_equal(x, right));
   }
 
-  bool contains_on_board(double x, double y) const {
-    return ((EQ_DOUBLE(x, left) && EQ_LOW_DOUBLE((bot - y)*(top - y), 0)) ||
-            (EQ_DOUBLE(x, right) && EQ_LOW_DOUBLE((bot - y)*(top - y), 0)) ||
-            (EQ_DOUBLE(y, top) && EQ_LOW_DOUBLE((left - x)*(right - x), 0)) ||
-            (EQ_DOUBLE(y, bot) && EQ_LOW_DOUBLE((left - x)*(right - x), 0)));
+  bool is_on_border(double x, double y) const {
+    return ((equal(x, left) && less_or_equal((bot - y)*(top - y), 0)) ||
+            (equal(x, right) && less_or_equal((bot - y)*(top - y), 0)) ||
+            (equal(y, top) && less_or_equal((left - x)*(right - x), 0)) ||
+            (equal(y, bot) && less_or_equal((left - x)*(right - x), 0)));
   }
   /**
    * Returns an area of a rectangle.
