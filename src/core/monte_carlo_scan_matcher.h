@@ -1,3 +1,13 @@
+/**
+ * \file
+ * \brief Defines the class of Scan matcher that uses Mote-Carlo method
+ * There is class MonteCarloScanMatcher derived from GridScanMatcher. Class
+ * contains virtual methods that should be overwritten. The main method
+ * consists of loop that estimates the best position of robot that fits to
+ * data from laser scan.
+ */
+
+
 #ifndef __MONTE_CARLO_SCAN_MATCHER_H
 #define __MONTE_CARLO_SCAN_MATCHER_H
 
@@ -10,15 +20,39 @@
 #include "grid_scan_matcher.h"
 
 // TODO: move publish transform to observer
+
+/**
+ * \brief Scan Matcher based on the Monte Carlo method.
+ * The focus of the scan matcher is to compare a scan and a built map; in this
+ * class the method of scan comparison is performed by comparing corresponding
+ * scan costs.
+ */
 class MonteCarloScanMatcher : public GridScanMatcher {
 public:
   using ObsPtr = std::shared_ptr<GridScanMatcherObserver>;
 public:
+
+  /**
+   * \brief Initializes the scan matcher with a certain scan cost estimator.
+   * \param estimator An estimator of Scan Cost.
+   * \param failed_iter A limit of generated samples that have a higher cost
+   * comparing with the best estimated pose.
+   * \param max_iter A maximum number of hypothesis to be tested.
+   */
   MonteCarloScanMatcher(std::shared_ptr<ScanCostEstimator> estimator,
                         unsigned failed_iter, unsigned max_iter):
     GridScanMatcher{estimator},
     _failed_tries_limit(failed_iter), _total_tries_limit(max_iter) {}
 
+  /**
+   * Estimates the most probable position according to a given scan;
+   * the greater this probability, the lower cost of the scan.
+   * \param init_pose The first approxiamtion of pose.
+   * \param scan A current scan.
+   * \param map A current GridMap.
+   * \param pose_delta An output parameter of the best pose_delta.
+   * \return The lowest scan cost that corresponds to output pose_delta.
+   */
   virtual double process_scan(const RobotState &init_pose,
                       const TransformedLaserScan &scan,
                       const GridMap &map,
@@ -77,7 +111,17 @@ public:
   }
 
 protected:
+  /**
+   * Generates the pose of a robot in a vicinity of a base pose.
+   * \param base_pose A basical pose of a robot.
+   */
   virtual void sample_pose(RobotState &base_pose) = 0;
+
+  /**
+   * A callback invoked when a better estimate is found.
+   * \param sample_num Amount of tries that were complited.
+   * \param sample_limit Totla amount of tries allowed.
+   */
   virtual unsigned on_estimate_update(unsigned sample_num,
                                       unsigned sample_limit) = 0;
 

@@ -10,11 +10,24 @@
 #include "../core/state_data.h"
 #include "../core/maps/grid_map.h"
 
+/**
+ * \brief The class publishes information about robot's map and location
+ *  in ROS-compatible format so it can be shown by rviz.
+ */
 class RvizGridViewer {
 public: // method
+
+/**
+ * Initializes a map and robot's position publisher.
+ * \param pub A map publisher to ROS.
+ */
   RvizGridViewer(ros::Publisher pub, const double show_map_rate) :
     _map_pub(pub), map_publishing_rate(show_map_rate) {}
 
+/**
+ * Publishes a robot state as TF message.
+ * \param r A robot state in internal format.
+ */
   void show_robot_pose(const RobotState &r) {
     tf::Transform t;
     t.setOrigin(tf::Vector3(r.x, r.y, 0.0));
@@ -26,6 +39,10 @@ public: // method
                            "odom_combined", "robot_pose"));
   }
 
+/**
+ * Publishes given GridMap as a ROS message.
+ * \param map A grid map in framework's internal format.
+ */
   void show_map(const GridMap &map) {
     // TODO: move map publishing rate to parameter
     if ((ros::Time::now() - _last_pub_time).toSec() < map_publishing_rate) {
@@ -39,8 +56,8 @@ public: // method
     map_msg.info.resolution = map.scale();
     // move map to the middle
     nav_msgs::MapMetaData &info = map_msg.info;
-    info.origin.position.x = -info.resolution * info.height / 2;
-    info.origin.position.y = -info.resolution * info.width  / 2;
+    info.origin.position.x = -info.resolution * map.map_center_x();
+    info.origin.position.y = -info.resolution * map.map_center_y();
     info.origin.position.z = 0;
 
     for (const auto &row : map.cells()) {

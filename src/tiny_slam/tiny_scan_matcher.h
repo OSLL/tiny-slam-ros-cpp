@@ -6,16 +6,34 @@
 #include "../core/monte_carlo_scan_matcher.h"
 #include "tiny_scan_cost_estimator.h"
 
+/*!
+ * \brief The scan matcher based on the Monte Carlo simulation.
+ *
+ * The robot pose is updated by shifting it on a random vector and
+ * rotation by a random angle. The vector distribution is dynamically adjusted.
+ */
 class TinyScanMatcher : public MonteCarloScanMatcher {
 private:
   using ScePtr = std::shared_ptr<ScanCostEstimator>;
 public:
+  /*!
+   * Initializes the scan matcher.
+   * \param[in] cost_estimator - the type of estimator for the robot location.
+   * \param[in] bad_iter, max_iter - see <b>failed_iter</b>, <b>max_iter</b> in
+   *                                 MonteCarloScanMatcher
+   * \param[in] sigma_coord, sigma_angle - the \f$\sigma\f$ value of a normal
+   *                                      distribution for the random variables.
+   *                   (\f$\Delta x\f$, \f$\Delta y\f$ and \f$\Delta \theta\f$).
+   */
   TinyScanMatcher(ScePtr cost_estimator, unsigned bad_iter, unsigned max_iter,
                   double sigma_coord, double sigma_angle):
    MonteCarloScanMatcher(cost_estimator, bad_iter, max_iter),
     _sigma_coord(sigma_coord), _sigma_angle(sigma_angle),
     _curr_sigma_coord(_sigma_coord), _curr_sigma_angle(_sigma_angle) {}
 
+  /*!
+   * Resets the scan matcher to the state it had right after the initialization.
+   */
   virtual void reset_state() override {
     _curr_sigma_coord = _sigma_coord;
     _curr_sigma_angle = _sigma_angle;

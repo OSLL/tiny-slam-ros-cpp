@@ -5,10 +5,10 @@ project(tiny_slam)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  sensor_msgs
+  nav_msgs
   tf
   message_filters
-  sensor_msgs
-  rosbag_storage
 )
 
 catkin_package()
@@ -18,4 +18,3 @@ include_directories(${catkin_INCLUDE_DIRS})
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 
 target_link_libraries(tiny_slam ${catkin_LIBRARIES})
-

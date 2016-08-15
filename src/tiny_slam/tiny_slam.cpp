@@ -1,3 +1,12 @@
+/*!
+ * \file
+ * \brief The ROS node implementation that provides the tinySLAM method.
+ *
+ * There are an entry point and functions which parse the initialization file.\n
+ * There is also a declaration of one class
+ * (PoseScanMatcherObserver is inherited from GridScanMatcherObserver).
+ */
+
 #include <iostream>
 #include <ros/ros.h>
 #include <sensor_msgs/LaserScan.h>
@@ -18,13 +27,27 @@
 #include "tiny_world.h"
 #include "tiny_grid_cells.h"
 
+/*!
+ * \brief Derived class from GridScanMatcherObserver to publish the robot pose.
+ *
+ * This class provides functions to publish the robot pose in a ROS topic.
+ */
 class PoseScanMatcherObserver : public GridScanMatcherObserver {
 public:
+
+  /*!
+   * Publishes the robot pose tested by the scan matcher at the moment.
+   * \param[in] pose - the robot location in the space.
+   */
   virtual void on_scan_test(const RobotState &pose,
                             const TransformedLaserScan &scan,
                             double score) override {
     publish_transform("sm_curr_pose", pose);
   }
+  /*!
+   * Publishes the best found robot pose.
+   * \param[in] pose - the robot location in the space.
+   */
   virtual void on_pose_update(const RobotState &pose,
                               const TransformedLaserScan &scan,
                               double score) override {
@@ -36,6 +59,11 @@ private:
     }
 };
 
+/*!
+ * Determines the cell factory based on parameters came from a launch file.
+ * \param[in] params - values from the launch file.
+ * \return The pointer (shared) to a created factory of grid cells.
+ */
 std::shared_ptr<GridCellFactory> init_cell_factory(TinyWorldParams &params) {
   std::string cell_type;
   ros::param::param<std::string>("~cell_type", cell_type, "avg");
@@ -54,6 +82,11 @@ std::shared_ptr<GridCellFactory> init_cell_factory(TinyWorldParams &params) {
   }
 }
 
+/*!
+ * Determines the estimator based on parameters came from a launch file.
+ * \param[in] params - values from a launch file.
+ * \return The pointer (shared) to a created estimator of a map cost.
+ */
 std::shared_ptr<CellOccupancyEstimator> init_occ_estimator() {
   double occ_prob, empty_prob;
   ros::param::param<double>("~base_occupied_prob", occ_prob, 0.95);
@@ -73,12 +106,20 @@ std::shared_ptr<CellOccupancyEstimator> init_occ_estimator() {
   }
 }
 
+/*!
+ * Returns how to deal with exceeding values based on parameters came
+ * from a launch file.
+ */
 bool init_skip_exceeding_lsr() {
   bool param_value;
   ros::param::param<bool>("~skip_exceeding_lsr_vals", param_value, false);
   return param_value;
 }
 
+/**
+ * Initializes constants for scan matcher
+ * \return The structure contains requied paramteres
+ */
 TinyWorldParams init_common_world_params() {
   double sig_XY, sig_T, width;
   int lim_bad, lim_totl;
@@ -91,6 +132,10 @@ TinyWorldParams init_common_world_params() {
   return TinyWorldParams(sig_XY, sig_T, lim_bad, lim_totl, width);
 }
 
+/**
+ * Initializes constants for map
+ * \return The structure contains requied paramteres
+ */
 GridMapParams init_grid_map_params() {
   GridMapParams params;
   ros::param::param<double>("~map_height_in_meters", params.height, 20);
@@ -100,6 +145,10 @@ GridMapParams init_grid_map_params() {
   return params;
 }
 
+/**
+ * Initializes constants for ros utils
+ * \return Requied parameters
+ */
 void init_constants_for_ros(double &ros_tf_buffer_size,
                             double &ros_map_rate,
                             int &ros_filter_queue,
@@ -110,6 +159,9 @@ void init_constants_for_ros(double &ros_tf_buffer_size,
   ros::param::param<int>("~ros_subscribers_queue_size",ros_subscr_queue,1000);
 }
 
+/*!
+ * The entry point: creates an environment world and the main node "tiny slam".
+ */
 int main(int argc, char** argv) {
   ros::init(argc, argv, "tinySLAM");
 
