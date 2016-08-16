@@ -21,10 +21,10 @@ struct Occupancy {
   }
   void setNan(){
     prob_occ = std::numeric_limits<double>::quiet_NaN();
-    estimation_quality = std::numeric_limits<double>::quiet_NaN();
+    estimation_quality = 0.01;
   }
   bool isNan(){
-    return std::isnan(prob_occ) || std::isnan(estimation_quality);
+    return std::isnan(prob_occ);
   }
 };
 
@@ -42,7 +42,7 @@ struct Beam {
 
   bool intersects_rect(const Rectangle& bnds) {
     bool result = false;
-    if(bnds.contains(x_st,y_st) || bnds.contains(y_st,y_end)) {
+    if(bnds.contains(x_st,y_st) || bnds.contains(x_end,y_end)) {
       return true;
     }
     if (equal(x_st, x_end)) {

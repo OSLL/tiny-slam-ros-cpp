@@ -81,8 +81,10 @@ public: //methods
   virtual Occupancy estimate_occupancy(const Beam &beam,
                                        const Rectangle &cell_bnds,
                                        bool is_occ) override {
+    Occupancy result(0,0);
     if(!beam_intersects_cell(beam, cell_bnds)){
-      return Occupancy(is_occ, 0);
+      result.setNan();
+      return result;
     }
     if(beam_encounters_cell(beam,cell_bnds)){
       return is_occ ? Occupancy(1, 0.1) : Occupancy(0.01, 0.1);
