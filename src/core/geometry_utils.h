@@ -28,8 +28,9 @@ inline bool is_between(double point, double left, double right) {
       (less_or_equal(right, point) && less_or_equal(point, left));
 }
 
-inline bool is_between_with_left(double point, double left, double right) {
-  return less_or_equal(left, point) && (point < right);
+inline bool is_strictly_between(double point, double left, double right) {
+  return ((left < point && point < right) ||
+        (right < point && point < left));
 }
 
 inline bool both_less(double x, double y, double threshold) {

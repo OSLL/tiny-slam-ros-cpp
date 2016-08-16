@@ -82,12 +82,12 @@ public: //methods
                                        const Rectangle &cell_bnds,
                                        bool is_occ) override {
     Occupancy result(0,0);
-    if(!beam_intersects_cell(beam, cell_bnds)){
+    if(!beam.intersects_rect(cell_bnds)){
       result.setNan();
       return result;
     }
     if(beam_encounters_cell(beam,cell_bnds)){
-      return is_occ ? Occupancy(1, 0.1) : Occupancy(0.01, 0.1);
+      return is_occ ? Occupancy(1, 1) : Occupancy(0.01, 0.1);
     }
     if(beam_reaches_bound_passing_through(beam, cell_bnds)){
       return is_occ ? Occupancy(0.1, 0.1) : Occupancy(0.01, 0.9);
@@ -95,7 +95,7 @@ public: //methods
 
     Intersections intrs = find_intersections(beam, cell_bnds, is_occ);
     double chunk_area = compute_chunk_area(beam, cell_bnds, is_occ, intrs);
-    Occupancy result = estimate_occupancy(chunk_area, cell_bnds.area(), is_occ);
+    result = estimate_occupancy(chunk_area, cell_bnds.area(), is_occ);
     if (beam_tangents_cell(beam,cell_bnds)){
       result.prob_occ = 0.01;
     }
