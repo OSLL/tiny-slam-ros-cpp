@@ -30,7 +30,7 @@ public:
   // TODO: cp, mv ctors, dtor
   /**
    * Creates a GridCell based map.
-   * \param cell_factory The factory that a creates requied type of Cell.
+   * \param cell_factory The factory that a creates a requied type of Cell.
    */
   GridMap(std::shared_ptr<GridCellFactory> cell_factory,
           const GridMapParams &init_params) :

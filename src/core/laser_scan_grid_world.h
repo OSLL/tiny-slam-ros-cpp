@@ -27,7 +27,7 @@ public: // methods
 
   /**
    * Creates a world as a Map of Grid Cells.
-   * \param gcs A shared pointer on a cell strategy.
+   * \param gcs A shared pointer to a cell strategy.
    */
   LaserScanGridWorld(std::shared_ptr<GridCellStrategy> gcs,
                      const GridMapParams &init_params) :
