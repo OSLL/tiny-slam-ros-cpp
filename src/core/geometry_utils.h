@@ -16,11 +16,11 @@ inline bool equal(double a, double b) {
 }
 
 inline bool equal(double a, double b, double c) {
-  return (equal(a,b) && equal(a,c));
+  return (equal(a, b) && equal(a, c));
 }
 
 inline bool less_or_equal(double a, double b) {
-  return (equal(a,b) || (a < b));
+  return (equal(a, b) || (a < b));
 }
 
 inline bool is_between(double point, double left, double right) {
@@ -29,8 +29,8 @@ inline bool is_between(double point, double left, double right) {
 }
 
 inline bool is_strictly_between(double point, double left, double right) {
-  return ((left < point && point < right) ||
-        (right < point && point < left));
+  return (((left < point) && (point < right)) ||
+        ((right < point) && (point < left)));
 }
 
 inline bool both_less(double x, double y, double threshold) {
@@ -66,15 +66,19 @@ struct Rectangle {
    * \return True if the rectangle contains a point and False otherwise.
    */
   bool contains(double x, double y) const {
-    return (less_or_equal(bot, y) && less_or_equal(y, top)) &&
-           (less_or_equal(left, x) && less_or_equal(x, right));
+    return (is_between(y, bot, top) && is_between(x, left, right));
   }
 
-  bool is_on_border(double x, double y) const {
-    return ((equal(x, left) && less_or_equal((bot - y)*(top - y), 0)) ||
-            (equal(x, right) && less_or_equal((bot - y)*(top - y), 0)) ||
-            (equal(y, top) && less_or_equal((left - x)*(right - x), 0)) ||
-            (equal(y, bot) && less_or_equal((left - x)*(right - x), 0)));
+  bool contains_on_border(double x, double y) const {
+    return ((equal(x, left) && is_between(y, bot, top)) ||
+            (equal(x, right) && is_between(y, bot, top)) ||
+            (equal(y, top) && is_between(x, left, right)) ||
+            (equal(y, bot) && is_between(x, left, right)));
+  }
+
+  bool contains_in_corner(double x, double y) const {
+    return ((equal(x, left) || equal(x, right)) &&
+            (equal(y, top) || equal(y, bot)));
   }
   /**
    * Returns an area of a rectangle.
@@ -84,6 +88,17 @@ struct Rectangle {
     return (top - bot)*(right - left);
   }
 
+  double get_height() const {
+    return (top - bot);
+  }
+
+  double center_x() const {
+    return (left + right)/2;
+  }
+
+  double center_y() const {
+    return (top + bot)/2;
+  }
   double bot,   ///< The bottom of a rectangle.
          top,   ///< The top of a rectangle.
          left,  ///< The left side of a rectangle.
