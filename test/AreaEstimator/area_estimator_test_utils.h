@@ -1,3 +1,6 @@
+#ifndef AREA_ESTIMATOR_TEST_H_
+#define AREA_ESTIMATOR_TEST_H_
+
 #include <cmath>
 #include <unistd.h>
 #include <string>
@@ -12,13 +15,13 @@ struct Ray {
   double st_x, st_y, end_x, end_y;
 };
 
-bool test_estimator(const Rectangle &cell,
+bool test_estimator(const Rectangle &cell, bool is_occ,
                     const Ray &ray, const Occupancy &expected) {
   AreaOccupancyEstimator aoe(0.95, 0.01);
   Beam beam{ray.st_x, ray.st_y, ray.end_x, ray.end_y};
-  bool is_occ = cell.does_contain(ray.st_x, ray.st_y) ||
-                cell.does_contain(ray.end_x, ray.end_y);
   Occupancy occ = aoe.estimate_occupancy(beam, cell, is_occ);
+  if (expected.isNan())
+    return occ.isNan(); 
 
   return occ == expected;
 }
@@ -40,3 +43,5 @@ Ray read_ray(double st_x, double st_y, double end_x, double end_y) {
   ray.end_y = end_y;
   return ray;
 }
+
+#endif
