@@ -1,3 +1,7 @@
+/**
+ * \file
+ * \brief Defines the Grid map.
+ */
 #ifndef _GRID_MAP_H
 #define _GRID_MAP_H
 
@@ -8,6 +12,9 @@
 #include "grid_cell_factory.h"
 #include "../geometry_utils.h"
 
+/**
+ * \brief An occupancy grid implementation.
+ */
 class GridMap {
 public: // typedefs
   using Cell = std::shared_ptr<GridCell>;
@@ -17,6 +24,10 @@ private: // typedefs
 
 public:
   // TODO: cp, mv ctors, dtor
+  /**
+   * Creates a GridCell based map.
+   * \param cell_factory The factory that a creates requied type of Cell.
+   */
   GridMap(std::shared_ptr<GridCellFactory> cell_factory):
     // TODO: replace hardcoded value with params
     _width(1), _height(1), _m_per_cell(0.1),
@@ -34,10 +45,16 @@ public:
     _unvisited_cell = cell_factory->create_cell();
   }
 
+  /// Returns the width of the map.
   int width() const { return _width; }
+
+  /// Returns thr height of the map.
   int height() const { return _height; }
+
+  /// Returns the scale.
   double scale() const { return _m_per_cell; }
 
+  /// Returns map's cells.
   const std::vector<std::vector<Cell>> cells() const { return _cells; }
 
   #define COL_IND(cell_coord)         \
@@ -45,6 +62,12 @@ public:
   #define ROW_IND(cell_coord)         \
       ((cell_coord).y + _map_center_y)
 
+  /**
+   * Updates a cell with a new occupancy data.
+   * \param cell_coord Coordinates of a cell.
+   * \param new_value The probability for cell of being occupied.
+   * \param quality The Measure of beleif to the data.
+   */
   void update_cell(const DiscretePoint2D& cell_coord,
                    const Occupancy &new_value, double quality = 1.0) {
     // TODO: bounds check
@@ -55,6 +78,10 @@ public:
     _cells[row][col]->set_value(new_value, quality);
   }
 
+  /**
+   * Returns the probability of the cell to be occupied.
+   * \param cell_coord A point with coordinates of requied cell in Grid Map.
+   */
   double cell_value(const DiscretePoint2D& cell_coord) const {
     if (!has_cell(cell_coord))
       return _unvisited_cell->value();
@@ -62,6 +89,10 @@ public:
     return _cells[ROW_IND(cell_coord)][COL_IND(cell_coord)]->value();
   }
 
+  /**
+   * Projects coordinates in meters onto a cell of the grid map.
+   * \return The cell point corresponding to given coordinates.
+   */
   DiscretePoint2D world_to_cell(double x, double y) const {
     #define METERS_TO_CELLS(var)   \
       std::floor((var)/_m_per_cell)
@@ -70,8 +101,14 @@ public:
     #undef METERS_TO_CELLS
   }
 
+  /// Returnes the scale.
   double cell_scale() const { return _m_per_cell; }
 
+  /**
+   * Returns the bounds of the cell in the World.
+   * \param cell_coord The point with coordinates of requied cell in the grid
+   *                                                                       map.
+   */
   Rectangle world_cell_bounds(const DiscretePoint2D &cell_coord) {
     Rectangle bounds;
     bounds.bot   = cell_coord.y * _m_per_cell;
@@ -82,13 +119,11 @@ public:
   }
 
   /*!
-   * Returns the column index in container -
-   * the \f$x\f$ coordinate of the map center
+   * Returns the \f$x\f$ coordinate of the map center
    */
   int map_center_x() const { return _map_center_x; }
   /*!
-   * Returns the row index in container -
-   * the \f$y\f$ coordinate of the map center
+   * Returns the \f$y\f$ coordinate of the map center
    */
   int map_center_y() const { return _map_center_y; }
 
