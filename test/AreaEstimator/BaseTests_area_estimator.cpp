@@ -109,13 +109,13 @@ TEST(AreaEstimator_BaseTests, Empty_UD_AtAngle_StopsCenter) {
 
 TEST(AreaEstimator_BaseTests, Occ_NotCrossCell) {
   Ray ray = read_ray(2, 2, 3, 3);
-  bool test_flag = test_estimator(cell, true, ray, {nan_occ, nan_occ});
+  bool test_flag = test_estimator(cell, true, ray, {nan_occ, 0.01});
   EXPECT_TRUE(test_flag);
 }
 
 TEST(AreaEstimator_BaseTests, Occ_TangentToCell) {
   Ray ray = read_ray(-2, 0, 0, 2);
-  bool test_flag = test_estimator(cell, true, ray, {nan_occ, nan_occ});
+  bool test_flag = test_estimator(cell, true, ray, {nan_occ, 0.5});
   EXPECT_TRUE(test_flag);
 }
 

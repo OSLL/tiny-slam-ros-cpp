@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-SET(CMAKE_CXX_FLAGS "-std=c++11 -Wall -O3")
+SET(CMAKE_CXX_FLAGS "-std=c++11 -Wall -O3 -pthread")
 project(tiny_slam)
 
 find_package(catkin REQUIRED COMPONENTS
@@ -16,8 +16,9 @@ catkin_package()
 find_package(GTest)
 include_directories(${catkin_INCLUDE_DIRS} ${GTEST_INCLUDE_DIRS})
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-catkin_add_gtest(utest test/AreaEstimator/utest_area_estimator.cpp)
+catkin_add_gtest(utest test/AreaEstimator/BaseTests_area_estimator.cpp)
+catkin_add_gtest(ptest test/AreaEstimator/GettingIntoBorderTests_area_estimator.cpp)
+catkin_add_gtest(otest test/AreaEstimator/RobotInsideTests_area_estimator.cpp)
 
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 

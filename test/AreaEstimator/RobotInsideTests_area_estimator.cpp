@@ -7,7 +7,7 @@ double nan_occ = std::numeric_limits<double>::quiet_NaN();
 
 TEST(AreaEstimator_RobotInside, Empty_FromInside_Out) {
   Ray ray = read_ray(-0.5, -0.5, 50, 0);
-  bool test_flag = test_estimator(cell, false, ray, {0.01, 0.5});
+  bool test_flag = test_estimator(cell, false, ray, {0.01, 0.252475});
   EXPECT_TRUE(test_flag);
 }
 
@@ -49,7 +49,7 @@ TEST(AreaEstimator_RobotInside, SamePlace) {
 
 TEST(AreaEstimator_RobotOnBorder, Empty_ToOutSide) {
   Ray ray = read_ray(0, 1, 1, -2);
-  bool test_flag = test_estimator(cell, false, ray, {0.01, 0.5});
+  bool test_flag = test_estimator(cell, false, ray, {0.01, 0.333333});
   EXPECT_TRUE(test_flag);
 }
 
