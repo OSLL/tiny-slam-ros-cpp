@@ -86,29 +86,61 @@ public: //methods
       result.setNan();
       return result;
     }
-    Beam n_beam = beam;
-    while(cell_bnds.contains(n_beam.x_st, n_beam.y_st)) {
-      n_beam.x_st = n_beam.x_st - (n_beam.x_end - n_beam.x_st);
-      n_beam.y_st = n_beam.y_st - (n_beam.y_end - n_beam.y_st);
-    }
-
-    if(!n_beam.intersects_rect(cell_bnds)) {
+    if(!beam.intersects_rect(cell_bnds)) {
       result.setNan();
       return result;
     }
-    if(n_beam.encounters_rect(cell_bnds)){
-      return is_occ ? Occupancy(1.0, 1.0) : Occupancy(0.01, 0.1);
+    if(beam.encounters_rect(cell_bnds)){
+      return is_occ ? Occupancy(1.0, 1.0) : Occupancy(base_empty_prob(), 0.5);
+    }
+    if(!cell_bnds.contains(beam.x_end, beam.y_end) && is_occ) {
+      result.setNan();
+      return result;
+    }
+    Beam buf_beam = beam.generate_revert();
+    if(buf_beam.encounters_rect(cell_bnds)) {
+      result.setNan();
+      return result;
+    }
+
+    Beam n_beam = beam;
+    bool flag_changed_start_end = false;
+    if(!cell_bnds.contains_on_border(beam.x_st, beam.y_st) &&
+       !cell_bnds.contains_on_border(beam.x_end, beam.y_end)) {
+      if (cell_bnds.contains(beam.x_end, beam.y_end)) {
+        while(cell_bnds.contains(n_beam.x_st, n_beam.y_st)) {
+          n_beam.x_st = n_beam.x_st - (n_beam.x_end - n_beam.x_st);
+          n_beam.y_st = n_beam.y_st - (n_beam.y_end - n_beam.y_st);
+        }
+      }
+      else {
+        if (cell_bnds.contains(beam.x_st, beam.y_st)) {
+          n_beam = beam.generate_revert();
+          flag_changed_start_end = true;
+        }
+      }
     }
 
     Intersections intrs = find_intersections(n_beam, cell_bnds, is_occ);
     double chunk_area = compute_chunk_area(n_beam, cell_bnds, is_occ, intrs);
+    double chunk_proportion = chunk_area/cell_bnds.area();
     result = estimate_occupancy(chunk_area, cell_bnds.area(), is_occ);
+
+    chunk_proportion = (0.5 < chunk_proportion) ?
+                         (1 - chunk_proportion) : chunk_proportion;
+    if(flag_changed_start_end) {
+      result.estimation_quality = chunk_proportion;
+      result.prob_occ = 0.01;
+    }
     if(n_beam.tangents_rect(cell_bnds)) {
       result.estimation_quality = 0.01;
     }
     else if(n_beam.reaches_border_passing_through_rect(cell_bnds)) {
-      result.prob_occ = 0.01;
-      result.estimation_quality = 0.5;
+      result.prob_occ = base_empty_prob();
+      result.estimation_quality = chunk_proportion;
+    }
+    if (equal(result.prob_occ, base_empty_prob()) && is_occ) {
+      result.setNan();
     }
     return result;
   }

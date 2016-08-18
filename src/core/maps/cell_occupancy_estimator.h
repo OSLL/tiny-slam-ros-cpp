@@ -40,12 +40,14 @@ struct Occupancy {
     return equal(prob_occ, that.prob_occ) &&
            equal(estimation_quality, that.estimation_quality);
   }
+
   void setNan(){
     prob_occ = std::numeric_limits<double>::quiet_NaN();
-    estimation_quality = 0.01;
+    estimation_quality = std::numeric_limits<double>::quiet_NaN();
   }
-  bool isNan(){
-    return std::isnan(prob_occ);
+
+  bool isNan() const {
+    return std::isnan(prob_occ) || std::isnan(estimation_quality);
   }
 };
 /**
@@ -121,6 +123,12 @@ struct Beam {
 
   bool reaches_border_passing_through_rect(const Rectangle& bnds) const {
     return bnds.contains_on_border(x_end, y_end) && intersects_rect(bnds);
+  }
+  Beam generate_revert() const {
+    Beam result(*this);
+    std::swap(result.x_st, result.x_end);
+    std::swap(result.y_st, result.y_end);
+    return result;
   }
 };
 
