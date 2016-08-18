@@ -14,9 +14,28 @@
     <param name="occupancy_estimator" value="const" />
     <param name="skip_exceeding_lsr_vals" value="false" />
 
+    <!-- Map setup-->
+    <param name="map_height_in_meters" value="50" />
+    <param name="map_width_in_meters" value="50" />
+    <param name="map_meters_per_cell" value="0.1" />
+
     <!-- Internal constants setup -->
     <param name="base_occupied_prob" value="0.95" />
     <param name="base_empty_prob" value="0.01" />
+    <param name="hole_width" value="1.5" />
+
+    <!-- Internal scan matcher constants-->
+    <param name="scmtch_sigma_XY_MonteCarlo" value="0.2" />
+    <param name="scmtch_sigma_theta_MonteCarlo" value="0.1" />
+    <param name="scmtch_limit_of_bad_attempts" value="20" />
+    <param name="scmtch_limit_of_total_attempts" value="100" />
+
+    <!-- Internal constants for ros-->
+    <param name="ros_rviz_map_publishing_rate" value="5.0" />
+    <param name="ros_tf_buffer_duration" value="5.0" /> <!-- in seconds-->
+    <param name="ros_filter_queue_size" value="1000" />
+    <param name="ros_subscribers_queue_size" value="1000" />
+
   </node>
 
   <node name="player" pkg="rosbag" type="play"

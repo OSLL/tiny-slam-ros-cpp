@@ -33,8 +33,10 @@ public: // methods
    */
   TinySlamFascade(std::shared_ptr<GridCellStrategy> gcs,
                   const TinyWorldParams &params,
+                  const GridMapParams &init_map_params,
                   bool skip_max_vals):
-    LaserScanObserver(skip_max_vals), _world(new TinyWorld(gcs, params)) {}
+    LaserScanObserver(skip_max_vals),
+    _world(new TinyWorld(gcs, params, init_map_params)) {}
 
   /*!
    * Sets a viewer component that is notified by a pose and map updates.

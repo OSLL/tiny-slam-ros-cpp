@@ -16,12 +16,13 @@
  */
 class RvizGridViewer {
 public: // method
+
 /**
  * Initializes a map and robot's position publisher.
  * \param pub A map publisher to ROS.
  */
-  RvizGridViewer(ros::Publisher pub):
-    _map_pub(pub) {}
+  RvizGridViewer(ros::Publisher pub, const double show_map_rate) :
+    _map_pub(pub), map_publishing_rate(show_map_rate) {}
 
 /**
  * Publishes a robot state as TF message.
@@ -44,7 +45,7 @@ public: // method
  */
   void show_map(const GridMap &map) {
     // TODO: move map publishing rate to parameter
-    if ((ros::Time::now() - _last_pub_time).toSec() < 5.0) {
+    if ((ros::Time::now() - _last_pub_time).toSec() < map_publishing_rate) {
       return;
     }
 
@@ -74,6 +75,7 @@ private: // fields
   ros::Publisher _map_pub;
   ros::Time _last_pub_time;
   tf::TransformBroadcaster _tf_brcst;
+  const double map_publishing_rate;
 };
 
 #endif

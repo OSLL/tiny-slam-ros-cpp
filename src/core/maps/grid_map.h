@@ -12,6 +12,10 @@
 #include "grid_cell_factory.h"
 #include "../geometry_utils.h"
 
+struct GridMapParams {
+  double width, height, meters_per_cell; // width & height in meters
+};
+
 /**
  * \brief An occupancy grid implementation.
  */
@@ -26,12 +30,13 @@ public:
   // TODO: cp, mv ctors, dtor
   /**
    * Creates a GridCell based map.
-   * \param cell_factory The factory that a creates requied type of Cell.
+   * \param cell_factory The factory that creates a requied type of Cell.
    */
-  GridMap(std::shared_ptr<GridCellFactory> cell_factory):
-    // TODO: replace hardcoded value with params
-    _width(1), _height(1), _m_per_cell(0.1),
-    // the map size 1x1 is chosen to delegate an expanded evolution to itself
+  GridMap(std::shared_ptr<GridCellFactory> cell_factory,
+          const GridMapParams &init_params) :
+    _width(std::floor(init_params.width/init_params.meters_per_cell)),
+    _height(std::floor(init_params.height/init_params.meters_per_cell)),
+    _m_per_cell(init_params.meters_per_cell),
     _cell_factory(cell_factory), _cells(_height) {
 
     _map_center_x = std::floor((float)_width /2);

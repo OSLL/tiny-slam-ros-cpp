@@ -116,6 +116,49 @@ bool init_skip_exceeding_lsr() {
   return param_value;
 }
 
+/**
+ * Initializes constants for scan matcher
+ * \return The structure contains requied paramteres
+ */
+TinyWorldParams init_common_world_params() {
+  double sig_XY, sig_T, width;
+  int lim_bad, lim_totl;
+  ros::param::param<double>("~scmtch_sigma_XY_MonteCarlo", sig_XY, 0.2);
+  ros::param::param<double>("~scmtch_sigma_theta_MonteCarlo", sig_T, 0.1);
+  ros::param::param<int>("~scmtch_limit_of_bad_attempts", lim_bad, 20);
+  ros::param::param<int>("~scmtch_limit_of_total_attempts", lim_totl, 100);
+  ros::param::param<double>("~hole_width", width,1.5);
+
+  return TinyWorldParams(sig_XY, sig_T, lim_bad, lim_totl, width);
+}
+
+/**
+ * Initializes constants for map
+ * \return The structure contains requied paramteres
+ */
+GridMapParams init_grid_map_params() {
+  GridMapParams params;
+  ros::param::param<double>("~map_height_in_meters", params.height, 20);
+  ros::param::param<double>("~map_width_in_meters", params.width, 20);
+  ros::param::param<double>("~map_meters_per_cell", params.meters_per_cell,
+                                                                         0.1);
+  return params;
+}
+
+/**
+ * Initializes constants for ros utils
+ * \return Requied parameters
+ */
+void init_constants_for_ros(double &ros_tf_buffer_size,
+                            double &ros_map_rate,
+                            int &ros_filter_queue,
+                            int &ros_subscr_queue) {
+  ros::param::param<double>("~ros_tf_buffer_duration",ros_tf_buffer_size,5.0);
+  ros::param::param<double>("~ros_rviz_map_publishing_rate", ros_map_rate, 5.0);
+  ros::param::param<int>("~ros_filter_queue_size",ros_filter_queue,1000);
+  ros::param::param<int>("~ros_subscribers_queue_size",ros_subscr_queue,1000);
+}
+
 /*!
  * The entry point: creates an environment world and the main node "tiny slam".
  */
@@ -123,19 +166,26 @@ int main(int argc, char** argv) {
   ros::init(argc, argv, "tinySLAM");
 
   ros::NodeHandle nh;
-  TinyWorldParams params;
+  TinyWorldParams params = init_common_world_params();
+  GridMapParams grid_map_params = init_grid_map_params();
   std::shared_ptr<ScanCostEstimator> cost_est{new TinyScanCostEstimator()};
   std::shared_ptr<GridCellStrategy> gcs{new GridCellStrategy{
     init_cell_factory(params), cost_est, init_occ_estimator()}};
   std::shared_ptr<TinySlamFascade> slam{new TinySlamFascade(gcs,
-    params, init_skip_exceeding_lsr())};
+    params, grid_map_params, init_skip_exceeding_lsr())};
 
+  double ros_map_publishing_rate, ros_tf_buffer_size;
+  int ros_filter_queue, ros_subscr_queue;
+  init_constants_for_ros(ros_tf_buffer_size, ros_map_publishing_rate,
+                         ros_filter_queue, ros_subscr_queue);
   TopicWithTransform<sensor_msgs::LaserScan> scan_observer(nh,
-      "laser_scan", "odom_combined");
+    "laser_scan", "odom_combined", ros_tf_buffer_size,
+    ros_filter_queue, ros_subscr_queue);
   scan_observer.subscribe(slam);
 
   std::shared_ptr<RvizGridViewer> viewer(
-    new RvizGridViewer(nh.advertise<nav_msgs::OccupancyGrid>("/map", 5)));
+    new RvizGridViewer(nh.advertise<nav_msgs::OccupancyGrid>("/map", 5),
+                       ros_map_publishing_rate));
   slam->set_viewer(viewer);
 
 #ifdef RVIZ_DEBUG
