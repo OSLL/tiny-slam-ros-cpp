@@ -1,11 +1,6 @@
 #ifndef AREA_ESTIMATOR_TEST_H_
 #define AREA_ESTIMATOR_TEST_H_
 
-#include <cmath>
-#include <unistd.h>
-#include <string>
-#include <fstream>
-
 #include "../../src/core/maps/area_occupancy_estimator.h"
 
 struct Ray {

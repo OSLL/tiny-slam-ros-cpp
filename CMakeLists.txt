@@ -5,10 +5,10 @@ project(tiny_slam)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  sensor_msgs
+  nav_msgs
   tf
   message_filters
-  sensor_msgs
-  rosbag_storage
 )
 
 catkin_package()
