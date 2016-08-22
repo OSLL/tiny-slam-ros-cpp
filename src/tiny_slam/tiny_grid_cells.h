@@ -39,7 +39,7 @@ public:
    * \param[in] quality - the quality of the experiment value \f$\alpha\f$.
    */
   void set_value(const Occupancy &value, double quality) override {
-    if(!value.isNan()){
+    if(value.isValid()){
       _prob = (1.0 - quality) * _prob + quality * value.prob_occ;
     }
   }

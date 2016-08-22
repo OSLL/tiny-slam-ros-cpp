@@ -83,23 +83,23 @@ public: //methods
                                        bool is_occ) override {
     Occupancy result(0.0, 0.0);
     if (equal (beam.x_st, beam.x_end) && (equal(beam.y_st, beam.y_end))) {
-      result.setNan();
+      result.setInvalid();
       return result;
     }
     if(!beam.intersects_rect(cell_bnds)) {
-      result.setNan();
+      result.setInvalid();
       return result;
     }
     if(beam.encounters_rect(cell_bnds)){
       return is_occ ? Occupancy(1.0, 1.0) : Occupancy(base_empty_prob(), 0.5);
     }
     if(!cell_bnds.contains(beam.x_end, beam.y_end) && is_occ) {
-      result.setNan();
+      result.setInvalid();
       return result;
     }
     Beam buf_beam = beam.generate_revert();
     if(buf_beam.encounters_rect(cell_bnds)) {
-      result.setNan();
+      result.setInvalid();
       return result;
     }
 
@@ -140,7 +140,7 @@ public: //methods
       result.estimation_quality = chunk_proportion;
     }
     if (equal(result.prob_occ, base_empty_prob()) && is_occ) {
-      result.setNan();
+      result.setInvalid();
     }
     return result;
   }

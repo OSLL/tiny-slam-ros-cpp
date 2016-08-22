@@ -41,13 +41,13 @@ struct Occupancy {
            equal(estimation_quality, that.estimation_quality);
   }
 
-  void setNan(){
+  void setInvalid(){
     prob_occ = std::numeric_limits<double>::quiet_NaN();
     estimation_quality = std::numeric_limits<double>::quiet_NaN();
   }
 
-  bool isNan() const {
-    return std::isnan(prob_occ) || std::isnan(estimation_quality);
+  bool isValid() const {
+    return !std::isnan(prob_occ) && !std::isnan(estimation_quality);
   }
 };
 /**
@@ -97,10 +97,10 @@ struct Beam {
     cross_right_bot = equal(inters_y, bnds.bot);
 
     inters_y = bnds.bot;
-    result |= is_strictly_between((inters_y-b)/k, bnds.left, bnds.right);
+    result |= is_strictly_between((inters_y - b)/k, bnds.left, bnds.right);
 
     inters_y = bnds.top;
-    result |= is_strictly_between((inters_y-b)/k, bnds.left, bnds.right);
+    result |= is_strictly_between((inters_y - b)/k, bnds.left, bnds.right);
     if((cross_left_bot && cross_right_top) ||
        (cross_left_top && cross_right_bot)) {
       return true;
