@@ -17,7 +17,7 @@ find_package(GTest)
 include_directories(${catkin_INCLUDE_DIRS} ${GTEST_INCLUDE_DIRS})
 
 catkin_add_gtest(utest test/AreaEstimator/BaseTests_area_estimator.cpp)
-catkin_add_gtest(ptest test/AreaEstimator/GettingIntoBorderTests_area_estimator.cpp)
+catkin_add_gtest(ptest test/AreaEstimator/BorderTouchTests_area_estimator.cpp)
 catkin_add_gtest(otest test/AreaEstimator/RobotInsideTests_area_estimator.cpp)
 
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
