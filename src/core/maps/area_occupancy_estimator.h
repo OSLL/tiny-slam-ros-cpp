@@ -16,55 +16,6 @@
  */
 class AreaOccupancyEstimator : public CellOccupancyEstimator {
 private: // types
-  enum class IntersLocation : char {
-    Bot = 0, Left = 1, Top = 2, Right = 3
-  };
-
-  struct Intersection {
-    Intersection(IntersLocation loc, double inters_x, double inters_y) :
-      location(loc), x(inters_x), y(inters_y) {}
-
-    IntersLocation location;
-    bool is_horiz() const {
-      return location == IntersLocation::Bot || location == IntersLocation::Top;
-    }
-    double x, y;
-  };
-
-  using Intersections = std::vector<Intersection>;
-
-  struct Ray { // in parametric form
-    Ray(double x_s, double x_d, double y_s, double y_d) :
-      x_st(x_s), x_delta(x_d), y_st(y_s), y_delta(y_d) {}
-
-    double x_st, x_delta;
-    double y_st, y_delta;
-
-    void intersect_horiz_segm(double st_x, double end_x, double y,
-                              IntersLocation loc, Intersections &consumer) {
-      if (equal(y_delta, 0))
-        return;
-
-      double inters_alpha = (y - y_st) / y_delta;
-      double inters_x = x_st + inters_alpha * x_delta;
-      if (inters_x < st_x || end_x < inters_x) // out of segment bounds
-        return;
-
-      consumer.push_back(Intersection(loc, inters_x, y));
-    }
-
-    void intersect_vert_segm(double st_y, double end_y, double x,
-                             IntersLocation loc, Intersections &consumer) {
-      if (equal(x_delta, 0))
-        return;
-
-      double inters_alpha = (x - x_st) / x_delta;
-      double inters_y = y_st + inters_alpha * y_delta;
-      if (inters_y < st_y || end_y < inters_y) // out of segment bounds
-        return;
-      consumer.push_back(Intersection(loc, x, inters_y));
-    }
-  };
 
 public: //methods
 
@@ -82,73 +33,53 @@ public: //methods
                                        const Rectangle &cell_bnds,
                                        bool is_occ) override {
     Occupancy result(0.0, 0.0);
-    if (equal (beam.x_st, beam.x_end) && (equal(beam.y_st, beam.y_end))) {
-      result.setInvalid();
+
+    bool beam_is_a_point = equal(beam.x_st, beam.x_end)
+                        && equal(beam.y_st, beam.y_end);
+    bool beam_intersects_cell = beam.intersects(cell_bnds);
+    bool beam_escapes_occ_cell = !cell_bnds.is_inside(beam.x_end, beam.y_end)
+                                 && is_occ;
+    bool beam_escapes_from_border = (-beam).encounters(cell_bnds);
+
+    if (beam_is_a_point || !beam_intersects_cell ||
+        beam_escapes_occ_cell || beam_escapes_from_border) {
+      result.invalidate();
       return result;
     }
-    if(!beam.intersects_rect(cell_bnds)) {
-      result.setInvalid();
-      return result;
-    }
-    if(beam.encounters_rect(cell_bnds)){
+
+    if (beam.encounters(cell_bnds)){
       return is_occ ? Occupancy(1.0, 1.0) : Occupancy(base_empty_prob(), 0.5);
     }
-    if(!cell_bnds.contains(beam.x_end, beam.y_end) && is_occ) {
-      result.setInvalid();
-      return result;
-    }
-    Beam buf_beam = beam.generate_revert();
-    if(buf_beam.encounters_rect(cell_bnds)) {
-      result.setInvalid();
-      return result;
-    }
 
-    Beam n_beam = beam;
-    bool flag_changed_start_end = false;
-    if(!cell_bnds.contains_on_border(beam.x_st, beam.y_st) &&
-       !cell_bnds.contains_on_border(beam.x_end, beam.y_end)) {
-      if (cell_bnds.contains(beam.x_end, beam.y_end)) {
-        while(cell_bnds.contains(n_beam.x_st, n_beam.y_st)) {
-          n_beam.x_st = n_beam.x_st - (n_beam.x_end - n_beam.x_st);
-          n_beam.y_st = n_beam.y_st - (n_beam.y_end - n_beam.y_st);
-        }
-      }
-      else {
-        if (cell_bnds.contains(beam.x_st, beam.y_st)) {
-          n_beam = beam.generate_revert();
-          flag_changed_start_end = true;
-        }
-      }
-    }
+    Beam remote_beam = beam.move_start_out(cell_bnds);
 
-    Intersections intrs = find_intersections(n_beam, cell_bnds, is_occ);
-    double chunk_area = compute_chunk_area(n_beam, cell_bnds, is_occ, intrs);
-    double chunk_proportion = chunk_area/cell_bnds.area();
+    Intersections intrs = find_intersections(remote_beam, cell_bnds, is_occ);
+    double chunk_area = compute_chunk_area(remote_beam, cell_bnds, is_occ,
+                                                                        intrs);
+    double area_ratio = chunk_area/cell_bnds.area();
     result = estimate_occupancy(chunk_area, cell_bnds.area(), is_occ);
 
-    chunk_proportion = (0.5 < chunk_proportion) ?
-                         (1 - chunk_proportion) : chunk_proportion;
-    if(flag_changed_start_end) {
-      result.estimation_quality = chunk_proportion;
-      result.prob_occ = 0.01;
-    }
-    if(n_beam.tangents_rect(cell_bnds)) {
+    area_ratio = (0.5 < area_ratio) ? (1 - area_ratio) : area_ratio;
+
+    if (remote_beam.touches_rect(cell_bnds)) {
       result.estimation_quality = 0.01;
     }
-    else if(n_beam.reaches_border_passing_through_rect(cell_bnds)) {
+    else if (remote_beam.reaches_border_passing_through(cell_bnds)) {
       result.prob_occ = base_empty_prob();
-      result.estimation_quality = chunk_proportion;
+      result.estimation_quality = area_ratio;
     }
+
     if (equal(result.prob_occ, base_empty_prob()) && is_occ) {
-      result.setInvalid();
+      result.invalidate();
     }
+
     return result;
   }
 
 private: // methods
   Intersections find_intersections(const Beam &beam,
                                    const Rectangle &bnds, bool is_occ) {
-    Intersections intersections;
+
     // if the cell is occupied, rotate ray around beam by 90 degrees
     Ray ray = is_occ ?
       Ray(beam.x_end, beam.y_st - beam.y_end,
@@ -156,15 +87,7 @@ private: // methods
       Ray(beam.x_st, beam.x_end - beam.x_st,
           beam.y_st, beam.y_end - beam.y_st);
 
-    ray.intersect_horiz_segm(bnds.left, bnds.right, bnds.top,
-                             IntersLocation::Top, intersections);
-    ray.intersect_horiz_segm(bnds.left, bnds.right, bnds.bot,
-                             IntersLocation::Bot, intersections);
-    ray.intersect_vert_segm(bnds.bot, bnds.top, bnds.left,
-                            IntersLocation::Left, intersections);
-    ray.intersect_vert_segm(bnds.bot, bnds.top, bnds.right,
-                            IntersLocation::Right, intersections);
-    return intersections;
+    return ray.find_intersections(bnds);
   }
 
   double compute_chunk_area(const Beam &beam, const Rectangle &bnds,

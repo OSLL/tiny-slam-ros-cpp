@@ -12,7 +12,9 @@
 
 
 inline bool equal(double a, double b) {
-  return (std::abs((a) - (b)) < 0.0001);
+  return (std::abs((a) - (b)) <
+         std::numeric_limits<double>::epsilon() * (std::abs(a)+std::abs(b))) ||
+         std::abs((a) - (b)) < std::numeric_limits<double>::min();
 }
 
 inline bool equal(double a, double b, double c) {
@@ -23,21 +25,21 @@ inline bool less_or_equal(double a, double b) {
   return (equal(a, b) || (a < b));
 }
 
-inline bool is_between(double point, double left, double right) {
-  return (less_or_equal(left, point) && less_or_equal(point, right)) ||
-      (less_or_equal(right, point) && less_or_equal(point, left));
+inline bool are_ordered(double a, double b, double c) {
+  return (less_or_equal(a, b) && less_or_equal(b, c)) ||
+         (less_or_equal(c, b) && less_or_equal(b, a));
 }
 
-inline bool is_strictly_between(double point, double left, double right) {
-  return (((left < point) && (point < right)) ||
-        ((right < point) && (point < left)));
+inline bool are_strictly_ordered(double a, double b, double c) {
+  return ((a < b) && (b < c)) ||
+         ((c < b) && (b < a));
 }
 
 inline bool both_less(double x, double y, double threshold) {
   return (x < threshold) && (y < threshold);
 }
 
-inline bool both_higher(double x, double y, double threshold) {
+inline bool both_greater(double threshold, double x, double y) {
   return (threshold < x) && (threshold < y);
 }
 
@@ -65,18 +67,18 @@ struct Rectangle {
    * \param x,y Coordinates of a target point.
    * \return True if the rectangle contains a point and False otherwise.
    */
-  bool contains(double x, double y) const {
-    return (is_between(y, bot, top) && is_between(x, left, right));
+  bool is_inside(double x, double y) const {
+    return (are_ordered(bot, y, top) && are_ordered(left, x, right));
   }
 
-  bool contains_on_border(double x, double y) const {
-    return ((equal(x, left) && is_between(y, bot, top)) ||
-            (equal(x, right) && is_between(y, bot, top)) ||
-            (equal(y, top) && is_between(x, left, right)) ||
-            (equal(y, bot) && is_between(x, left, right)));
+  bool is_on_border(double x, double y) const {
+    return ((equal(x, left) && are_ordered(bot, y, top)) ||
+            (equal(x, right) && are_ordered(bot, y, top)) ||
+            (equal(y, top) && are_ordered(left, x, right)) ||
+            (equal(y, bot) && are_ordered(left, x, right)));
   }
 
-  bool contains_in_corner(double x, double y) const {
+  bool is_in_corner(double x, double y) const {
     return ((equal(x, left) || equal(x, right)) &&
             (equal(y, top) || equal(y, bot)));
   }
@@ -88,7 +90,7 @@ struct Rectangle {
     return (top - bot)*(right - left);
   }
 
-  double get_height() const {
+  double height() const {
     return (top - bot);
   }
 
@@ -103,6 +105,71 @@ struct Rectangle {
          top,   ///< The top of a rectangle.
          left,  ///< The left side of a rectangle.
          right; ///< The right side of a rectangle.
+};
+
+enum class IntersLocation : char {
+  Bot = 0, Left = 1, Top = 2, Right = 3
+};
+
+struct Intersection {
+  Intersection(IntersLocation loc, double inters_x, double inters_y) :
+    location(loc), x(inters_x), y(inters_y) {}
+
+  IntersLocation location;
+  bool is_horiz() const {
+    return location == IntersLocation::Bot || location == IntersLocation::Top;
+  }
+  double x, y;
+};
+
+using Intersections = std::vector<Intersection>;
+
+struct Ray { // in parametric form
+  Ray(double x_s, double x_d, double y_s, double y_d) :
+    x_st(x_s), x_delta(x_d), y_st(y_s), y_delta(y_d) {}
+
+  double x_st, x_delta;
+  double y_st, y_delta;
+
+  void intersect_horiz_segm(double st_x, double end_x, double y,
+                            IntersLocation loc, Intersections &consumer) {
+    if (equal(y_delta, 0))
+      return;
+
+    double inters_alpha = (y - y_st) / y_delta;
+    double inters_x = x_st + inters_alpha * x_delta;
+    if (inters_x < st_x || end_x < inters_x) // out of segment bounds
+      return;
+
+    consumer.push_back(Intersection(loc, inters_x, y));
+  }
+
+  void intersect_vert_segm(double st_y, double end_y, double x,
+                           IntersLocation loc, Intersections &consumer) {
+    if (equal(x_delta, 0))
+      return;
+
+    double inters_alpha = (x - x_st) / x_delta;
+    double inters_y = y_st + inters_alpha * y_delta;
+    if (inters_y < st_y || end_y < inters_y) // out of segment bounds
+      return;
+    consumer.push_back(Intersection(loc, x, inters_y));
+  }
+
+  Intersections find_intersections(const Rectangle &bnds) {
+      Intersections intersections;
+      // if the cell is occupied, rotate ray around beam by 90 degrees
+
+      intersect_horiz_segm(bnds.left, bnds.right, bnds.top,
+                               IntersLocation::Top, intersections);
+      intersect_horiz_segm(bnds.left, bnds.right, bnds.bot,
+                               IntersLocation::Bot, intersections);
+      intersect_vert_segm(bnds.bot, bnds.top, bnds.left,
+                              IntersLocation::Left, intersections);
+      intersect_vert_segm(bnds.bot, bnds.top, bnds.right,
+                              IntersLocation::Right, intersections);
+      return intersections;
+    }
 };
 
 /**
