@@ -15,6 +15,7 @@ bool test_estimator(const Rectangle &cell, bool is_occ,
   AreaOccupancyEstimator aoe(0.95, 0.01);
   Beam beam{ray.st_x, ray.st_y, ray.end_x, ray.end_y};
   Occupancy occ = aoe.estimate_occupancy(beam, cell, is_occ);
+  
   if (!expected.is_valid())
     return !occ.is_valid(); 
 
@@ -28,15 +29,6 @@ Rectangle create_cell(double top, double bot, double left, double right) {
   cell.left  = left;
   cell.right = right;
   return cell;
-}
-
-TestRay create_ray(double st_x, double st_y, double end_x, double end_y) {
-  TestRay ray;
-  ray.st_x  = st_x; 
-  ray.st_y  = st_y;
-  ray.end_x = end_x;
-  ray.end_y = end_y;
-  return ray;
 }
 
 #endif
