@@ -2,81 +2,81 @@
 
 #include "Map_test.h"
 
-TEST(AutoExpandbleMapBaseTests, Right) {
-  HeWi param = AutoExpandbleMap_Test({2, 0});
-  bool flag = (param.height == 1)&&(param.width == 4);
-  EXPECT_TRUE(flag);
-  flag = (param.x == 0)&&(param.y == 0);
-  EXPECT_TRUE(flag);
+TEST(AutoExpandbleMapBaseTests, Expand_Right) {
+  MapParam param = test_auto_expand({2, 0});
+  bool is_succeed = (param.height == 1) && (param.width == 4);
+  EXPECT_TRUE(is_succeed);
+  is_succeed = (param.x == 0) && (param.y == 0);
+  EXPECT_TRUE(is_succeed);
 }
 
-TEST(AutoExpandbleMapBaseTests, Top) {
-  HeWi param = AutoExpandbleMap_Test({0, 3});
-  bool flag = (param.height == 8)&&(param.width == 4);
-  EXPECT_TRUE(flag);
-  flag = (param.x == 0)&&(param.y == 0);
-  EXPECT_TRUE(flag);
+TEST(AutoExpandbleMapBaseTests, Expand_Top) {
+  MapParam param = test_auto_expand({0, 3});
+  bool is_succeed = (param.height == 8) && (param.width == 4);
+  EXPECT_TRUE(is_succeed);
+  is_succeed = (param.x == 0) && (param.y == 0);
+  EXPECT_TRUE(is_succeed);
 }
 
-TEST(AutoExpandbleMapBaseTests, Left) {
-  HeWi param = AutoExpandbleMap_Test({-3, 0});
-  bool flag = (param.height == 8)&&(param.width == 8);
-  EXPECT_TRUE(flag);
-  flag = (param.x == 4)&&(param.y == 0);
-  EXPECT_TRUE(flag);
+TEST(AutoExpandbleMapBaseTests, Expand_Left) {
+  MapParam param = test_auto_expand({-3, 0});
+  bool is_succeed = (param.height == 8) && (param.width == 8);
+  EXPECT_TRUE(is_succeed);
+  is_succeed = (param.x == 4) && (param.y == 0);
+  EXPECT_TRUE(is_succeed);
 }
 
-TEST(AutoExpandbleMapBaseTests, Down) {
-  HeWi param = AutoExpandbleMap_Test({0, -3});
-  bool flag = (param.height == 16)&&(param.width == 8);
-  EXPECT_TRUE(flag);
-  flag = (param.x == 4)&&(param.y == 8);
-  EXPECT_TRUE(flag);
+TEST(AutoExpandbleMapBaseTests, Expand_Down) {
+  MapParam param = test_auto_expand({0, -3});
+  bool is_succeed = (param.height == 16) && (param.width == 8);
+  EXPECT_TRUE(is_succeed);
+  is_succeed = (param.x == 4) && (param.y == 8);
+  EXPECT_TRUE(is_succeed);
 }
 
-TEST(AutoExpandbleMapBaseTests, Right_Top) {
-  HeWi param = AutoExpandbleMap_Test({3, 2});
-  bool flag = (param.height == 16)&&(param.width == 8);
-  EXPECT_TRUE(flag);
-  flag = (param.x == 4)&&(param.y == 8);
-  EXPECT_TRUE(flag);
+TEST(AutoExpandbleMapBaseTests, Expand_Right_Top) {
+  MapParam param = test_auto_expand({3, 2});
+  bool is_succeed = (param.height == 16) && (param.width == 8);
+  EXPECT_TRUE(is_succeed);
+  is_succeed = (param.x == 4) && (param.y == 8);
+  EXPECT_TRUE(is_succeed);
 }
 
-TEST(AutoExpandbleMapBaseTests, Right_Down) {
-  HeWi param = AutoExpandbleMap_Test({3, -2});
-  bool flag = (param.height == 16)&&(param.width == 8);
-  EXPECT_TRUE(flag);
-  flag = (param.x == 4)&&(param.y == 8);
-  EXPECT_TRUE(flag);
+TEST(AutoExpandbleMapBaseTests, Expand_Right_Down) {
+  MapParam param = test_auto_expand({3, -2});
+  bool is_succeed = (param.height == 16) && (param.width == 8);
+  EXPECT_TRUE(is_succeed);
+  is_succeed = (param.x == 4) && (param.y == 8);
+  EXPECT_TRUE(is_succeed);
 }
 
-TEST(AutoExpandbleMapBaseTests, Left_Top) {
-  HeWi param = AutoExpandbleMap_Test({-3, 2});
-  bool flag = (param.height == 16)&&(param.width == 8);
-  EXPECT_TRUE(flag);
-  flag = (param.x == 4)&&(param.y == 8);
-  EXPECT_TRUE(flag);
+TEST(AutoExpandbleMapBaseTests, Expand_Left_Top) {
+  MapParam param = test_auto_expand({-3, 2});
+  bool is_succeed = (param.height == 16) && (param.width == 8);
+  EXPECT_TRUE(is_succeed);
+  is_succeed = (param.x == 4) && (param.y == 8);
+  EXPECT_TRUE(is_succeed);
 }
 
-TEST(AutoExpandbleMapBaseTests, Left_Down) {
-  HeWi param = AutoExpandbleMap_Test({-3, -2});
-  bool flag = (param.height == 16)&&(param.width == 8);
-  EXPECT_TRUE(flag);
-  flag = (param.x == 4)&&(param.y == 8);
-  EXPECT_TRUE(flag);
+TEST(AutoExpandbleMapBaseTests, Expand_Left_Down) {
+  MapParam param = test_auto_expand({-3, -2});
+  bool is_succeed = (param.height == 16) && (param.width == 8);
+  EXPECT_TRUE(is_succeed);
+  is_succeed = (param.x == 4) && (param.y == 8);
+  EXPECT_TRUE(is_succeed);
 }
 
 TEST(AutoExpandbleMapBaseTests, NoExpand) {
-  HeWi param = AutoExpandbleMap_Test({0, 0});
-  bool flag = (param.height == 16)&&(param.width == 8);
-  EXPECT_TRUE(flag);
-  flag = (param.x == 4)&&(param.y == 8);
-  EXPECT_TRUE(flag);
+  MapParam param = test_auto_expand({0, 0});
+  bool is_succeed = (param.height == 16) && (param.width == 8);
+  EXPECT_TRUE(is_succeed);
+  is_succeed = (param.x == 4) && (param.y == 8);
+  EXPECT_TRUE(is_succeed);
 }
 
 TEST(AutoExpandbleMapBaseTests, CheckCellsValue) {
-  bool flag = CellValue_test();
-  EXPECT_TRUE(flag);
+  bool is_succeed = test_CellValueNotChange();
+  EXPECT_TRUE(is_succeed);
 }
 
 int main (int argc, char *argv[]) {
