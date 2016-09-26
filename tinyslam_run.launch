@@ -14,6 +14,11 @@
     <param name="occupancy_estimator" value="const" />
     <param name="skip_exceeding_lsr_vals" value="false" />
 
+    <!-- Topics setup -->
+    <param name="odom" value="odom_combined" />
+    <param name="laser_scan" value="/base_scan" />
+    <param name="robot_pose" value="robot_pose" />
+
     <!-- Map setup-->
     <param name="map_height_in_meters" value="50" />
     <param name="map_width_in_meters" value="50" />
