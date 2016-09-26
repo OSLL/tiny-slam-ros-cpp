@@ -42,7 +42,7 @@ public:
   virtual void on_scan_test(const RobotState &pose,
                             const TransformedLaserScan &scan,
                             double score) override {
-    publish_transform("sm_curr_pose", pose);
+    publish_transform("sm_curr_pose", _odom, pose);
   }
   /*!
    * Publishes the best found robot pose.
@@ -51,12 +51,14 @@ public:
   virtual void on_pose_update(const RobotState &pose,
                               const TransformedLaserScan &scan,
                               double score) override {
-    publish_transform("sm_best_pose", pose);
+    publish_transform("sm_best_pose", _odom, pose);
   }
 private:
-    void publish_transform(const std::string& frame_id, const RobotState& p) {
-      publish_2D_transform(frame_id, "odom", p.x, p.y, p.theta);
+    void publish_transform(const std::string& frame_id, std::string odom, const RobotState& p) {
+      publish_2D_transform(frame_id, odom, p.x, p.y, p.theta);
     }
+
+  std::string _odom;
 };
 
 /*!
@@ -197,7 +199,7 @@ int main(int argc, char** argv) {
   slam->set_viewer(viewer);
 
 #ifdef RVIZ_DEBUG
-  std::shared_ptr<PoseScanMatcherObserver> obs(new PoseScanMatcherObserver);
+  std::shared_ptr<PoseScanMatcherObserver> obs(new PoseScanMatcherObserver(odom));
   slam->add_scan_matcher_observer(obs);
 #endif
   ros::spin();
