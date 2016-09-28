@@ -2,81 +2,53 @@
 
 #include "Map_test.h"
 
+bool is_succeed(const DiscretePoint2D& Cell_coor, MapParams expected_param) {
+  GridMap map(std::shared_ptr<GridCellFactory>(new TinyBaseCellFactory), {1,1,1});
+  MapParams param = test_auto_expand(Cell_coor, map);
+  return param == expected_param;
+}
+
 TEST(AutoExpandbleMapBaseTests, Expand_Right) {
-  MapParam param = test_auto_expand({2, 0});
-  bool is_succeed = (param.height == 1) && (param.width == 4);
-  EXPECT_TRUE(is_succeed);
-  is_succeed = (param.x == 0) && (param.y == 0);
-  EXPECT_TRUE(is_succeed);
+  EXPECT_TRUE(is_succeed({2,0}, {1,4,0,0}));
 }
 
 TEST(AutoExpandbleMapBaseTests, Expand_Top) {
-  MapParam param = test_auto_expand({0, 3});
-  bool is_succeed = (param.height == 8) && (param.width == 4);
-  EXPECT_TRUE(is_succeed);
-  is_succeed = (param.x == 0) && (param.y == 0);
-  EXPECT_TRUE(is_succeed);
+  EXPECT_TRUE(is_succeed({0,2}, {4,1,0,0}));
 }
 
 TEST(AutoExpandbleMapBaseTests, Expand_Left) {
-  MapParam param = test_auto_expand({-3, 0});
-  bool is_succeed = (param.height == 8) && (param.width == 8);
-  EXPECT_TRUE(is_succeed);
-  is_succeed = (param.x == 4) && (param.y == 0);
-  EXPECT_TRUE(is_succeed);
+  EXPECT_TRUE(is_succeed({-2,0}, {1,4,3,0}));
 }
 
 TEST(AutoExpandbleMapBaseTests, Expand_Down) {
-  MapParam param = test_auto_expand({0, -3});
-  bool is_succeed = (param.height == 16) && (param.width == 8);
-  EXPECT_TRUE(is_succeed);
-  is_succeed = (param.x == 4) && (param.y == 8);
-  EXPECT_TRUE(is_succeed);
+  EXPECT_TRUE(is_succeed({0,-2}, {4,1,0,3}));
 }
 
 TEST(AutoExpandbleMapBaseTests, Expand_Right_Top) {
-  MapParam param = test_auto_expand({3, 2});
-  bool is_succeed = (param.height == 16) && (param.width == 8);
-  EXPECT_TRUE(is_succeed);
-  is_succeed = (param.x == 4) && (param.y == 8);
-  EXPECT_TRUE(is_succeed);
+  EXPECT_TRUE(is_succeed({2,2}, {4,4,0,0}));
 }
 
 TEST(AutoExpandbleMapBaseTests, Expand_Right_Down) {
-  MapParam param = test_auto_expand({3, -2});
-  bool is_succeed = (param.height == 16) && (param.width == 8);
-  EXPECT_TRUE(is_succeed);
-  is_succeed = (param.x == 4) && (param.y == 8);
-  EXPECT_TRUE(is_succeed);
+  EXPECT_TRUE(is_succeed({2,-2}, {4,4,0,3}));
 }
 
 TEST(AutoExpandbleMapBaseTests, Expand_Left_Top) {
-  MapParam param = test_auto_expand({-3, 2});
-  bool is_succeed = (param.height == 16) && (param.width == 8);
-  EXPECT_TRUE(is_succeed);
-  is_succeed = (param.x == 4) && (param.y == 8);
-  EXPECT_TRUE(is_succeed);
+  EXPECT_TRUE(is_succeed({-2,2}, {4,4,3,0}));
 }
 
 TEST(AutoExpandbleMapBaseTests, Expand_Left_Down) {
-  MapParam param = test_auto_expand({-3, -2});
-  bool is_succeed = (param.height == 16) && (param.width == 8);
-  EXPECT_TRUE(is_succeed);
-  is_succeed = (param.x == 4) && (param.y == 8);
-  EXPECT_TRUE(is_succeed);
+  EXPECT_TRUE(is_succeed({-2,-2}, {4,4,3,3}));
 }
 
 TEST(AutoExpandbleMapBaseTests, NoExpand) {
-  MapParam param = test_auto_expand({0, 0});
-  bool is_succeed = (param.height == 16) && (param.width == 8);
-  EXPECT_TRUE(is_succeed);
-  is_succeed = (param.x == 4) && (param.y == 8);
-  EXPECT_TRUE(is_succeed);
+  EXPECT_TRUE(is_succeed({0,0}, {1,1,0,0}));
 }
 
 TEST(AutoExpandbleMapBaseTests, CheckCellsValue) {
-  bool is_succeed = test_CellValueNotChange();
-  EXPECT_TRUE(is_succeed);
+  GridMap map(std::shared_ptr<GridCellFactory>(new TinyBaseCellFactory), {1,1,1});
+  map.update_cell({5, 5}, {0.5, 0.5});
+  bool not_change = test_CellValueNotChange(map);
+  EXPECT_TRUE(not_change);
 }
 
 int main (int argc, char *argv[]) {
