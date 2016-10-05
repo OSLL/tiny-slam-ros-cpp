@@ -64,10 +64,11 @@ struct Beam {
   }
 
   Beam operator- () const {
-    return (*this).revert();
+    Beam result(*this);
+    std::swap(result.x_st, result.x_end);
+    std::swap(result.y_st, result.y_end);
+    return result;
   }
-
-
 
   bool intersects(const Rectangle& bnds) const {
     bool is_inside_rect = bnds.is_inside(x_st, y_st) ||
@@ -98,17 +99,11 @@ struct Beam {
     return false;
   }
 
-  bool reaches_border_passing_through(const Rectangle& bnds) const {
+  bool stops_at_border_passing_through(const Rectangle& bnds) const {
     return bnds.is_on_border(x_end, y_end) && intersects(bnds);
   }
-  Beam revert() const {
-    Beam result(*this);
-    std::swap(result.x_st, result.x_end);
-    std::swap(result.y_st, result.y_end);
-    return result;
-  }
 
-  Beam move_start_out(const Rectangle& bnds) const {
+  Beam clone_with_start_outside(const Rectangle& bnds) const {
     Beam result(*this);
 
     bool beam_ends_inside = !bnds.is_on_border(x_st, y_st) &&

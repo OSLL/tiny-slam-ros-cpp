@@ -51,20 +51,20 @@ public: //methods
       return is_occ ? Occupancy(1.0, 1.0) : Occupancy(base_empty_prob(), 0.5);
     }
 
-    Beam remote_beam = beam.move_start_out(cell_bnds);
+    Beam acting_beam = beam.clone_with_start_outside(cell_bnds);
 
-    Intersections intrs = find_intersections(remote_beam, cell_bnds, is_occ);
-    double chunk_area = compute_chunk_area(remote_beam, cell_bnds, is_occ,
+    Intersections intrs = find_intersections(acting_beam, cell_bnds, is_occ);
+    double chunk_area = compute_chunk_area(acting_beam, cell_bnds, is_occ,
                                                                         intrs);
     double area_ratio = chunk_area/cell_bnds.area();
     result = estimate_occupancy(chunk_area, cell_bnds.area(), is_occ);
 
     area_ratio = (0.5 < area_ratio) ? (1 - area_ratio) : area_ratio;
 
-    if (remote_beam.touches_rect(cell_bnds)) {
+    if (acting_beam.touches_rect(cell_bnds)) {
       result.estimation_quality = 0.01;
     }
-    else if (remote_beam.reaches_border_passing_through(cell_bnds)) {
+    else if (acting_beam.stops_at_border_passing_through(cell_bnds)) {
       result.prob_occ = base_empty_prob();
       result.estimation_quality = area_ratio;
     }
