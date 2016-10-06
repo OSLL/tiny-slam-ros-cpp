@@ -61,7 +61,7 @@ public: //methods
 
     area_ratio = (0.5 < area_ratio) ? (1 - area_ratio) : area_ratio;
 
-    if (acting_beam.touches_rect(cell_bnds)) {
+    if (acting_beam.contains_border(cell_bnds)) {
       result.estimation_quality = 0.01;
     }
     else if (acting_beam.stops_at_border_passing_through(cell_bnds)) {

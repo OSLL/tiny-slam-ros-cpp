@@ -58,7 +58,7 @@ struct Beam {
   double x_end, y_end; ///< Coordinates where the beam reaches an obstacle.
 
   //methods
-  bool touches_rect(const Rectangle& bnds) const {
+  bool contains_border(const Rectangle& bnds) const {
     return equal(x_st, x_end, bnds.left) || equal(y_st, y_end, bnds.bot) ||
            equal(x_st, x_end, bnds.right) || equal(y_st, y_end, bnds.top);
   }
@@ -87,7 +87,7 @@ struct Beam {
   }
 
   bool encounters(const Rectangle& bnds) const {
-    if(!bnds.is_on_border(x_end, y_end) || touches_rect(bnds)) {
+    if(!bnds.is_on_border(x_end, y_end) || contains_border(bnds)) {
       return false;
     }
     if (equal(x_end, bnds.left) || equal(x_end, bnds.right)) {
