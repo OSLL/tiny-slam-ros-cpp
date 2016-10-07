@@ -86,7 +86,7 @@ struct Beam {
     return result;
   }
 
-  bool encounters(const Rectangle& bnds) const {
+  bool reaches_bound(const Rectangle& bnds) const {
     if(!bnds.is_on_border(x_end, y_end) || contains_border(bnds)) {
       return false;
     }

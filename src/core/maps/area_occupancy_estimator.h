@@ -39,7 +39,7 @@ public: //methods
     bool beam_intersects_cell = beam.intersects(cell_bnds);
     bool beam_escapes_occ_cell = !cell_bnds.is_inside(beam.x_end, beam.y_end)
                                  && is_occ;
-    bool beam_escapes_from_border = (-beam).encounters(cell_bnds);
+    bool beam_escapes_from_border = (-beam).reaches_bound(cell_bnds);
 
     if (beam_is_a_point || !beam_intersects_cell ||
         beam_escapes_occ_cell || beam_escapes_from_border) {
@@ -47,7 +47,7 @@ public: //methods
       return result;
     }
 
-    if (beam.encounters(cell_bnds)){
+    if (beam.reaches_bound(cell_bnds)){
       return is_occ ? Occupancy(1.0, 1.0) : Occupancy(base_empty_prob(), 0.5);
     }
 
