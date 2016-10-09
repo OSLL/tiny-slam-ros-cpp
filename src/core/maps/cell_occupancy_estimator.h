@@ -37,8 +37,17 @@ struct Occupancy {
     prob_occ(prob), estimation_quality(quality), x(curr_x), y(curr_y) {}
 
   bool operator==(const Occupancy &that) {
-    return EQ_DOUBLE(prob_occ, that.prob_occ) &&
-           EQ_DOUBLE(estimation_quality, that.estimation_quality);
+    return equal(prob_occ, that.prob_occ) &&
+           equal(estimation_quality, that.estimation_quality);
+  }
+
+  void invalidate(){
+    prob_occ = std::numeric_limits<double>::quiet_NaN();
+    estimation_quality = std::numeric_limits<double>::quiet_NaN();
+  }
+
+  bool is_valid() const {
+    return !std::isnan(prob_occ) && !std::isnan(estimation_quality);
   }
 };
 /**
@@ -47,6 +56,68 @@ struct Occupancy {
 struct Beam {
   double x_st, y_st; ///< Coordinates of a start of the beam.
   double x_end, y_end; ///< Coordinates where the beam reaches an obstacle.
+
+  //methods
+  bool contains_border(const Rectangle& bnds) const {
+    return equal(x_st, x_end, bnds.left) || equal(y_st, y_end, bnds.bot) ||
+           equal(x_st, x_end, bnds.right) || equal(y_st, y_end, bnds.top);
+  }
+
+  Beam operator- () const {
+    Beam result(*this);
+    std::swap(result.x_st, result.x_end);
+    std::swap(result.y_st, result.y_end);
+    return result;
+  }
+
+  bool intersects(const Rectangle& bnds) const {
+    bool is_inside_rect = bnds.is_inside(x_st, y_st) ||
+                          bnds.is_inside(x_end, y_end);
+    if (is_inside_rect) {
+      return true;
+    }
+
+    bool result = false;
+    Ray ray(x_st, y_st, x_end - x_st, y_end - y_st);
+    Intersections intrs = ray.find_intersections(bnds);
+    for (auto intersection : intrs) {
+      result |= bnds.is_on_border(intersection.x, intersection.y);
+    }
+    return result;
+  }
+
+  bool reaches_bound(const Rectangle& bnds) const {
+    if(!bnds.is_on_border(x_end, y_end) || contains_border(bnds)) {
+      return false;
+    }
+    if (equal(x_end, bnds.left) || equal(x_end, bnds.right)) {
+      return are_strictly_ordered(x_st, x_end, bnds.center_x());
+    }
+    if (equal(y_end, bnds.bot) || equal(y_end, bnds.top)) {
+      return are_strictly_ordered(y_st, y_end, bnds.center_y());
+    }
+    return false;
+  }
+
+  bool stops_at_border_passing_through(const Rectangle& bnds) const {
+    return bnds.is_on_border(x_end, y_end) && intersects(bnds);
+  }
+
+  Beam clone_with_start_outside(const Rectangle& bnds) const {
+    Beam result(*this);
+
+    bool beam_ends_inside = !bnds.is_on_border(x_st, y_st) &&
+                            !bnds.is_on_border(x_end,y_end) &&
+                            bnds.is_inside(x_end, y_end);
+    bool beam_starts_inside = bnds.is_inside(result.x_st, result.y_st);
+    while (beam_ends_inside && beam_starts_inside) {
+      result.x_st = result.x_st - (result.x_end - result.x_st);
+      result.y_st = result.y_st - (result.y_end - result.y_st);
+      beam_starts_inside = bnds.is_inside(result.x_st, result.y_st);
+    }
+
+    return result;
+  }
 };
 
 /**
