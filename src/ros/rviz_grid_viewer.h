@@ -22,8 +22,9 @@ public: // method
  * \param pub A map publisher to ROS.
  */
   RvizGridViewer(ros::Publisher pub, const double show_map_rate, 
-                 std::string odom, std::string robot_pose) :
-    _map_pub(pub), map_publishing_rate(show_map_rate), _odom(odom), _robot_pose(robot_pose) {}
+                 std::string frame_odom, std::string frame_robot_pose) :
+    _map_pub(pub), map_publishing_rate(show_map_rate), 
+    _frame_odom(frame_odom), _frame_robot_pose(frame_robot_pose) {}
 
 /**
  * Publishes a robot state as TF message.
@@ -77,8 +78,8 @@ private: // fields
   ros::Time _last_pub_time;
   tf::TransformBroadcaster _tf_brcst;
   const double map_publishing_rate;
-  std::string _odom;
-  std::string _robot_pose;
+  std::string _frame_odom;
+  std::string _frame_robot_pose;
 };
 
 #endif

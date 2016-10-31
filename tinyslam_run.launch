@@ -15,8 +15,10 @@
     <param name="skip_exceeding_lsr_vals" value="false" />
 
     <!-- Topics setup -->
-    <param name="odom" value="odom_combined" />
     <param name="laser_scan" value="/base_scan" />
+
+    <!-- Frame_names setup -->
+    <param name="odom" value="odom_combined" />
     <param name="robot_pose" value="robot_pose" />
 
     <!-- Map setup-->
