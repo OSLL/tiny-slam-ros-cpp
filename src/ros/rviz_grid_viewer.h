@@ -21,8 +21,10 @@ public: // method
  * Initializes a map and robot's position publisher.
  * \param pub A map publisher to ROS.
  */
-  RvizGridViewer(ros::Publisher pub, const double show_map_rate) :
-    _map_pub(pub), map_publishing_rate(show_map_rate) {}
+  RvizGridViewer(ros::Publisher pub, const double show_map_rate, 
+                 std::string frame_odom, std::string frame_robot_pose) :
+    _map_pub(pub), map_publishing_rate(show_map_rate), 
+    _frame_odom(frame_odom), _frame_robot_pose(frame_robot_pose) {}
 
 /**
  * Publishes a robot state as TF message.
@@ -36,7 +38,7 @@ public: // method
     t.setRotation(q);
     _tf_brcst.sendTransform(
       tf::StampedTransform(t, ros::Time::now(),
-                           "odom_combined", "robot_pose"));
+                           _odom, _robot_pose));
   }
 
 /**
@@ -76,6 +78,8 @@ private: // fields
   ros::Time _last_pub_time;
   tf::TransformBroadcaster _tf_brcst;
   const double map_publishing_rate;
+  std::string _frame_odom;
+  std::string _frame_robot_pose;
 };
 
 #endif
