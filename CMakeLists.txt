@@ -13,10 +13,14 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package()
 
-find_package(GTest)
-include_directories(${catkin_INCLUDE_DIRS} ${GTEST_INCLUDE_DIRS})
+#does catkin support gtest?
+if(CATKIN_ENABLE_TESTING)
+  find_package(GTest)
+  include_directories(${catkin_INCLUDE_DIRS} ${GTEST_INCLUDE_DIRS})
+  catkin_add_gtest(atest test/AutoExpandbleMap/AutoExpandble_map_utest.cpp)
 
-#catkin_add_gtest(atest test/AutoExpandbleMap/AutoExpandble_map_utest.cpp)
+endif()
+
 
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 
