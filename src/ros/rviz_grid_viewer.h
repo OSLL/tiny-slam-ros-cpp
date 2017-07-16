@@ -38,7 +38,7 @@ public: // method
     t.setRotation(q);
     _tf_brcst.sendTransform(
       tf::StampedTransform(t, ros::Time::now(),
-                           _odom, _robot_pose));
+                           _frame_odom, _frame_robot_pose));
   }
 
 /**

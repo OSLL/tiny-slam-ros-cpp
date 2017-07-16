@@ -21,3 +21,4 @@ catkin_add_gtest(atest test/AutoExpandbleMap/AutoExpandble_map_utest.cpp)
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 
 target_link_libraries(tiny_slam ${catkin_LIBRARIES} ${GTEST_LIBRARY})
+

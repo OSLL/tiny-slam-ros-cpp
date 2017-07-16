@@ -66,8 +66,9 @@ public: // methods
     _observers.push_back(obs);
   }
 private: // consts
-  const uint32_t SUBSCR_QUEUE_SZ = 10000; // elems
+
   const uint32_t FILTER_QUEUE_SZ = 10000; // elems
+  const uint32_t SUBSCR_QUEUE_SZ = 10000; // elems
 private: // methods
   void transformed_msg_cb(const boost::shared_ptr<MsgType> msg) {
     tf::StampedTransform transform;
