@@ -26,14 +26,14 @@ catkin_package()
 
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 
-#if(CATKIN_ENABLE_TESTING)
+if(CATKIN_ENABLE_TESTING)
 #	find_package(GTest REQUIRED)
 	include_directories(${GTEST_INCLUDE_DIRS})
   	  
 	catkin_add_gtest(atest test/AutoExpandbleMap/AutoExpandble_map_utest.cpp)
 
 	target_link_libraries(atest ${catkin_LIBRARIES} ${GTEST_LIBRARY})
-#endif()
+endif()
 
 target_link_libraries(tiny_slam ${catkin_LIBRARIES})
 
