@@ -27,7 +27,7 @@ catkin_package()
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 
 #if(CATKIN_ENABLE_TESTING)
-	find_package(GTest REQUIRED)
+#	find_package(GTest REQUIRED)
 	include_directories(${GTEST_INCLUDE_DIRS})
   	  
 	catkin_add_gtest(atest test/AutoExpandbleMap/AutoExpandble_map_utest.cpp)
