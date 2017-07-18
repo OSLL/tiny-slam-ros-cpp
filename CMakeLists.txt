@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-SET(CMAKE_CXX_FLAGS "-Wall -O3 -pthread -std=c++11")
+SET(CMAKE_CXX_FLAGS "-std=c++11 -Wall -O3 -pthread")
 project(tiny_slam)
 
 set (rosv "rosversion")
