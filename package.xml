@@ -27,5 +27,4 @@
 
   </export>
   <test_depend>rosunit</test_depend>
-  <test_depend>gtest</test_depend>
 </package>
