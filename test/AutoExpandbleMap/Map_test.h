@@ -40,7 +40,6 @@ bool test_CellValueNotChange(GridMap map) {
       }
     }
   }
-
   return true;
 }
 
