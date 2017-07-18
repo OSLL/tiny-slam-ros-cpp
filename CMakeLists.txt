@@ -14,31 +14,21 @@ find_package(catkin REQUIRED COMPONENTS
   message_filters
 )
 
-find_package(GTest REQUIRED)
-include_directories(
-  include/${PROJECT_NAME}
-  ${catkin_INCLUDE_DIRS}
-  ${GTEST_INCLUDE_DIRS} #NEW: GTest Lib
-)
-
 catkin_package()
 
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
 
-execute_process(COMMAND ${rosv} ${rosv_dist}
-	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-	RESULT_VARIABLE ros_result
-	OUTPUT_VARIABLE ros_version)
-
-if(${ros_version} STREQUAL "jade\n" OR (${ros_version} STREQUAL "indigo\n")  )
-  	target_link_libraries(tiny_slam ${catkin_LIBRARIES})
+if(CATKIN_ENABLE_TESTING)
+	find_package(GTest REQUIRED)
+	include_directories(
+	  include/${PROJECT_NAME}
+	  ${catkin_INCLUDE_DIRS}
+	  ${GTEST_INCLUDE_DIRS})
+  	  
+	catkin_add_gtest(atest test/AutoExpandbleMap/AutoExpandble_map_utest.cpp)
+	target_link_libraries(tiny_slam ${catkin_LIBRARIES} ${GTEST_LIBRARY})
 else()
- 	if(CATKIN_ENABLE_TESTING)
- 		find_package(GTest)
-  		include_directories(${catkin_INCLUDE_DIRS} ${GTEST_INCLUDE_DIRS})
-  		catkin_add_gtest(atest test/AutoExpandbleMap/AutoExpandble_map_utest.cpp)
-	  	target_link_libraries(tiny_slam ${catkin_LIBRARIES})
- 	endif()
+  	target_link_libraries(tiny_slam ${catkin_LIBRARIES})
 endif()
 
 
