@@ -14,6 +14,13 @@ find_package(catkin REQUIRED COMPONENTS
   message_filters
 )
 
+find_package(GTest REQUIRED)
+include_directories(
+  include/${PROJECT_NAME}
+  ${catkin_INCLUDE_DIRS}
+  ${GTEST_INCLUDE_DIRS} #NEW: GTest Lib
+)
+
 catkin_package()
 
 add_executable(tiny_slam src/tiny_slam/tiny_slam.cpp)
@@ -30,7 +37,7 @@ else()
  		find_package(GTest)
   		include_directories(${catkin_INCLUDE_DIRS} ${GTEST_INCLUDE_DIRS})
   		catkin_add_gtest(atest test/AutoExpandbleMap/AutoExpandble_map_utest.cpp)
-	  	target_link_libraries(tiny_slam ${catkin_LIBRARIES} ${GTEST_LIBRARY})
+	  	target_link_libraries(tiny_slam ${catkin_LIBRARIES})
  	endif()
 endif()
 
