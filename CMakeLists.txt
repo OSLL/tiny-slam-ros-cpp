@@ -23,7 +23,7 @@ execute_process(COMMAND ${rosv} ${rosv_dist}
 	RESULT_VARIABLE ros_result
 	OUTPUT_VARIABLE ros_version)
 
-if(${ros_version} STREQUAL "jade\n")
+if(${ros_version} STREQUAL "jade\n" OR (${ros_version} STREQUAL "indigo\n")  )
   	target_link_libraries(tiny_slam ${catkin_LIBRARIES})
 else()
  	if(CATKIN_ENABLE_TESTING)
