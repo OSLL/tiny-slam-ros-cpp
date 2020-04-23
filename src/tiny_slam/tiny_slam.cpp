@@ -193,7 +193,7 @@ int main(int argc, char** argv) {
   scan_observer.subscribe(slam);
 
   std::shared_ptr<RvizGridViewer> viewer(
-    new RvizGridViewer(nh.advertise<nav_msgs::OccupancyGrid>("/map", 5),
+    new RvizGridViewer(nh.advertise<nav_msgs::OccupancyGrid>("/map", 5, true),
                        ros_map_publishing_rate, frame_odom, frame_robot_pose));
   slam->set_viewer(viewer);
 
